@@ -68,8 +68,6 @@ Params = setparams();
 
 if ~exist('Dataset', 'var')
     Dataset = load(Params.data_dir);
-else
-    % disp('Data already loaded')
 end
 
 %% Set n_nodes, n_var, n_repetitions 
