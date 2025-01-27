@@ -1,10 +1,10 @@
-function edge_groups=load_atlas_edge_groups(n_nodes,mapping_category)
+function edge_groups=load_atlas_edge_groups(n_nodes, mapping_category, atlas_file)
 
 % returns a n_nodes x n_nodes matrix where the value of each edge reflects
 % the network pair it belongs to
 
 % requires atlas loaded from load_atlas_mapping
-atlas=load_atlas_mapping(n_nodes,mapping_category);
+atlas=load_atlas_mapping(atlas_file);
 
 tmp=atlas.category(2:end)-atlas.category(1:end-1);
 lobe_mapping=find(tmp>0);
@@ -27,3 +27,5 @@ for i=1:length(lobe_mapping)-1
 end
 
 edge_groups=tril(edge_groups)+tril(edge_groups,-1)';
+
+end

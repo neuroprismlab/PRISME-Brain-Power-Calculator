@@ -10,21 +10,20 @@ function create_test_fc_data_set()
     %% Definition of the tast dataset description
     nodes = 5;
     variables = 10; % 5*(5 - 1)/2
-    subject_number = 20; % 20 subs is enough 
-
-    %% Define an empty dataset 
-    Dataset = struct();
+    subject_number = 20; % 20 subs is enough
 
     %% Define study info - this is the test dataset to mimic hcp
     study_info.dataset = 'test_hcp';
     study_info.map = 'fc';
     study_info.test = 't';
     study_info.mask = triu(ones(nodes), 1);
-
+    
+    outcome.test1.sub_ids = NaN;
+    outcome.test1.score = NaN;
+    outcome.test1.score_label = NaN;
     outcome.test1.contrast = {'TASK', 'REST'};
     outcome.test1.category = 'cognitive';
     
-
     brain_data.TASK = zeros(variables, subject_number);
     for i = 1:subject_number
         brain_data.TASK(:, i) = [1, 1, 1, 1, 1, 0.5, 0.2, 0.8, 0, 0];
@@ -40,7 +39,5 @@ function create_test_fc_data_set()
     file_name = './data/test_hpc_fc.mat';
 
     save(file_name, 'brain_data', 'study_info', 'outcome');
-
-    Dataset = load(file_name);
 
 end

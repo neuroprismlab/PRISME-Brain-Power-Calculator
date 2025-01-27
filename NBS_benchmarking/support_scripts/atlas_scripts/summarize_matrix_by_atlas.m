@@ -1,4 +1,4 @@
-function [summary_matrix,summary_matrix_std] = summarize_matrix_by_atlas(mat, varargin)
+function [summary_matrix,summary_matrix_std] = summarize_matrix_by_atlas(mat, atlas_file, varargin)
 % load mask, take avg within edge pairs
 % IF WANT TO REORDER, MUST NOT ALREADY BE REORDERED!
 % inputs: mat
@@ -63,10 +63,10 @@ mask=ones(size(mat));
 %         error('mask dim do not match matrix dim')
 %     end
 % end
-map = load_atlas_mapping(matdim, atlascategory);
-lobe_mapping=map.category(2:end)-map.category(1:end-1);
-lobe_mapping=[0; find(lobe_mapping==1); length(lobe_mapping)+1];
-lobe_mapping=lobe_mapping+1;
+map = load_atlas_mapping(atlas_file);
+lobe_mapping = map.category(2:end) - map.category(1:end-1);
+lobe_mapping = [0; find(lobe_mapping==1); length(lobe_mapping)+1];
+lobe_mapping = lobe_mapping + 1;
 
 
 %% Count

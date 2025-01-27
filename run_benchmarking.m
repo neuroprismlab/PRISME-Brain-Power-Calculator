@@ -27,6 +27,8 @@ function run_benchmarking(RP, Y)
         [RP.node_nets, RP.trilmask_net, RP.edge_groups] = ...
             extract_atlas_related_parameters(RP, Y);
         
+        return;
+        
         % If omnibus, we'll loop through all the specified omnibus types
         if ~strcmp(RP.cluster_stat_type, 'Omnibus')
             loop_omnibus_types = {NaN};

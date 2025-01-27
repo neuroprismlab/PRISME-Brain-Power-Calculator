@@ -17,6 +17,9 @@ Params.data_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator/data/
 Params.gt_data_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator/power_calculator_results/ground_truth/';
 Params.gt_origin = 'power_calculator';
 
+% If not NaN, it will use the atlas file found in this directory
+Params.atlas_file = NaN;
+
 % If recalculate is equal to 1 - recalculate
 Params.recalculate = 0;
 

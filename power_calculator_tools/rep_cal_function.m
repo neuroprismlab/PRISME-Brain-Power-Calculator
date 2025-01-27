@@ -4,12 +4,15 @@ function rep_cal_function(Params)
         Dataset = load(Params.data_dir);
     end
     
+    
     %% Set n_nodes, n_var, n_repetitions 
     Params = setup_experiment_data(Params, Dataset);
     Params = create_output_directory(Params);
     Params.data_set = get_data_set_name(Dataset);
-    
-    setup_parallel_workers(Params.parallel, Params.n_workers);
+    Params.atlas_file = atlas_data_set_map(Params);
+
+    %% Parallel Workers 
+    %setup_parallel_workers(Params.parallel, Params.n_workers);
     
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;
@@ -23,7 +26,7 @@ function rep_cal_function(Params)
         RP = Params;
         
         %% FOR DEBUGING
-        RP.all_cluster_stat_types = {'Size'};
+        RP.all_cluster_stat_types = {'Constrained'};
         disp('Debugging still here')
     
         RP = infer_test_from_data(RP, OutcomeData.(t), BrainData);

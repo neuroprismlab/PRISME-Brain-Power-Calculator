@@ -51,6 +51,7 @@
     % - Equal to issue above - perform_correction 
     % - Extent and Intensity - Which one?
     %
+    % - Atlas name: map268_subnetwork.mat
     %% TODO
     % - shen atlas check 
 
