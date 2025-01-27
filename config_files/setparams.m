@@ -108,7 +108,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
 Params.all_omnibus_types = {'Multidimensional_cNBS'};
 Params.omnibus_type = 'Multidimensional_cNBS'; 
-% 'Threshold_Positive' | 'Threshold_Both_Dir' | 'Average_Positive' | 'Average_Both_Dir' | 'Multidimensional_cNBS' | 'Multidimensional_all_edges' 
+% 'Threshold_Positive' | 'Threshold_Both_Dir' | 'Average_Positive' | 'Average_Both_Dir' | 
+% 'Multidimensional_cNBS' | 'Multidimensional_all_edges' 
                             % Only used if cluster_stat_type='Omnibus'
 Params.omnibus_type_gt='Threshold_Positive';
 Params.use_preaveraged_constrained = 0; % 1 | 0
@@ -117,7 +118,7 @@ Params.use_preaveraged_constrained = 0; % 1 | 0
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
+Params.testing = true;
 Params.test_n_perms = '100';
 Params.test_n_repetitions = 1;
 Params.test_n_workers = 10;
