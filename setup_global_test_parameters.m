@@ -1,7 +1,6 @@
 function Params = setup_global_test_parameters(Params, data_set_name)
 
     Params = setparams();
-    Params.all_cluster_stat_types = {'Parametric_Bonferroni'};
 
     Params.save_directory = './test_power_calculator/';
     Params.data_dir = ['./data/', data_set_name];

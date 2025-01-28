@@ -1,5 +1,7 @@
 function rep_cal_function(Params)
     
+    disp(Params.data_dir)
+
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);
     end
@@ -20,14 +22,11 @@ function rep_cal_function(Params)
     tests = fieldnames(OutcomeData);
     
     for ti = 1:length(tests)
+        
         t = tests{ti};
         % Fix RP both tasks
         % RP - stands for Repetition Parameters
         RP = Params;
-        
-        %% FOR DEBUGING
-        RP.all_cluster_stat_types = {'Constrained'};
-        disp('Debugging still here')
     
         RP = infer_test_from_data(RP, OutcomeData.(t), BrainData);
         
