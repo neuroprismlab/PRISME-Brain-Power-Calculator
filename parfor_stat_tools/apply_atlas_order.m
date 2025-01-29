@@ -1,6 +1,6 @@
 % Maybe define it locally? Is only used by pfor_repetition_loop
 function Y_rep = apply_atlas_order(Y_rep, ... 
-                                   mapping_category, mask, ...
+                                   atlas_file, mask, ...
                                    n_subs_subset)
     %
     % Description:
@@ -22,14 +22,14 @@ function Y_rep = apply_atlas_order(Y_rep, ...
     %   m_test - output data
     %
 
-    %Y_rep = zeros(RepParams.n_var, RepParams.n_subs_subset*2)
-
+    % Y_rep = zeros(RepParams.n_var, RepParams.n_subs_subset*2)
+ 
     for i = 1:n_subs_subset
                         
         % - reorder_matrix_by_atlas only applies to shen atlas
         % - full information before reordering
         temp_y = unflatten_matrix(Y_rep(:, i), mask);
-        temp_y = reorder_matrix_by_atlas(temp_y, mapping_category);
+        temp_y = reorder_matrix_by_atlas(temp_y, atlas_file);
         Y_rep(:, i) = flat_matrix(temp_y, mask);
 
     end

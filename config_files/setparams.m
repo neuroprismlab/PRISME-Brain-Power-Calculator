@@ -28,16 +28,6 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 
-%HPC data for now - need to fix directory %% FIX THIS
-
-Params.task1='WM';         % 'EMOTION' | 'GAMBLING' | 'LANGUAGE' | 'MOTOR' | 'RELATIONAL' | 'SOCIAL' | 'WM' | 'REST'
-                    % use any for TPR and 'REST' for FPR
-Params.task_gt='WM'; % for ground truth (can use truncated, e.g., 'REST_176frames')
-Params.task2='REST';       % 2nd task for FPR or TPR contrast (set 'REST2' for FPR)
-Params.subIDs_suffix='_subIDs.txt';        % see naming convention
-Params.data_type_suffix='_GSR_matrix.txt'; % see naming convention 
-
-
 % Model: 2D matrix
 % for testing, get from NBS toolbox "SchizophreniaExample" dir
 Params.design_matrix_file = './NBS1.2/SchizophreniaExample/designMatrix.mat';

@@ -1,11 +1,8 @@
 function rep_cal_function(Params)
-    
-    disp(Params.data_dir)
 
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);
     end
-    
     
     %% Set n_nodes, n_var, n_repetitions 
     Params = setup_experiment_data(Params, Dataset);
@@ -14,7 +11,9 @@ function rep_cal_function(Params)
     Params.atlas_file = atlas_data_set_map(Params);
 
     %% Parallel Workers 
-    %setup_parallel_workers(Params.parallel, Params.n_workers);
+    % Uncoment the disp line if setup is commented out - as reminder 
+    % setup_parallel_workers(Params.parallel, Params.n_workers);
+    disp('Debugging: Setup parallel workers deactived')
     
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;
@@ -22,7 +21,6 @@ function rep_cal_function(Params)
     tests = fieldnames(OutcomeData);
     
     for ti = 1:length(tests)
-        
         t = tests{ti};
         % Fix RP both tasks
         % RP - stands for Repetition Parameters

@@ -28,7 +28,7 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
     % Extract data points for this repetion 
     Y_rep = Y(:, rep_sub_ids);  
     
-    Y_rep = apply_atlas_order(Y_rep, RP.mapping_category, RP.mask, RP.n_subs_subset); 
+    Y_rep = apply_atlas_order(Y_rep, RP.atlas_file, RP.mask, RP.n_subs_subset); 
               
     % Assign setup_benchmark parameters to new UI
     UI_new = UI;

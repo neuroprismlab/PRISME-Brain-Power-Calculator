@@ -203,7 +203,7 @@ for i=2:K+1
     if mod((i-1),100)==0
         str=sprintf('| %5d/%5d perms complete | latest element in null: %6.1f |', i-1 , K, null_dist(i-1,end));
         % display no more than nDisp most recent permutations
-        new_str=[str,{new_str{1:min(nDisp,length(new_str))}}]';
+        new_str = [str,{new_str{1:min(nDisp,length(new_str))}}]';
         try 
             set(H,'string',[new_str;pre_str]);
             drawnow;
@@ -435,6 +435,7 @@ function [pval] = perform_correction(null_dist,target_stat,max_target_stat,do_pa
 % For multidimensional nulls (cNBS):
 %   1st level: get within-group (uncorrected) pvals - nonparametric
 %   2nd level: get cross-group FWER-corrected pvals - parametric or nonparametric
+    disp(STATS.statistic_type_numeric )
 
     switch STATS.statistic_type_numeric 
 
@@ -448,18 +449,18 @@ function [pval] = perform_correction(null_dist,target_stat,max_target_stat,do_pa
             % Make matrix flat again
             flat_target_stat = flat_matrix(target_stat, STATS.mask);
             % Calculate p-values directly for each element in flat_target_stat
-            pval = arrayfun(@(stat) sum(stat < null_dist) / K, flat_target_stat);
+            pval = arrayfun(@(stat) sum(stat <= null_dist) / K, flat_target_stat);
 
         case 2 % TFCE
             
-            pval=arrayfun(@(this_stat) sum(+(this_stat<null_dist))/K, target_stat);
+            pval=arrayfun(@(this_stat) sum(+(this_stat <= null_dist))/K, target_stat);
             
         case {3, 4, 5} % cNBS and SEA
             
             % estimate pvalue for each network
             pval_uncorr=zeros(size(STATS.edge_groups.unique));
             for i=1:length(STATS.edge_groups.unique)
-                pval_uncorr(i) = sum(+(max_target_stat(i) < null_dist(:,i)))/K;
+                pval_uncorr(i) = sum(+(max_target_stat(i) <= null_dist(:,i)))/K;
             end
             
             % maybe faster:

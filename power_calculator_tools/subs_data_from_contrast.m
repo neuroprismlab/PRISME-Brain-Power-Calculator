@@ -4,9 +4,22 @@ function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
     
     % Get sub ids from contrast
     % Maybe this changes? I don't know if all contrasts have two elements
-    sub_ids_cond1 = BrainData.(contrast{1}).sub_ids;
-    sub_ids_cond2 = BrainData.(contrast{2}).sub_ids;
-    RP.test_name = strcat(contrast{1}, '_', contrast{2});
+
+    % Rest contrast my not always be rest contrast lol 
+    if strcmp(contrast{1}, 'REST')
+        rest_contrast = contrast{1};
+        task_contrast = contrast{2};
+    elseif strcmp(contrast{2}, 'REST')
+        rest_contrast = contrast{2};
+        task_contrast = contrast{1};
+    else
+        rest_contrast = contrast{1};
+        task_contrast = contrast{2};
+    end
+        
+    sub_ids_cond1 = BrainData.(task_contrast).sub_ids;
+    sub_ids_cond2 = BrainData.(rest_contrast).sub_ids;
+    RP.test_name = strcat(rest_contrast, '_', task_contrast);
     
     switch RP.test_type
 
@@ -27,8 +40,8 @@ function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
             X = ones(length(sub_ids), 1);
     
             % Normally the first one is rest, but it depends on input data
-            Y_rest = BrainData.(contrast{1}).data(:, sub_index_t1);
-            Y_task = BrainData.(contrast{2}).data(:, sub_index_t2);  
+            Y_rest = BrainData.(rest_contrast).data(:, sub_index_t1);
+            Y_task = BrainData.(task_contrast).data(:, sub_index_t2);  
     
             Y = Y_task - Y_rest;
 
@@ -57,8 +70,8 @@ function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
     
             % Get respective brain data
             % Normally the first one is rest, but it depends on input data
-            Y_rest = BrainData.(contrast{1}).data(:, sub_index_t1);
-            Y_task = BrainData.(contrast{2}).data(:, sub_index_t2);  
+            Y_rest = BrainData.(rest_contrast).data(:, sub_index_t1);
+            Y_task = BrainData.(task_contrast).data(:, sub_index_t2);  
     
             % Combine the data
             Y = [Y_task, Y_rest];
@@ -95,8 +108,8 @@ function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
 
             % Get respective brain data 
             % Normally the first one is rest, but it depends on input data
-            Y_rest = BrainData.(contrast{1}).data(:, sub_index_t1);
-            Y_task = BrainData.(contrast{2}).data(:, sub_index_t2);  
+            Y_rest = BrainData.(rest_contrast).data(:, sub_index_t1);
+            Y_task = BrainData.(task_contrast).data(:, sub_index_t2);  
     
             Y = [Y_task, Y_rest]; 
 
