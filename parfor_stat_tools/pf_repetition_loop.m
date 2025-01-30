@@ -49,7 +49,6 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
 
     nbs_neg = NBSrun_smn(UI_new_neg);
     
-
     % check for any positives (if there was no ground truth effect, this goes into the FWER calculation)
     if nbs.NBS.n > 0
         FWER_rep = 1;

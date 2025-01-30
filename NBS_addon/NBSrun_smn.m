@@ -1,4 +1,4 @@
-function nbs=NBSrun_smn(varargin)
+function nbs = NBSrun_smn(varargin)
 %NBSrun Reads user inputs, performs basic error checking and then performs 
 %operations specified by user inputs.
 %

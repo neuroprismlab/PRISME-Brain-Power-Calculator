@@ -99,10 +99,21 @@ switch STATS.statistic_type
     case 'Parametric_FDR'
         % https://www.ncbi.nlm.nih.gov/pmc/articles/PMC170937/
         % q value is a function of FDR that guarantees that q increases with p 
-        [~, pval] = mafdr(p_uncorr);
+        % [~, pval] = mafdr(p_uncorr);
+        
+        % Step 1: Get sorted indexes (without modifying p_uncorr itself)
+        [~, sort_idx] = sort(p_uncorr);
+
+        % Step 2: Apply BH-FDR correction using the sorted indexes
+        m = length(p_uncorr);
+        pval = zeros(size(p_uncorr)); % Initialize with the same shape
+
+        for i = 1:m
+            pval(sort_idx(i)) = p_uncorr(sort_idx(i)) * m / i;
+        end
     otherwise
         error('Invalid or no correction specified. Aborting.');
-end
+    end
 
 con_mat{1}=pval(:)<STATS.alpha;
 any_significant=any(con_mat{1});

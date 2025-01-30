@@ -19,7 +19,5 @@ function Params = setup_global_test_parameters(Params, data_set_name)
 
     % Avoid future developer confusion 
     Params.testing = true;
-    
-    rep_cal_function(Params)
 
 end
