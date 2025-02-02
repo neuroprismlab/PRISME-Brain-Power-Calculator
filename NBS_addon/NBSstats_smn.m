@@ -336,12 +336,14 @@ switch STATS.statistic_type_numeric
         [cluster_stats,null_stat] = get_edge_components(adj,Intensity,test_stat,STATS.thresh,N,ind_upper,bgl);
        
     case 2 % do TFCE
+
+        %test_stat_mat=zeros(N,N);
+        %test_stat_mat(ind_upper) = test_stat;
+        %test_stat_mat=(test_stat_mat+test_stat_mat');
+
+        test_stat_mat = unflatten_matrix(test_stat, STATS.mask);
         
-        test_stat_mat=zeros(N,N);
-        test_stat_mat(ind_upper) = test_stat;
-        test_stat_mat=(test_stat_mat+test_stat_mat');
-        
-        cluster_stats=matlab_tfce_transform(test_stat_mat,'matrix');
+        cluster_stats = matlab_tfce_transform(test_stat_mat,'matrix');
         
         null_stat=max(cluster_stats(:));
         
@@ -435,11 +437,10 @@ function [pval] = perform_correction(null_dist,target_stat,max_target_stat,do_pa
 % For multidimensional nulls (cNBS):
 %   1st level: get within-group (uncorrected) pvals - nonparametric
 %   2nd level: get cross-group FWER-corrected pvals - parametric or nonparametric
-    disp(STATS.statistic_type_numeric )
 
     switch STATS.statistic_type_numeric 
 
-        case 1 % NBS
+        case {1, 2} % NBS and TFCE
             
             % - added so didn't need to pass
             % - TODO: return here, prob expensive to convert sparse to full
@@ -450,10 +451,7 @@ function [pval] = perform_correction(null_dist,target_stat,max_target_stat,do_pa
             flat_target_stat = flat_matrix(target_stat, STATS.mask);
             % Calculate p-values directly for each element in flat_target_stat
             pval = arrayfun(@(stat) sum(stat <= null_dist) / K, flat_target_stat);
-
-        case 2 % TFCE
-            
-            pval=arrayfun(@(this_stat) sum(+(this_stat <= null_dist))/K, target_stat);
+            disp('Place holder')
             
         case {3, 4, 5} % cNBS and SEA
             

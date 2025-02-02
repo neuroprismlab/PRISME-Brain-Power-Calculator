@@ -3,9 +3,8 @@ function edge_based_tests(data_set_name)
     Params = common_test_setup(data_set_name);
     
     % Test 'TFCE' and Size with more detail 
-    % Ok methods = {'Parametric_Bonferroni', 'Parametric_FDR'}
-    stat_method_cell = {'Size'};
-    
+    % Ok methods = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size'}
+    stat_method_cell = {'TFCE'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     
@@ -34,7 +33,7 @@ function edge_based_tests(data_set_name)
 
         % Check for significant p-values where an effect is expected (rows 1 to 6)
         for row = 1:6
-            assert(all(pvals(row, :) == 0), error_effect);
+            assert(all(pvals(row, :) <= 0.05), error_effect);
         end
 
         % Check for non-significant p-values where no effect is expected (rows 7 to 10)

@@ -158,8 +158,11 @@ UI=varargin{1};
 
 %Handles to GUI objects to enable progress updates to be written to GUI
 if nargin==2
-    S=varargin{2};
-    try set(S.OUT.ls,'string',[]); catch; end
+    S = varargin{2};
+    try 
+        set(S.OUT.ls,'string',[])
+    catch
+    end
 end
 
 %Assume UI is valid to begin with
@@ -292,8 +295,8 @@ if repeat
         %Parent of the waitbar is the figure          
         try S.OUT.waitbar=uiwaitbar(WaitbarPos,S.fh); drawnow;  
         catch; S.OUT.waitbar=[]; end
-        nbs.STATS.test_stat=zeros(nbs.GLM.perms+1,DIMS.nodes*(DIMS.nodes-1)/2); 
-        nbs.STATS.test_stat=NBSglm(nbs.GLM,S.OUT.waitbar);  
+        nbs.STATS.test_stat = zeros(nbs.GLM.perms+1,DIMS.nodes*(DIMS.nodes-1)/2); 
+        nbs.STATS.test_stat = NBSglm(nbs.GLM,S.OUT.waitbar);  
         delete(S.OUT.waitbar); 
     else
         %Too big to precompute 
@@ -309,8 +312,8 @@ if strcmp(UI.method.ui,'Run NBS')
     str='Computing network components...';
     try tmp=get(S.OUT.ls,'string'); set(S.OUT.ls,'string',[{str};tmp]); drawnow;
     catch;  fprintf([str,'\n']); end 
-    try [nbs.NBS.n,nbs.NBS.con_mat,nbs.NBS.pval]=NBSstats(nbs.STATS,S.OUT.ls,nbs.GLM);
-    catch; [nbs.NBS.n,nbs.NBS.con_mat,nbs.NBS.pval]=NBSstats(nbs.STATS,-1,nbs.GLM); end
+    try [nbs.NBS.n,nbs.NBS.con_mat,nbs.NBS.pval] = NBSstats(nbs.STATS,S.OUT.ls,nbs.GLM);
+    catch; [nbs.NBS.n,nbs.NBS.con_mat,nbs.NBS.pval] = NBSstats(nbs.STATS,-1,nbs.GLM); end
 %Do FDR
 elseif strcmp(UI.method.ui,'Run FDR')
     str='False Discovery Rate...';
@@ -441,35 +444,35 @@ end
 %Read contrast
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [contrast,ok]=read_contrast(Name,DIMS)
-ok=1; 
-data=readUI(Name);
-if ~isempty(data)
-    [nr,nc,ns]=size(data); 
-    if nr==1 && nc==DIMS.predictors && ns==1 && isnumeric(data) 
-        contrast=data; 
+    ok=1; 
+    data=readUI(Name);
+    if ~isempty(data)
+        [nr,nc,ns]=size(data); 
+        if nr==1 && nc==DIMS.predictors && ns==1 && isnumeric(data) 
+            contrast=data; 
+        else
+            ok=0; contrast=[];
+        end
     else
         ok=0; contrast=[];
-    end
-else
-    ok=0; contrast=[];
-end     
+    end     
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Read node coordinates
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [node_coor,ok]=read_node_coor(Name,DIMS)
-ok=1;
-data=readUI(Name);
-if ~isempty(data)
-    [nr,nc,ns]=size(data);
-    if nr==DIMS.nodes && nc==3 && ns==1 && isnumeric(data)
-        node_coor=data; 
+    ok=1;
+    data=readUI(Name);
+    if ~isempty(data)
+        [nr,nc,ns]=size(data);
+        if nr==DIMS.nodes && nc==3 && ns==1 && isnumeric(data)
+            node_coor=data; 
+        else
+            ok=0; node_coor=[];
+        end
     else
         ok=0; node_coor=[];
-    end
-else
-    ok=0; node_coor=[];
-end        
+    end        
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Read node labels
