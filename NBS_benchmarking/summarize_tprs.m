@@ -119,14 +119,6 @@ case 'calculate_tpr'
     gt_data.brain_data = getfield(GtData, rep_data.meta_data.gt_location{:});
     gt_data.meta_data = getfield(GtData, rep_data.meta_data.gt_meta_data_location{:});
     
-    % I get the edge groups only for the network based ones 
-    if strcmp(rep_data.meta_data.test_type, 'Constrained') || strcmp(rep_data.meta_data.test_type, 'Omnibus') || ...
-        strcmp(rep_data.meta_data.test_type, 'Constrained_FWER')
-        
-        edge_groups = rep_data.meta_data.rep_parameters.edge_groups;
-    else
-        edge_groups = [];
-    end 
 
     %% Calculate positives here
     PowerRes = summary_tools.calculate_positives(rep_data);

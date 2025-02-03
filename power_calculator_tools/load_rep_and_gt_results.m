@@ -1,4 +1,4 @@
-function [GtData, RepData] = load_rep_and_gt_results(varargin)
+function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     
     %% Input Parsing section
     p = inputParser;
@@ -13,9 +13,8 @@ function [GtData, RepData] = load_rep_and_gt_results(varargin)
     RepData = p.Results.repetition_data;
     GtData = p.Results.gt_data;
 
-    Params = setparams();
-
     %% Get rep data
+
     if isempty(fieldnames(RepData))
         RepData = unite_results_from_directory('directory', Params.save_directory);
         if isempty(fieldnames(RepData))
@@ -36,7 +35,6 @@ function [GtData, RepData] = load_rep_and_gt_results(varargin)
     
     %% TODO: Optimize this with dfs_struct 
     function RepData = l_dfs_add_gt_location(node, path_cell, RepData)
-         
         fields = fieldnames(node);
         
         %% Loop over 
@@ -54,12 +52,11 @@ function [GtData, RepData] = load_rep_and_gt_results(varargin)
                 RepData = add_gt_location_to_rep_data(path_cell, RepData, gt_origin);
             end
             path_cell = path_cell(1:end-1);
+
         end
+
     end
 
 end
-
-
-
 
 

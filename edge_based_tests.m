@@ -2,9 +2,7 @@ function edge_based_tests(data_set_name)
 
     Params = common_test_setup(data_set_name);
     
-    % Test 'TFCE' and Size with more detail 
-    % Ok methods = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size'}
-    stat_method_cell = {'TFCE'};
+    stat_method_cell = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     

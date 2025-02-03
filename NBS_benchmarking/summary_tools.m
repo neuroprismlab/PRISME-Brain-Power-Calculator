@@ -132,14 +132,6 @@ function PowerRes = calculate_positives(rep_data)
       PowerRes = struct;
       
       %% Get Params and Variables
-      % get params
-      n_repetitions = rep_data.meta_data.rep_parameters.n_repetitions;
-      n_subs_subset = rep_data.meta_data.rep_parameters.n_subs_subset;
-      n_perms = rep_data.meta_data.rep_parameters.n_perms;
-
-      % get variables
-      pvals_all = rep_data.brain_data.pvals_all;
-      pvals_all_neg = rep_data.brain_data.pvals_all_neg;
       edge_stats_all = rep_data.brain_data.edge_stats_all;
       edge_stats_all_neg = rep_data.brain_data.edge_stats_all_neg;
       cluster_stats_all = rep_data.brain_data.cluster_stats_all;

@@ -4,7 +4,8 @@
 % FWER can become an issue ....
 % MatLab mafdr is not working so well ... I had to modify it 
 
-
+clear;
+clc;
 
 scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));
@@ -17,7 +18,11 @@ create_test_fc_atlas()
 
 % network_based_tests('test_hcp_fc.mat')
 
-data_inference_from_contrast_test()
+% data_inference_from_contrast_test()
+
+test_power_calculation_from_gt_and_data()
+
+
 
 
 

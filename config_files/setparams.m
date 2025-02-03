@@ -9,12 +9,12 @@ function Params = setparams()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % NBS toolbox
-% if true, will update paths using system and paths in setpaths.m
-% if false, will use the paths defined below
+% The paths are
 Params.system_dependent_paths=0;
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator/data/s_hcp_fc_noble_tasks.mat';
-Params.gt_data_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator/power_calculator_results/ground_truth/';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.gt_data_dir = './power_calculator_results/ground_truth/';
+
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
