@@ -22,4 +22,6 @@ function test_power_calculation_from_gt_and_data()
                                                  'save_directory', Params.save_directory);
     dfs_struct(power_calculation_tprs, RepData);
 
+    test_final_power_results()
+
 end

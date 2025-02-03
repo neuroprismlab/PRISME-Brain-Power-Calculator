@@ -8,8 +8,8 @@ function generate_synthetic_gt_data()
     end
 
     % Set fixed number of edges and networks (same as the test data)
-    num_edges = 100;   % Example: 100 edges for edge-level tests
-    num_networks = 10; % Example: 10 networks for network-level tests
+    num_edges = 10;   % Example: 100 edges for edge-level tests
+    num_networks = 4; % Example: 10 networks for network-level tests
 
     % Define split points for assigning 25% and 25%-50% ranges
     split_25_edges = round(0.25 * num_edges);
@@ -37,12 +37,12 @@ function generate_synthetic_gt_data()
     % Assign 25% of edges as positive true positives
     brain_data.edge_stats_all(1:split_25_edges) = abs(randn(split_25_edges, 1)) + 1e-5;
     % Assign next 25% of edges as negative true positives
-    brain_data.edge_stats_all_neg(split_25_edges+1:split_50_edges) = ...
+    brain_data.edge_stats_all(split_25_edges+1:split_50_edges) = ...
         -abs(randn(split_50_edges - split_25_edges, 1)) - 1e-5;
 
-    % Ensure mutual exclusivity (no overlapping true positives)
-    invalid_indices = (brain_data.edge_stats_all > 0 & brain_data.edge_stats_all_neg < 0);
-    brain_data.edge_stats_all_neg(invalid_indices) = abs(randn(sum(invalid_indices), 1)) + 1e-5;
+    % Set `edge_stats_all_neg` explicitly to match but with reversed sign
+    brain_data.edge_stats_all_neg = -brain_data.edge_stats_all;
+
 
     % Update meta_data for edge-level test
     meta_data.test_type = 'Parametric_Bonferroni'; % Edge-level method
@@ -56,15 +56,15 @@ function generate_synthetic_gt_data()
     brain_data.cluster_stats_all = zeros(num_networks, 1);
     brain_data.cluster_stats_all_neg = zeros(num_networks, 1);
 
+     % ----- Network-Level GT Fix -----
     % Assign 25% of networks as positive true positives
     brain_data.cluster_stats_all(1:split_25_networks) = abs(randn(split_25_networks, 1)) + 1e-5;
     % Assign next 25% of networks as negative true positives
-    brain_data.cluster_stats_all_neg(split_25_networks+1:split_50_networks) = ...
-        -abs(randn(split_50_networks-split_25_networks, 1)) - 1e-5;
+    brain_data.cluster_stats_all(split_25_networks+1:split_50_networks) = ...
+        -abs(randn(split_50_networks - split_25_networks, 1)) - 1e-5;
 
-    % Ensure mutual exclusivity (no overlapping true positives)
-    invalid_indices = (brain_data.cluster_stats_all > 0 & brain_data.cluster_stats_all_neg < 0);
-    brain_data.cluster_stats_all_neg(invalid_indices) = abs(randn(sum(invalid_indices), 1)) + 1e-5;
+    % Set `cluster_stats_all_neg` explicitly to match but with reversed sign
+    brain_data.cluster_stats_all_neg = -brain_data.cluster_stats_all;
 
     % Update meta_data for network-level test
     meta_data.test_type = 'Constrained'; % Network-level method

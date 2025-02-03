@@ -56,13 +56,18 @@ p = inputParser;
 % addOptional(p,'summary_type',summary_type_default);
 addRequired(p,'summary_type');
 addOptional(p,'tpr_dthresh', 0);
-addOptional(p,'save_directory', './data_results/power_calculation/')
+addOptional(p,'save_directory', './power_calculation_results/')
 parse(p, summary_type, varargin{:});
 
 % summary_type=p.Results.summary_type;
 tpr_dthresh = p.Results.tpr_dthresh;
-save_directory = p.Results.save_directory;
+save_directory = [p.Results.save_directory, '/power_calculation/'];
 
+% Make save directory if it does not exist
+
+if ~isfolder(save_directory)
+    mkdir(save_directory)
+end
 
 %% MAIN
 

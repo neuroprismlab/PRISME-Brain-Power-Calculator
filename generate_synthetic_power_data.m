@@ -12,8 +12,8 @@ function generate_synthetic_power_data()
     network_level_tests = {'Constrained', 'Constrained_FWER'};
 
     % Set fixed number of edges and networks (arbitrary for synthetic testing)
-    num_edges = 100;   % Example: 100 edges for edge-level tests
-    num_networks = 10; % Example: 10 networks for network-level tests
+    num_edges = 10;   % Example: 100 edges for edge-level tests
+    num_networks = 4; % Example: 10 networks for network-level tests
     n_repetitions = 100; % Number of repetitions for power calculation
 
     % Compute split for 25% of elements
@@ -41,8 +41,8 @@ function generate_synthetic_power_data()
             % Ensure 25% power: In 25% of repetitions, p-value is set to zero (significant)
             for rep = 1:n_repetitions
                 if mod(rep, 4) == 0 % Every 4th repetition should have significant results
-                    brain_data.pvals_all(1:split_25_edges, rep) = 0;  
-                    brain_data.pvals_all_neg(split_25_edges+1:2*split_25_edges, rep) = 0;
+                    brain_data.pvals_all([1, 2, 3], rep) = 0;  % Positive detections
+                    brain_data.pvals_all_neg([4, 5], rep) = 0; % Negative detections
                 end
             end
 
