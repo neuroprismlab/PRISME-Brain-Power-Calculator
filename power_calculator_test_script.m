@@ -14,11 +14,12 @@ create_test_fc_data_set()
 create_test_fc_atlas()
 
 % edge_based_tests('test_hcp_fc.mat')
+
 % network_based_tests('test_hcp_fc.mat')
 
-% Write tests for 
-% infer_test_from_data
-% subs_data_from_contrast
+data_inference_from_contrast_test()
+
+
 
 
 
