@@ -121,33 +121,55 @@ function run_benchmarking(RP, Y)
                
                 %% Run NBS repetitions
                 
-                % Be careful with this parfor commented lol
-                parfor (i_rep=1: RP.n_repetitions)
+                % This is really annoying because if you change one - you
+                % need to mimmic and change bellow
+                % For whoever fix this - create function with signature
+                % with everything and encapsulate 
 
-                % Do not erase the comment bellow, it is used for debugging
-                % when running not in parallel 
-% disp('Parof');  for i_rep = 1:RP.n_repetitions
-                    
-                    % Encapsulation of the most computationally intensive loop
-                    [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
-                     FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                     pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
-        
-                    FWER = FWER + FWER_rep;
-                    FWER_neg = FWER_neg + FWER_neg_rep;
-        
-                    edge_stats_all(:,i_rep) = edge_stats_all_rep;
-                    pvals_all(:,i_rep) = pvals_all_rep;
-                    edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
-                    pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
-                    
-                    % If it is an edge method, no need for the
-                    % network stats  
-                    if ~strcmp(RP.stat_level, 'edge')
-                        cluster_stats_all(:,:,i_rep) = cluster_stats_all_rep;
-                        cluster_stats_all_neg(:,:,i_rep) = cluster_stats_all_neg_rep;
+                if ~RP.parallel
+                    for i_rep=1: RP.n_repetitions
+                        % Encapsulation of the most computationally intensive loop
+                        [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
+                         FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+            
+                        FWER = FWER + FWER_rep;
+                        FWER_neg = FWER_neg + FWER_neg_rep;
+            
+                        edge_stats_all(:,i_rep) = edge_stats_all_rep;
+                        pvals_all(:,i_rep) = pvals_all_rep;
+                        edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
+                        pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
+                        
+                        % If it is an edge method, no need for the
+                        % network stats  
+                        if ~strcmp(RP.stat_level, 'edge')
+                            cluster_stats_all(:,:,i_rep) = cluster_stats_all_rep;
+                            cluster_stats_all_neg(:,:,i_rep) = cluster_stats_all_neg_rep;
+                        end
                     end
-           
+                else
+                    parfor (i_rep=1: RP.n_repetitions)
+                        % Encapsulation of the most computationally intensive loop
+                        [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
+                         FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+            
+                        FWER = FWER + FWER_rep;
+                        FWER_neg = FWER_neg + FWER_neg_rep;
+            
+                        edge_stats_all(:,i_rep) = edge_stats_all_rep;
+                        pvals_all(:,i_rep) = pvals_all_rep;
+                        edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
+                        pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
+                        
+                        % If it is an edge method, no need for the
+                        % network stats  
+                        if ~strcmp(RP.stat_level, 'edge')
+                            cluster_stats_all(:,:,i_rep) = cluster_stats_all_rep;
+                            cluster_stats_all_neg(:,:,i_rep) = cluster_stats_all_neg_rep;
+                        end
+                    end
                 end
                 
                 % An NaN for network-level in the edge case

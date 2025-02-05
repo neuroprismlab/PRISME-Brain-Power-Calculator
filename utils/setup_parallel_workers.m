@@ -1,12 +1,19 @@
-function setup_parallel_workers(flag, worker_number)
+function run_parallel = setup_parallel_workers(flag, worker_number)
     % This variable is used to run tests sequentially - github workflows
     % cannot run parallel
     global testing_yml_workflow;
     
+    if exist('testing_yml_workflow', 'var')
+        git_work_flow = testing_yml_workflow;
+    end
+
     % If running in GitHub Actions, force serial execution
-    if exist('testing_yml_workflow', 'var') && testing_yml_workflow
+    if git_work_flow
         fprintf('Running in GitHub CI/CD: Forcing serial execution.\n');
+        run_parallel = false;
         return; % Skip parallel execution
+    else
+        run_parallel = flag;
     end
 
     if flag

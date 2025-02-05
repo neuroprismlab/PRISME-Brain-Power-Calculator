@@ -62,6 +62,7 @@ cd(scriptDir);
 
 vars = who;       % Get a list of all variable names in the workspace
 vars(strcmp(vars, 'data_matrix')) = [];  % Remove the variable you want to keep from the list
+vars(strcmp(vars, 'testing_yml_workflow')) = [];
 clear(vars{:});   % Clear all other variables
 clc;
 
