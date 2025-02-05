@@ -12,8 +12,8 @@ function rep_cal_function(Params)
 
     %% Parallel Workers 
     % Uncoment the disp line if setup is commented out - as reminder 
-    % setup_parallel_workers(Params.parallel, Params.n_workers);
-    disp('Debugging: Setup parallel workers deactived')
+    setup_parallel_workers(Params.parallel, Params.n_workers);
+    % disp('Debugging: Setup parallel workers deactived')
     
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;

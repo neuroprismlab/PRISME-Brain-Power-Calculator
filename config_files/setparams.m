@@ -62,8 +62,7 @@ Params.n_repetitions = 500;  % 500 recommended
 Params.n_subs_subset = 40;   % 40 | 80 | 120
 
 %% List of subjects per subset
-Params.list_of_nsubset = {20, 40, 80, 120}; % To change this, add more when necessary
-Params.list_of_nsubset = {40}; % Redefined because I need a base with all 40 first
+Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
 
@@ -111,7 +110,7 @@ Params.use_preaveraged_constrained = 0; % 1 | 0
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = '100';
 Params.test_n_repetitions = 1;
 Params.test_n_workers = 10;

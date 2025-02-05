@@ -21,6 +21,8 @@ if RepParams.testing
     RepParams.n_workers = RepParams.test_n_workers;
 end
 
+% Get the level - edge-level, network-level, or whole brain level
+RepParams.stat_level = set_statistic_level(RepParams.cluster_stat_type);
 
 %% Adjust NBS Method According to Stat Type
 % special setup for nonparametric FDR (part of classic NBS toolbox) and parametric FDR and Bonferroni (newly added here)  since can't run it using cluster_stat_type
