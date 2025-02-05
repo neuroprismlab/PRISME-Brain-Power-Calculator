@@ -138,7 +138,7 @@ function run_benchmarking(RP, Y)
         
                     edge_stats_all(:,i_rep) = edge_stats_all_rep;
                     pvals_all(:,i_rep) = pvals_all_rep;
-                    edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep;
+                    edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
                     pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
                     
                     % If it is an edge method, no need for the

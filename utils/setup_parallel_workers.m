@@ -1,5 +1,14 @@
 function setup_parallel_workers(flag, worker_number)
-    % Setup parallel workers only if specified
+    % This variable is used to run tests sequentially - github workflows
+    % cannot run parallel
+    global testing_yml_workflow;
+    
+    % If running in GitHub Actions, force serial execution
+    if exist('testing_yml_workflow', 'var') && testing_yml_workflow
+        fprintf('Running in GitHub CI/CD: Forcing serial execution.\n');
+        return; % Skip parallel execution
+    end
+
     if flag
         % Get the local parallel cluster
         c = parcluster('local'); 
