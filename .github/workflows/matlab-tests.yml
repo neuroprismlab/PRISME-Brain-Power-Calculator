@@ -22,11 +22,6 @@ jobs:
                 global testing_yml_workflow;
                 testing_yml_workflow = true;  % Indicate CI/CD mode
                 
-                % Ensure serial execution
-                if isempty(gcp('nocreate'))
-                    parpool('local', 1);     
-                end
-                
                 % Run the test script
                 power_calculator_test_script;
                 disp('All tests passed successfully.');
