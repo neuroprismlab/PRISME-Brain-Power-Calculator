@@ -1,29 +1,33 @@
 name: Run MATLAB Tests
-
 on:
   push:
     branches:
-      - main  # Runs tests when code is pushed to main
+      - main
   pull_request:
     branches:
-      - main  # Runs tests when a PR is opened to main
-
+      - main
 jobs:
   run-matlab-tests:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Clones the repo
-
+        uses: actions/checkout@v4
       - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v1  # Official MATLAB GitHub Action
-
+        uses: matlab-actions/setup-matlab@v1
       - name: Run MATLAB Test Script
         uses: matlab-actions/run-command@v1
         with:
           command: |
             try
+                global testing_yml_workflow;
+                testing_yml_workflow = true;  % Indicate CI/CD mode
+                
+                % Ensure serial execution
+                if isempty(gcp('nocreate'))
+                    parpool('local', 1);     
+                end
+                
+                % Run the test script
                 power_calculator_test_script;
                 disp('All tests passed successfully.');
             catch ME
@@ -31,4 +35,3 @@ jobs:
                 disp(ME.message);
                 exit(1);
             end
-            
