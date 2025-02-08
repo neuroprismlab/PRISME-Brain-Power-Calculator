@@ -7,6 +7,7 @@
 clear;
 clc;
 
+%% Test hpc one sample t-tests 
 scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));
 cd(scriptDir);
@@ -18,9 +19,14 @@ edge_based_tests('test_hcp_fc.mat')
 
 network_based_tests('test_hcp_fc.mat')
 
+%% Test inference type from data
 data_inference_from_contrast_test()
 
+%% Test power calculator
 test_power_calculation_from_gt_and_data()
+
+% create t2-test dataset 
+
 
 
 

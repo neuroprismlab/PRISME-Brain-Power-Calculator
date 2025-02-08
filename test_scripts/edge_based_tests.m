@@ -6,8 +6,6 @@ function edge_based_tests(data_set_name)
 
     Params.all_cluster_stat_types = stat_method_cell;
     
-    Params = setup_global_test_parameters(Params, data_set_name);
-    
     rep_cal_function(Params)
     
     ResData = unite_results_from_directory('directory', './test_power_calculator/');

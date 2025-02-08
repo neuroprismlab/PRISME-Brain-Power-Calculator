@@ -5,7 +5,7 @@ function run_benchmarking(RP, Y)
 % edge_stats_all: mean and sd of edge_stats_all
 % cluster_stats_all: mean and sd of cluster_stats_all
 % pvals_all: total # positives
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
 %% Setup
 % make sure config files in NBS_benchmarking are correct
