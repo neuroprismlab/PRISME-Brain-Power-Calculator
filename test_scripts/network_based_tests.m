@@ -1,5 +1,8 @@
 function network_based_tests(data_set_name)
     
+    data_set = load(['./data/', data_set_name]);
+    data_set_name = get_data_set_name(data_set);
+
     Params = common_test_setup(data_set_name);
 
     stat_method_cell = {'Constrained', 'Constrained_FWER'};
@@ -13,7 +16,7 @@ function network_based_tests(data_set_name)
         method = stat_method_cell{i};
 
         % The query is based on how the dataset is created
-        query = {'testing', 'test_hcp', 'REST_TASK', method, 'subs_40', 'brain_data'};
+        query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'brain_data'};
     
         brain_data = getfield(ResData, query{:});
     

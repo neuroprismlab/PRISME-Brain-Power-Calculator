@@ -26,6 +26,11 @@ data_inference_from_contrast_test()
 test_power_calculation_from_gt_and_data()
 
 %% Create t2-test dataset 
+create_t2_test_dataset()
+
+edge_based_tests('test_t2_fc.mat')
+
+network_based_tests('test_t2_fc.mat')
 
 
 

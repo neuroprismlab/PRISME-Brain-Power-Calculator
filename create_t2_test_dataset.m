@@ -40,8 +40,6 @@ function create_t2_test_dataset()
     file_name = './data/test_t2_fc.mat';
 
     save(file_name, 'brain_data', 'study_info', 'outcome');
-    
-    %% Remove this later
-    edge_based_tests('test_t2_fc.mat')
+   
 
 end

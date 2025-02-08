@@ -5,8 +5,7 @@ function edge_based_tests(data_set_name)
 
     Params = common_test_setup(data_set_name);
     
-    % stat_method_cell = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE'};
-    stat_method_cell = {'Parametric_Bonferroni'};
+    stat_method_cell = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     

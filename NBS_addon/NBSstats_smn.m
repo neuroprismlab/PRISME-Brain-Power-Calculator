@@ -451,7 +451,6 @@ function [pval] = perform_correction(null_dist,target_stat,max_target_stat,do_pa
             flat_target_stat = flat_matrix(target_stat, STATS.mask);
             % Calculate p-values directly for each element in flat_target_stat
             pval = arrayfun(@(stat) sum(stat <= null_dist) / K, flat_target_stat);
-            disp('Place holder')
             
         case {3, 4, 5} % cNBS and SEA
             
