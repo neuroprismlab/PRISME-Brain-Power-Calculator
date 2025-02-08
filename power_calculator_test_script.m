@@ -25,7 +25,8 @@ data_inference_from_contrast_test()
 %% Test power calculator
 test_power_calculation_from_gt_and_data()
 
-% create t2-test dataset 
+%% Create t2-test dataset 
+
 
 
 
