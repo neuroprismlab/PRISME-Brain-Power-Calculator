@@ -129,6 +129,7 @@ function run_benchmarking(RP, Y)
                 if ~RP.parallel
                     for i_rep=1: RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
+
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
                          pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
@@ -213,7 +214,9 @@ function run_benchmarking(RP, Y)
                         condition_str = rep_params.task1;
                     end
                 end
-            
+                
+                disp('DEBUG IN RUN_BENCHMARKING')
+                keyboard;
 
                 %output_filename = [output_dir,'results__',condition_str,TPR_str,'_', ...
                 %                   UI.statistic_type.ui,size_str,omnibus_str,'_grsize', ...

@@ -12,7 +12,7 @@ function Params = setparams()
 % The paths are
 Params.system_dependent_paths=0;
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -56,7 +56,7 @@ Params.n_frames.REST2=1200;
 
 %%% Resampling parameters %%%
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.mapping_category = 'subnetwork'; % for cNBS
 Params.n_repetitions = 500;  % 500 recommended
 Params.n_subs_subset = 40;   % 40 | 80 | 120

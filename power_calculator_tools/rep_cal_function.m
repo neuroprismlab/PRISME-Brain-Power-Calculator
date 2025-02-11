@@ -15,6 +15,8 @@ function rep_cal_function(Params)
     Params.parallel = setup_parallel_workers(Params.parallel, Params.n_workers);
     % disp('Debugging: Setup parallel workers deactived')
     
+    disp(Params.parallel)
+
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;
         
@@ -26,11 +28,22 @@ function rep_cal_function(Params)
         % RP - stands for Repetition Parameters
        
         RP = Params;
-    
-        RP = infer_test_from_data(RP, OutcomeData.(t), BrainData);
+        
+        
+        [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
         
         % bellow - gets: test name, subject data, subject numbers, subids, and number of subjects
-        [~, Y , RP] = subs_data_from_contrast(RP, OutcomeData.(t).contrast, BrainData);
+        switch test_type_origin
+            
+            case 'score_cond'
+                [~, Y , RP] = subs_data_from_score_condtion(RP, OutcomeData.(t), BrainData);
+           
+            case 'contrast'
+                [~, Y , RP] = subs_data_from_contrast(RP, OutcomeData.(t).contrast, BrainData);
+            
+            otherwise
+                error('Test type origin not found')
+        end
         
         [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
         
