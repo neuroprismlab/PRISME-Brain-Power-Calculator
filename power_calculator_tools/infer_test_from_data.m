@@ -9,33 +9,29 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
     sub_ids_cond1 = [];
     sub_ids_cond2 = [];
     
-    %% Extract unique scores (called set because of uniqueness) 
-    if iscell(TestData.score)
-        test_data_score_set = unique(TestData.score); 
-        test_data_score_set(cellfun('isempty', test_data_score_set)) = [];
-    else
-        test_data_score_set = unique(TestData.score);
-        test_data_score_set = num2cell(test_data_score_set);
-    end
+    test_score_set = get_test_score_set(TestData);
 
-    if length(test_data_score_set) == 1 && ~isnan(test_data_score_set)
+    disp(length(test_score_set))
+    disp(test_score_set)
+
+    if length(test_score_set) == 1 && ~isnan(test_score_set)
         % if all scores are equal to the same number - t test
         test_type = 't';
     
-    elseif isa(test_data_score_set, 'double') && length(test_data_score_set) > 2
+    elseif all(cellfun(@isnumeric, test_score_set)) && length(test_score_set) > 2
         % if score is continuous -> r
-   
+        test_type_origin = 'score_cond';
         test_type = 'r';
     
-    elseif length(test_data_score_set) == 2
-        
+    elseif length(test_score_set) == 2
+
         test_type_origin = 'score_cond';
         % if two unique entries in score -> t (paired) or t2
 
         % Are the subids always in outcomes? For the hpc one, we have
         % NaN and it is likely a t2 test
-        index_cond_1 = strcmp(TestData.score, test_data_score_set{1});
-        index_cond_2 = strcmp(TestData.score, test_data_score_set{2});
+        index_cond_1 = strcmp(TestData.score, test_score_set{1});
+        index_cond_2 = strcmp(TestData.score, test_score_set{2});
 
         sub_ids_cond1 = BrainData.(TestData.reference_condition).sub_ids(index_cond_1);
         sub_ids_cond2 = BrainData.(TestData.reference_condition).sub_ids(index_cond_2);
@@ -97,13 +93,14 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
             RP.nbs_test_stat = 'onesample';
 
         case 't2'
-             RP.nbs_test_stat = 't-test';
+            RP.nbs_test_stat = 't-test';
 
         case 'pt'
             RP.nbs_test_stat = 't-test';
         
         case 'r'
-            error('Not implemented yet')
+            RP.nbs_test_stat = 'onesample'; % Is it one sample?
+            % error('Not implemented yet')
 
     end
     

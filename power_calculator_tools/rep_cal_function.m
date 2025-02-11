@@ -26,11 +26,16 @@ function rep_cal_function(Params)
         t = tests{ti};
         % Fix RP both tasks
         % RP - stands for Repetition Parameters
+        
+        %% Debugging each test 
+        disp('Test setter still here')
+        t = 'test2';
        
         RP = Params;
         
-        
         [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
+        
+        disp(RP.test_type)
         
         % bellow - gets: test name, subject data, subject numbers, subids, and number of subjects
         switch test_type_origin
@@ -45,6 +50,8 @@ function rep_cal_function(Params)
                 error('Test type origin not found')
         end
         
+        return
+
         [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
         
         % Sets parameters which are different than gt
