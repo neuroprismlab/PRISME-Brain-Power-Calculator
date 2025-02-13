@@ -1,4 +1,4 @@
-function run_benchmarking(RP, Y)
+function run_benchmarking(RP, Y, X)
 % Do NBS-based method benchmarking (cNBS, TFCE, etc)
 %
 % main outputs:
@@ -111,7 +111,6 @@ function run_benchmarking(RP, Y)
                 %% Sample rep ids
                 ids_sampled = draw_repetition_ids(RP);               
              
-                
                 if RP.testing
                     fprintf('\n*** TESTING MODE ***\n\n')
                 end
@@ -132,7 +131,7 @@ function run_benchmarking(RP, Y)
 
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -154,7 +153,7 @@ function run_benchmarking(RP, Y)
                         % Encapsulation of the most computationally intensive loop
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;

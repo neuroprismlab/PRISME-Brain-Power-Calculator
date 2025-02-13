@@ -11,9 +11,6 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
     
     test_score_set = get_test_score_set(TestData);
 
-    disp(length(test_score_set))
-    disp(test_score_set)
-
     if length(test_score_set) == 1 && ~isnan(test_score_set)
         % if all scores are equal to the same number - t test
         test_type = 't';
@@ -99,8 +96,7 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
             RP.nbs_test_stat = 't-test';
         
         case 'r'
-            RP.nbs_test_stat = 'onesample'; % Is it one sample?
-            % error('Not implemented yet')
+            RP.nbs_test_stat = 'onesample'; 
 
     end
     

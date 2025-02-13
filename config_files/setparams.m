@@ -13,6 +13,7 @@ function Params = setparams()
 Params.system_dependent_paths=0;
 Params.save_directory = './power_calculator_results/';
 Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -43,16 +44,16 @@ Params.exchange = [];
 % Specify whether to use resting runs for task2 which have been trimmed to match each task's scan duration
 % (in no. frames for single encoding direction; cf. https://protocols.humanconnectome.org/HCP/3T/imaging-protocols.html)
 % Note: all scans were acquired with the same TR
-Params.use_trimmed_rest=0; % default = 0
-Params.n_frames.EMOTION=176;
-Params.n_frames.GAMBLING=253;
-Params.n_frames.LANGUAGE=316;
-Params.n_frames.MOTOR=284;
-Params.n_frames.RELATIONAL=232;
-Params.n_frames.SOCIAL=274;
-Params.n_frames.WM=405;
-Params.n_frames.REST=1200;
-Params.n_frames.REST2=1200;
+Params.use_trimmed_rest = 0; % default = 0
+Params.n_frames.EMOTION = 176;
+Params.n_frames.GAMBLING = 253;
+Params.n_frames.LANGUAGE = 316;
+Params.n_frames.MOTOR = 284;
+Params.n_frames.RELATIONAL = 232;
+Params.n_frames.SOCIAL = 274;
+Params.n_frames.WM = 405;
+Params.n_frames.REST = 1200;
+Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores

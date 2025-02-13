@@ -50,10 +50,15 @@ function X = create_design_matrix(varargin)
                 X(n_subs + i, i + 1) = 1;
             end
 
-        % case 'r'
-            % can't define here - must wait to subsample data
-            % X=brain;
-            % y=score;
+        case 'r'
+            % Design matrix for r is obtained directly from the data 
+            % So here we define it as NaN
+            X = NaN; 
+        
+        otherwise
+
+            error('Test type in create_design_matrix not supported')
+        
     end
         
 end
