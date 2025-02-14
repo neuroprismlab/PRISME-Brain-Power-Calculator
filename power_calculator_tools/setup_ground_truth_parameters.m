@@ -12,7 +12,6 @@ function RP = setup_ground_truth_parameters(RP)
     RP.n_repetitions = 1; 
     
     % Set subject numbers
-    RP.n_subs_subset = RP.n_subs; 
     RP.list_of_nsubset = {RP.n_subs};
 
     RP.n_subs_subset_c1 = RP.n_subs_1;

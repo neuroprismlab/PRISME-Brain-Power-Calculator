@@ -9,6 +9,7 @@
     % variable? why?
     % - case 3,4, null_stats is not really stat, in get_constrained_stats
     % in NBSstats_smn.m
+    %% THE ONE BELOW IS SUPER IMPORTANT
     % - On NBSedge_level_parametric_corr - t-test (for t2) assumes that the
     % number of subjects in both groups is equal 
     % - NBSglm_smn.m is using a simple average to calculate the t-test
