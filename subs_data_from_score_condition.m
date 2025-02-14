@@ -26,8 +26,8 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
             Y = [Yc1, Yc2];
     
             % Get the number of subjects for each condition
-            n_subs_1 = length(index_b_data_c1);
-            n_subs_2 = length(index_b_data_c2);
+            n_subs_1 = length(RP.sub_ids_rest);
+            n_subs_2 = length(RP.sub_ids_task);
 
             X = zeros(n_subs_1 + n_subs_2, 2);
             X(1:n_subs_1, 1) = 1;                   % Condition 1

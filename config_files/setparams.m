@@ -48,7 +48,7 @@ Params.n_repetitions = 500;  % 500 recommended
 
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
-Params.list_of_nsubset = {200};
+Params.list_of_nsubset = {20};
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
 % NBS parameters

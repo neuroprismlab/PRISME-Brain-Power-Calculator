@@ -50,8 +50,6 @@ test_stat=zeros(1, GLM.n_GLMs);
 beta = zeros(GLM.n_predictors,GLM.n_GLMs);
 beta = GLM.X\GLM.y;
 
-disp(GLM.n_observations)
-
 %Compute statistic of interest
 % TODO: consider moving to switch/case in glm_setup
 if strcmp(GLM.test,'onesample')
