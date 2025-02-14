@@ -45,6 +45,7 @@ function run_benchmarking(RP, Y, X)
             
             for id_nsub_list=1:length(RP.list_of_nsubset)
                 RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
+                RP = set_n_subs_subset(RP);
 
                 %% Create_file_name
                 [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
@@ -212,10 +213,7 @@ function run_benchmarking(RP, Y, X)
                     else 
                         condition_str = rep_params.task1;
                     end
-                end
-                
-                disp('DEBUG IN RUN_BENCHMARKING')
-                keyboard;
+                end  
 
                 %output_filename = [output_dir,'results__',condition_str,TPR_str,'_', ...
                 %                   UI.statistic_type.ui,size_str,omnibus_str,'_grsize', ...
@@ -239,6 +237,7 @@ function run_benchmarking(RP, Y, X)
                 save(output_dir, 'brain_data', 'meta_data');
         
             end
+
         end
 
     end

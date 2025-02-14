@@ -47,7 +47,6 @@ function atlas_file = atlas_data_set_map(Params)
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
             case strcmp(Params.data_set, 'abcd_fc')
-                disp('Currently WRONG atlas')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
             case startsWith(Params.data_set, 'test_')

@@ -25,8 +25,6 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
 
     rep_sub_ids = ids_sampled(:, i_rep);
     
-   
-    
     % Draw reps from original data and reorder according to atlas
     Y_rep = Y(:, rep_sub_ids);
     Y_rep = apply_atlas_order(Y_rep, RP.atlas_file, RP.mask, RP.n_subs_subset); 
@@ -34,7 +32,6 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
     % For the r test - we draw from X and invert X and Y
     if strcmp(RP.test_type, 'r')
         X_rep = X(rep_sub_ids, :);
-        [X_rep, Y_rep] = deal(Y_rep, X_rep);
     end
               
     % Assign setup_benchmark parameters to new UI
