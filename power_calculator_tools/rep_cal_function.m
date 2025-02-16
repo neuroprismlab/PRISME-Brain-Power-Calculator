@@ -7,7 +7,7 @@ function rep_cal_function(Params)
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
     Params.ground_truth = false;
     Params = setup_experiment_data(Params, Dataset);
-    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset.study_info);
+    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
     Params.atlas_file = atlas_data_set_map(Params);
     
     %% Create output directory - setup save directory

@@ -17,7 +17,7 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
 
     %% Get rep data
     if isempty(fieldnames(RepData))
-        RepData = unite_results_from_directory('directory', [Params.save_directory, dataset]);
+        RepData = unite_results_from_directory('directory', [Params.save_directory, dataset, '/']);
         if isempty(fieldnames(RepData))
             error('RepData was not load correctly')
         end
@@ -25,7 +25,7 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     
     %% Get GT data
     if isempty(fieldnames(GtData))
-        GtData = load_gt_data('directory', [Params.gt_data_dir, dataset], 'gt_origin', gt_origin);
+        GtData = load_gt_data('directory', [Params.gt_data_dir, dataset, '/'], 'gt_origin', gt_origin);
         if isempty(fieldnames(GtData))
             error('GtData was not load correctly')
         end

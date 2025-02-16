@@ -38,7 +38,7 @@ end
 Params = setup_experiment_data(Params, Dataset);
 
 %% Create directory and get dataset name - get atlas
-[Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset.study_info);
+[Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
 Params.atlas_file = atlas_data_set_map(Params);
 
 %% Create gt output directory
