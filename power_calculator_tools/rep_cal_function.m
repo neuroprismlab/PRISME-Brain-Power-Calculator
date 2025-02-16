@@ -7,9 +7,11 @@ function rep_cal_function(Params)
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
     Params.ground_truth = false;
     Params = setup_experiment_data(Params, Dataset);
-    Params = create_output_directory(Params);
-    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
+    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset.study_info);
     Params.atlas_file = atlas_data_set_map(Params);
+    
+    %% Create output directory - setup save directory
+    Params = create_output_directory(Params);
 
     %% Parallel Workers 
     % Uncoment the disp line if setup is commented out - as reminder 
@@ -24,10 +26,6 @@ function rep_cal_function(Params)
         t = tests{ti};
         % Fix RP both tasks
         % RP - stands for Repetition Parameter
-        
-        %% Debugging each test 
-        %disp('Test setter still here')
-        %t = 'test2';
        
         RP = Params;
         
@@ -53,9 +51,6 @@ function rep_cal_function(Params)
 
         run_benchmarking(RP, Y, X)
         
-        %if RP.testing == 1 && ti == 2
-        %    return;
-        %end
     
     end
 

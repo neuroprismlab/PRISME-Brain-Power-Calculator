@@ -6,17 +6,18 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     addOptional(p, 'gt_origin', 'power_calculator');
     addOptional(p, 'repetition_data', struct());
     addOptional(p, 'gt_data', struct());
+    addOptional(p, 'dataset', NaN);
     
     parse(p, varargin{:});
 
     gt_origin = p.Results.gt_origin;
     RepData = p.Results.repetition_data;
     GtData = p.Results.gt_data;
+    dataset = p.Results.dataset;
 
     %% Get rep data
-
     if isempty(fieldnames(RepData))
-        RepData = unite_results_from_directory('directory', Params.save_directory);
+        RepData = unite_results_from_directory('directory', [Params.save_directory, dataset]);
         if isempty(fieldnames(RepData))
             error('RepData was not load correctly')
         end
@@ -24,7 +25,7 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     
     %% Get GT data
     if isempty(fieldnames(GtData))
-        GtData = load_gt_data('directory', Params.gt_data_dir, 'gt_origin', gt_origin);
+        GtData = load_gt_data('directory', [Params.gt_data_dir, dataset], 'gt_origin', gt_origin);
         if isempty(fieldnames(GtData))
             error('GtData was not load correctly')
         end

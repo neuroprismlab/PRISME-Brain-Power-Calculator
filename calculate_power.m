@@ -22,14 +22,20 @@ clc;
 %% Directory to save and find rep data - TODO add them all
 Params = setparams();
 
-%% Create storage directory - only if it does not exist
-if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-    mkdir(Params.save_directory);       % Create the directory
+% Load dataset
+if ~exist('Dataset', 'var')
+    Study_Info = load(Params.data_dir, 'study_info');
 end
+[Params.data_set, ~, ~] = get_data_set_name(Study_Info);
 
 if ~exist('RepData', 'var') || ~exist('GtData', 'var')
-    [GtData, RepData] = load_rep_and_gt_results(Params, 'gt_origin', Params.gt_origin);
+    [GtData, RepData] = load_rep_and_gt_results(Params, 'gt_origin', Params.gt_origin, ...
+                                                'dataset', Params.data_set);
 end 
+
+%% Create storage directory - only if it does not exist
+% the previous directory is used to load the data
+Params = create_power_output_directory(Params);
 
 power_calculation_tprs = @(x) summarize_tprs('calculate_tpr', x, GtData, ...
                                              'save_directory', Params.save_directory);

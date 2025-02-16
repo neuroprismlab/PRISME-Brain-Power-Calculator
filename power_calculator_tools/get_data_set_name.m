@@ -1,6 +1,6 @@
-function [data_set_name, data_set_base, data_set_map] = get_data_set_name(Dataset)
+function [data_set_name, data_set_base, data_set_map] = get_data_set_name(Study_Info)
     
-    data_set_base = Dataset.study_info.dataset;
-    data_set_map =  Dataset.study_info.map;
-    data_set_name = strcat(Dataset.study_info.dataset, '_', Dataset.study_info.map);
+    data_set_base = Study_Info.dataset;
+    data_set_map =  Study_Info.map;
+    data_set_name = strcat(Study_Info.dataset, '_', Study_Info.map);
 end

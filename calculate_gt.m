@@ -38,10 +38,11 @@ end
 Params = setup_experiment_data(Params, Dataset);
 
 %% Create directory and get dataset name - get atlas
-Params.save_directory = [Params.save_directory, 'ground_truth/'];
-Params = create_output_directory(Params);
-[Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
+[Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset.study_info);
 Params.atlas_file = atlas_data_set_map(Params);
+
+%% Create gt output directory
+Params = create_gt_output_directory(Params);
 
 %% Paralle workers
 setup_parallel_workers(Params.parallel, Params.n_workers);
