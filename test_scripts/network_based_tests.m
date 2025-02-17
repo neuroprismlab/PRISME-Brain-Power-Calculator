@@ -10,7 +10,7 @@ function network_based_tests(data_set_name)
 
     rep_cal_function(Params)
     
-    ResData = unite_results_from_directory('directory', './test_power_calculator/');
+    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
     
     for i = 1:length(stat_method_cell)
         method = stat_method_cell{i};

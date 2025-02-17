@@ -1,6 +1,6 @@
 function generate_synthetic_gt_data()
     % Directory where synthetic ground truth files will be saved
-    output_dir = './test_power_calculator/ground_truth/';
+    output_dir = './power_calculator_results/ground_truth/syn_power/';
     
     % Ensure directory exists
     if ~exist(output_dir, 'dir')

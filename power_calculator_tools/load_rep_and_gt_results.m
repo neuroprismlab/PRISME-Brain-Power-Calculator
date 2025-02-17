@@ -14,6 +14,10 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     RepData = p.Results.repetition_data;
     GtData = p.Results.gt_data;
     dataset = p.Results.dataset;
+    
+    if isnan(dataset)
+        error('Dataset must be specified')
+    end
 
     %% Get rep data
     if isempty(fieldnames(RepData))

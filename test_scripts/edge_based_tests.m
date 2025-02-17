@@ -10,8 +10,8 @@ function edge_based_tests(data_set_name)
     Params.all_cluster_stat_types = stat_method_cell;
     
     rep_cal_function(Params)
-    
-    ResData = unite_results_from_directory('directory', './test_power_calculator/');
+
+    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
 
     for i = 1:length(stat_method_cell)
         method = stat_method_cell{i};
@@ -56,7 +56,7 @@ function edge_based_tests(data_set_name)
                 assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
                     meta_data.rep_parameters.n_subs_subset)
                 assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
-                assert(meta_data.rep_parameters.nbs_test_stat == 'onesample')
+                assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'onesample'))
                 assert(strcmp(meta_data.rep_parameters.cluster_stat_type,method))
 
             case 't2'
@@ -65,7 +65,7 @@ function edge_based_tests(data_set_name)
                 assert(meta_data.rep_parameters.n_subs_subset_c1 + meta_data.rep_parameters.n_subs_subset_c2 == ...
                        meta_data.rep_parameters.n_subs_subset)
                 assert(meta_data.rep_parameters.n_subs_subset == 40)
-                assert(meta_data.rep_parameters.nbs_test_stat == 'onesample')
+                assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'t-test'))
                 assert(strcmp(meta_data.rep_parameters.cluster_stat_type,method))
    
             case 'r'
