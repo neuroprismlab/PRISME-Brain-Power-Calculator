@@ -1,31 +1,29 @@
 %% Questions
     %
     %% Potential issues
-    % - nbs_method different than statistic_type - ?
-    % - read_exchange - says optional - how?    
+    % - nbs_method different than statistic_type - ? 
     % - UI.size.ui - what is it?
-    % - UI.edge_groups.ui=edge_groups and
-    % - UI.use_preaveraged_constrained.ui=edge_groups are receiving the same
-    % variable? why?
     % - case 3,4, null_stats is not really stat, in get_constrained_stats
     % in NBSstats_smn.m
+    %
     %% THE ONE BELOW IS SUPER IMPORTANT
     % - On NBSedge_level_parametric_corr - t-test (for t2) assumes that the
     % number of subjects in both groups is equal 
+    % - should we correct for different group variances? Welch's app
     % - NBSglm_smn.m is using a simple average to calculate the t-test
     % statistics for the onesample case
     %
-    % - What is SEA and why is it mentioned in the code?
-    % - The same for 'Multidimensional_cNBS' 
-    % - Line 377 of NBSrun_smn.m - strcmp(nbs.STATS.statistic_type,'SEA')
     % - Params.cluster_size_type - is it being used? 
     % - bgl value?
     % - Extent and Intensity - Which one?
     %
     % - Atlas name: map268_subnetwork.mat
+    %
     %% TODO
     % - shen atlas check 
-    % - what atlas for the abcd dataset? what are the other atlases 
+    % - what atlas for the abcd dataset? what are the other atlases
+    %
+    % PARAMETRIC METHOD MIGHT HAVE AN ISSUE
 
 % Set working directory to the directory of this script
 scriptDir = fileparts(mfilename('fullpath'));

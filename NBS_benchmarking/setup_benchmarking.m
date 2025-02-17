@@ -85,10 +85,14 @@ UI.exchange.ui = RepParams.nbs_exchange;
 UI.mask.ui = RepParams.mask;
 % UI.do_Constrained_FWER_second_level.ui=do_Constrained_FWER_second_level;
 
+% Ground truth calculations do not require p-values
+UI.ground_truth = RepParams.ground_truth;
+
 %% Set up DIMS
 UI.DIMS.nodes = RepParams.n_nodes;
 UI.DIMS.observations = RepParams.n_subs_subset;
 UI.DIMS.predictors = size(RepParams.X_rep, 2);
+
 
 end
 

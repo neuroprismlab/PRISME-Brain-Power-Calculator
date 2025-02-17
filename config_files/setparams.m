@@ -10,7 +10,7 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+%Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
@@ -48,7 +48,6 @@ Params.n_repetitions = 500;  % 500 recommended
 
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
-Params.list_of_nsubset = {20};
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
 % NBS parameters
@@ -70,7 +69,7 @@ Params.all_omnibus_types = {'Multidimensional_cNBS'};
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = '20';
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 8;

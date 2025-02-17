@@ -67,6 +67,15 @@ ind_upper=find(triu(ones(N,N),1));
 GLM = NBSglm_setup_smn(GLM);
 edge_stats__target = NBSglm_smn(GLM);
 
+% If gt - we only need the result from the glm and the cluster stats
+if STATS.ground_truth
+    con_mat = [];
+    pval = [];
+    any_significant = 0;
+    return;
+end
+
+
 if strcmp(GLM.test,'onesample') 
     % Calculate degrees of freedom for one-sample t-test
     df = GLM.n_observations - 1; 

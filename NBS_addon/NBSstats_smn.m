@@ -1,4 +1,5 @@
-function [any_significant, con_mat, pval, edge_stats__target, cluster_stats__target] = NBSstats_smn(varargin)
+function [any_significant, con_mat, pval, edge_stats__target, cluster_stats__target] = ...
+NBSstats_smn(varargin)
 %NBSstats Computes network components among edges that survive a primary 
 %test statistic threshold. Assigns a corrected p-value to each component 
 %using permuted data that has been supplied as part of the structure STATS. 
@@ -187,6 +188,16 @@ GLM = NBSglm_setup_smn(GLM);
 edge_stats__target = get_univariate_stats(STATS,GLM,precomputed,1);
 [cluster_stats__target, max_stat__target] = get_cluster_stats(edge_stats__target,STATS,ind_upper, N, Intensity,bgl);
 
+disp(STATS.ground_truth)
+
+% If gt - we only need the result from the glm and the cluster stats
+if STATS.ground_truth
+    con_mat = [];
+    pval = [];
+    any_significant = 0;
+    return;
+end
+    
 % 2, Permuted cluster statistics
 %First row of test_stat is the observed test statistics, so start at the second row
 for i=2:K+1

@@ -17,7 +17,7 @@ function [GtData, RepData] = load_rep_and_gt_results(Params, varargin)
     
     if isnan(dataset)
         error('Dataset must be specified')
-    end
+    end 
 
     %% Get rep data
     if isempty(fieldnames(RepData))
