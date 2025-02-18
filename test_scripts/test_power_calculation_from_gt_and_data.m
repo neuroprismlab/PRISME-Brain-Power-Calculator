@@ -1,7 +1,15 @@
 function test_power_calculation_from_gt_and_data()
 
-    if isfolder('./test_power_calculator/')
-        rmdir('./test_power_calculator/', 's'); % 's' removes all subfolders and files
+    if isfolder('./power_calculator_results/syn_power/')
+        rmdir('./power_calculator_results/syn_power/', 's'); % 's' removes all subfolders and files
+    end
+
+    if isfolder('./power_calculator_results/ground_truth/syn_power/')
+        rmdir('./power_calculator_results/ground_truth/syn_power/', 's'); % 's' removes all subfolders and files
+    end
+
+    if isfolder('./power_calculator_results/power_calculation/syn_power/')
+        rmdir('./power_calculator_results/power_calculation/syn_power/', 's'); % 's' removes all subfolders and files
     end
     
     % Generate synthetic repetition (power) data
@@ -12,12 +20,14 @@ function test_power_calculation_from_gt_and_data()
 
      % --- Define params ---
     Params = setparams(); % Get default parameters
-    Params.save_directory = './test_power_calculator/';  % Directory for repetition data
-    Params.gt_data_dir = './test_power_calculator/ground_truth/';  % GT data directory
+    Params.save_directory = './power_calculator_results/';  % Directory for repetition data
+    Params.gt_data_dir = './power_calculator_results/ground_truth/';  % GT data directory
 
     % Call function to load repetition and GT data
-    [GtData, RepData] = load_rep_and_gt_results(Params);
+    [GtData, RepData] = load_rep_and_gt_results(Params, 'dataset', 'syn_power');
     
+    Params.save_directory = [Params.save_directory, '/power_calculation/syn_power/'];
+
     power_calculation_tprs = @(x) summarize_tprs('calculate_tpr', x, GtData, ...
                                                  'save_directory', Params.save_directory);
     dfs_struct(power_calculation_tprs, RepData);

@@ -38,15 +38,15 @@ function atlas_file = atlas_data_set_map(Params)
     atlas_ok = ~isnan(Params.atlas_file);
     atlas_file = NaN;  
 
-    % Display dataset name for debugging
-    disp(Params.data_set)
-
     if atlas_ok
         % Use provided atlas file if available
         atlas_file = Params.atlas_file;
     else
         switch true
             case strcmp(Params.data_set, 'hcp_fc')
+                atlas_file = './atlas_storage/map268_subnetwork.mat';
+
+            case strcmp(Params.data_set, 'abcd_fc')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
             case startsWith(Params.data_set, 'test_')

@@ -1,4 +1,4 @@
-function run_benchmarking(RP, Y)
+function run_benchmarking(RP, Y, X)
 % Do NBS-based method benchmarking (cNBS, TFCE, etc)
 %
 % main outputs:
@@ -45,6 +45,7 @@ function run_benchmarking(RP, Y)
             
             for id_nsub_list=1:length(RP.list_of_nsubset)
                 RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
+                RP = set_n_subs_subset(RP);
 
                 %% Create_file_name
                 [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
@@ -111,7 +112,6 @@ function run_benchmarking(RP, Y)
                 %% Sample rep ids
                 ids_sampled = draw_repetition_ids(RP);               
              
-                
                 if RP.testing
                     fprintf('\n*** TESTING MODE ***\n\n')
                 end
@@ -129,9 +129,10 @@ function run_benchmarking(RP, Y)
                 if ~RP.parallel
                     for i_rep=1: RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
+
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -153,7 +154,7 @@ function run_benchmarking(RP, Y)
                         % Encapsulation of the most computationally intensive loop
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y);
+                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -212,8 +213,7 @@ function run_benchmarking(RP, Y)
                     else 
                         condition_str = rep_params.task1;
                     end
-                end
-            
+                end  
 
                 %output_filename = [output_dir,'results__',condition_str,TPR_str,'_', ...
                 %                   UI.statistic_type.ui,size_str,omnibus_str,'_grsize', ...
@@ -237,6 +237,7 @@ function run_benchmarking(RP, Y)
                 save(output_dir, 'brain_data', 'meta_data');
         
             end
+
         end
 
     end

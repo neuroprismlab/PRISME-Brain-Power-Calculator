@@ -26,7 +26,8 @@ function RepetitionResults = unite_results_from_directory(varargin)
         
         %% Query elements 
         data_set_name = strcat(meta_data.dataset, '_', meta_data.map);
-        task_name = strcat(meta_data.test_components{1}, '_', meta_data.test_components{2});
+        task_name = get_test_components_from_meta_data(meta_data.test_components);
+
         subject_number = sprintf('subs_%d', meta_data.subject_number);
 
         if any(isnan(meta_data.omnibus)) || strcmp(meta_data.omnibus, 'nobus')

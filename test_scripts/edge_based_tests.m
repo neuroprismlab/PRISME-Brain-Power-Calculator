@@ -10,15 +10,16 @@ function edge_based_tests(data_set_name)
     Params.all_cluster_stat_types = stat_method_cell;
     
     rep_cal_function(Params)
-    
-    ResData = unite_results_from_directory('directory', './test_power_calculator/');
+
+    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
 
     for i = 1:length(stat_method_cell)
         method = stat_method_cell{i};
 
         % The query is based on how the dataset is created
         query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'brain_data'};
-    
+        
+        %% Test regression results
         brain_data = getfield(ResData, query{:});
     
         pvals = brain_data.pvals_all;
@@ -39,7 +40,48 @@ function edge_based_tests(data_set_name)
         for row = 7:10
             assert(all(pvals(row, :) == 1), error_non_effect);
         end
-     
+
+        %% Test meta-data results 
+        query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'meta_data'};
+
+        meta_data = getfield(ResData, query{:});
+
+        assert(meta_data.rep_parameters.n_repetitions == 20)
+
+        switch meta_data.rep_parameters.test_type
+
+            case 't'
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
+                    meta_data.rep_parameters.n_subs_subset_c2)
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
+                    meta_data.rep_parameters.n_subs_subset)
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
+                assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'onesample'))
+                assert(strcmp(meta_data.rep_parameters.cluster_stat_type,method))
+
+            case 't2'
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
+                       meta_data.rep_parameters.n_subs_subset_c2)
+                assert(meta_data.rep_parameters.n_subs_subset_c1 + meta_data.rep_parameters.n_subs_subset_c2 == ...
+                       meta_data.rep_parameters.n_subs_subset)
+                assert(meta_data.rep_parameters.n_subs_subset == 40)
+                assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'t-test'))
+                assert(strcmp(meta_data.rep_parameters.cluster_stat_type,method))
+   
+            case 'r'
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
+                    meta_data.rep_parameters.n_subs_subset_c2)
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == ...
+                    meta_data.rep_parameters.n_subs_subset)
+                assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
+                assert(meta_data.rep_parameters.nbs_test_stat == 'onesample')
+                assert(strcmp(meta_data.rep_parameters.cluster_stat_type,method))
+            
+            otherwise
+                error('A stored test type does not matched the covered test types')
+
+        end
+    
     end
 
 end

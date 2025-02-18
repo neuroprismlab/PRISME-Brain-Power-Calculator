@@ -1,37 +1,49 @@
-%% Questions
-    % There appears to be something wrong in the network level power
-    % calculations - edge level and whole brain are fine
-    % I likely made an error in the atlas 
-    % Cluster has network-based stats not edge
-    % Found it - Likely problem in edge groups!
-    % 
-    %% Potential fix - More resonable results!
-    %   Used tril mask on extract_atlas_related_parameters for edge groups
-    %   Removed atlas reordering in setupbenchmarking 
-
-% Initial setup
+%% Initial setup
 scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));
 cd(scriptDir);
-vars = who;       % Get a list of all variable names in the workspace
-vars(strcmp(vars, 'RepData')) = [];  % Remove the variable you want to keep from the list
-vars(strcmp(vars, 'GtData')) = [];
-clear(vars{:});   % Clear all other variables
+clearvars -except RepData GtData;
 clc;
 
-%% Directory to save and find rep data - TODO add them all
+%% Directory to save and find rep data
 Params = setparams();
 
-%% Create storage directory - only if it does not exist
-if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-    mkdir(Params.save_directory);       % Create the directory
+% Load dataset information
+if ~exist('Dataset', 'var')
+    Study_Info = load(Params.data_dir, 'study_info');
 end
+[Params.data_set, ~, ~] = get_data_set_name(Study_Info);
 
-if ~exist('RepData', 'var') || ~exist('GtData', 'var')
-    [GtData, RepData] = load_rep_and_gt_results(Params, 'gt_origin', Params.gt_origin);
-end 
+%% Process each repetition file one by one to reduce memory usage
+rep_files = dir(fullfile(Params.save_directory, Params.data_set, '*.mat'));
 
-power_calculation_tprs = @(x) summarize_tprs('calculate_tpr', x, GtData, ...
-                                             'save_directory', Params.save_directory);
-dfs_struct(power_calculation_tprs, RepData);
+%% Create output directory (only if it doesn't exist)
+Params = create_power_output_directory(Params);
 
+for i = 1:length(rep_files)
+    % Load a single repetition data file
+    rep_file_path = fullfile(rep_files(i).folder, rep_files(i).name);
+    rep_data = load(rep_file_path);
+    
+    % Extract metadata to find corresponding GT file
+    if isfield(rep_data, 'meta_data') && isfield(rep_data.meta_data, 'test_components')
+        gt_filename = construct_gt_filename(rep_data.meta_data);
+        gt_file_path = [Params.gt_data_dir, Params.data_set, '/', gt_filename];
+        
+        % Load only the necessary GT data
+        if exist(gt_file_path, 'file')
+            gt_data = load(gt_file_path);
+        else
+            warning('GT file %s not found. Skipping...', gt_filename);
+            continue;
+        end
+
+        % Compute power using the extracted repetition and GT data
+        summarize_tprs('calculate_tpr', rep_data, gt_data, 'save_directory', Params.save_directory);
+    else
+        warning('Metadata missing in %s, skipping...', rep_files(i).name);
+    end
+    
+    % Free memory before next iteration
+    clear rep_data gt_data;
+end

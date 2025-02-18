@@ -1,4 +1,4 @@
-function RP = infer_test_from_data(RP, TestData, BrainData)
+function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
     %
     % - Test type issues - load HPC 
     % Should more tests be added?
@@ -8,26 +8,30 @@ function RP = infer_test_from_data(RP, TestData, BrainData)
     test_type = 'unknown';
     sub_ids_cond1 = [];
     sub_ids_cond2 = [];
+    
+    test_score_set = get_test_score_set(TestData);
 
-    if length(unique(TestData.score)) == 1 && ~isnan(TestData.score)
+    if length(test_score_set) == 1 && ~isnan(test_score_set)
         % if all scores are equal to the same number - t test
         test_type = 't';
     
-    elseif isa(TestData.score, 'double') && length(unique(TestData.score)) > 2
+    elseif all(cellfun(@isnumeric, test_score_set)) && length(test_score_set) > 2
         % if score is continuous -> r
-   
+        test_type_origin = 'score_cond';
         test_type = 'r';
     
-    elseif length(unique(TestData.score)) == 2
+    elseif length(test_score_set) == 2
+
+        test_type_origin = 'score_cond';
         % if two unique entries in score -> t (paired) or t2
-        
-        % if both "conditions" of the score have the same sub ids -> t; otherwise t2
-        unique_conditions = unique(test_data.score);
 
         % Are the subids always in outcomes? For the hpc one, we have
         % NaN and it is likely a t2 test
-        sub_ids_cond1 = test.sub_ids(test_type.score == unique_conditions(1));
-        sub_ids_cond2 = test.sub_ids(test_type.score == unique_conditions(2));
+        index_cond_1 = strcmp(TestData.score, test_score_set{1});
+        index_cond_2 = strcmp(TestData.score, test_score_set{2});
+
+        sub_ids_cond1 = BrainData.(TestData.reference_condition).sub_ids(index_cond_1);
+        sub_ids_cond2 = BrainData.(TestData.reference_condition).sub_ids(index_cond_2);
         
         %% TODO: Divided by the two - focus on group sizes
         n_equal = numel(intersect(sort(sub_ids_cond1), sort(sub_ids_cond2)));
@@ -43,7 +47,7 @@ function RP = infer_test_from_data(RP, TestData, BrainData)
         % if contrast provided -> t or t2
         
         if ~isnan(TestData.contrast{1})
-
+            
             if length(TestData.contrast) == 1
                 % single condition in contrast -> t
        
@@ -59,9 +63,11 @@ function RP = infer_test_from_data(RP, TestData, BrainData)
                 n_equal = numel(intersect(sort(sub_ids_cond1), sort(sub_ids_cond2)));
                 n_unique = numel(setxor(sub_ids_cond1, sub_ids_cond2));  
                 
-                if n_equal >= n_unique       
+                if n_equal >= n_unique 
+                    test_type_origin = 'contrast';
                     test_type = 't';        
                 else
+                    test_type_origin = 'contrast';
                     test_type = 't2';             
                 end
 
@@ -84,13 +90,13 @@ function RP = infer_test_from_data(RP, TestData, BrainData)
             RP.nbs_test_stat = 'onesample';
 
         case 't2'
-             RP.nbs_test_stat = 't-test';
+            RP.nbs_test_stat = 't-test';
 
         case 'pt'
             RP.nbs_test_stat = 't-test';
         
         case 'r'
-            error('Not implemented yet')
+            RP.nbs_test_stat = 'onesample'; 
 
     end
     

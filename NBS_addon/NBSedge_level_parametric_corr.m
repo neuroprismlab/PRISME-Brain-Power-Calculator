@@ -67,6 +67,20 @@ ind_upper=find(triu(ones(N,N),1));
 GLM = NBSglm_setup_smn(GLM);
 edge_stats__target = NBSglm_smn(GLM);
 
+% If gt - we only need the result from the glm and the cluster stats
+if STATS.ground_truth
+    % Get the shape of edge_stats__target
+    shape = size(edge_stats__target);
+
+    % Create variables with the same shape
+    con_mat = {false(shape)};  % Empty logical array in a cell
+    pval = {NaN(shape)};  % NaN array inside a cell
+    any_significant = false; % Ensures downstream code doesn't break
+
+    return;
+end
+
+
 if strcmp(GLM.test,'onesample') 
     % Calculate degrees of freedom for one-sample t-test
     df = GLM.n_observations - 1; 

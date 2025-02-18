@@ -402,6 +402,12 @@ end
 % Number of nodes
 nbs.STATS.N = DIMS.nodes; 
 
+try
+   nbs.STATS.ground_truth = logical(UI.ground_truth);
+catch
+   error('Error setting up gt value')
+end
+
 % Do error checking on user inputs
 [msg,stop] = errorcheck(UI,DIMS,S);
 
@@ -465,6 +471,11 @@ else
     catch;  fprintf([str,'\n']); end 
     nbs.STATS.test_stat=[]; 
 end
+
+
+% If gt change the method 
+% We only need the GLM result for the gt
+
 
 
 %Do NBS

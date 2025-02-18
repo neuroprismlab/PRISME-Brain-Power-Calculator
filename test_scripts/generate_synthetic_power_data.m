@@ -1,6 +1,6 @@
 function generate_synthetic_power_data()
     % Directory where synthetic test files will be saved
-    output_dir = './test_power_calculator/';
+    output_dir = './power_calculator_results/syn_power/';
     
     % Ensure directory exists
     if ~exist(output_dir, 'dir')

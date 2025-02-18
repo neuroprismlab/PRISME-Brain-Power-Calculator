@@ -56,12 +56,16 @@ p = inputParser;
 % addOptional(p,'summary_type',summary_type_default);
 addRequired(p,'summary_type');
 addOptional(p,'tpr_dthresh', 0);
-addOptional(p,'save_directory', './power_calculation_results/')
+addOptional(p,'save_directory', NaN)
 parse(p, summary_type, varargin{:});
 
 % summary_type=p.Results.summary_type;
 tpr_dthresh = p.Results.tpr_dthresh;
-save_directory = [p.Results.save_directory, '/power_calculation/'];
+save_directory = p.Results.save_directory;
+
+if isnan(save_directory)
+    error('Save directory not specified')
+end
 
 % Make save directory if it does not exist
 
@@ -104,7 +108,7 @@ case 'calculate_tpr'
 
     %% Check if already calculated and get file_name
     data_set_name = strcat(rep_data.meta_data.dataset, '_', rep_data.meta_data.map);
-    test_components = strcat(rep_data.meta_data.test_components{1}, '_', rep_data.meta_data.test_components{2});
+    test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
     [~, file_name] = create_and_check_rep_file(save_directory, data_set_name, test_components, ...
                                                rep_data.meta_data.test, rep_data.meta_data.test_type, ...
                                                rep_data.meta_data.omnibus, rep_data.meta_data.subject_number, ...

@@ -16,7 +16,8 @@ function Params = setup_experiment_data(Params, Dataset)
     %
     
     % Extract study mask
-    Params.mask = Dataset.study_info.mask;
+    % Typeset to logical
+    Params.mask = logical(Dataset.study_info.mask);
     
     % Extract number of variables - change for multivariable methods
     Params.n_var = sum(Params.mask(:));

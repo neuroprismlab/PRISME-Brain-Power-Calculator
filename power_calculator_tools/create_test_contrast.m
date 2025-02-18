@@ -22,6 +22,10 @@ function [nbs_contrast, nbs_contrast_neg, nbs_exchange] = create_test_contrast(t
     
             nbs_contrast_neg=nbs_contrast;
             nbs_contrast_neg(1)=-1;
+
+        case 'r'
+            nbs_contrast = 1;     
+            nbs_contrast_neg = -1;
         
     end
     

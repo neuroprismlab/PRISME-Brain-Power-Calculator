@@ -1,4 +1,4 @@
-function edge_groups=load_atlas_edge_groups(n_nodes, mapping_category, atlas_file)
+function edge_groups=load_atlas_edge_groups(atlas_file)
 
 % returns a n_nodes x n_nodes matrix where the value of each edge reflects
 % the network pair it belongs to

@@ -83,7 +83,7 @@ function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
 
             RP.n_subs_1 = n_subs_1;
             RP.n_subs_2 = n_subs_2;
-            RP.n_subs = length(xor_sub_ids);
+            RP.n_subs = n_subs_1 + n_subs_2;
         
         case 'pt'
 
