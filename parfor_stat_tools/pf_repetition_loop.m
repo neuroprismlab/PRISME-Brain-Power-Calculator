@@ -48,10 +48,16 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
     % fprintf('* Repetition %d - negative contrast\n', i_rep)
     
     % Change constrast to negative one 
-    UI_new_neg = UI_new;
-    UI_new_neg.contrast.ui = RP.nbs_contrast_neg;
-
-    nbs_neg = NBSrun_smn(UI_new_neg);
+    % Negative constrast is not necessary for gt
+    if ~UI.ground_truth
+        UI_new_neg = UI_new;
+        UI_new_neg.contrast.ui = RP.nbs_contrast_neg;
+    
+        nbs_neg = NBSrun_smn(UI_new_neg);
+     
+    else
+        nbs_neg = nbs;
+    end
     
     % check for any positives (if there was no ground truth effect, this goes into the FWER calculation)
     if nbs.NBS.n > 0
@@ -65,17 +71,17 @@ function [FWER_rep, edge_stats_rep, pvals_rep, cluster_stats_rep, ...
     else
         FWER_rep_neg = 0;
     end
-
+    
     % record everything
     if strcmp(RP.cluster_stat_type,'FDR') || contains(RP.cluster_stat_type,'Parametric')
 
 	    % Note: NBS's FDR does not return corrected p-values, only significant edges 
         % (con_mat)--assigning significant edges to a pvalue of "0" and 
         % non-significant to pvalue "1" JUST for summarization purposes
-        edge_stats_rep = nbs.NBS.test_stat(RP.triumask);
+        edge_stats_rep = flat_matrix(nbs.NBS.test_stat, RP.mask);
         pvals_rep = ~nbs.NBS.con_mat{1}(:); % see above note 
         
-        edge_stats_rep_neg = nbs_neg.NBS.test_stat(RP.triumask);
+        edge_stats_rep_neg = flat_matrix(nbs_neg.NBS.test_stat, RP.mask);
         pvals_rep_neg = ~nbs_neg.NBS.con_mat{1}(:);  % see above note
         
         % This is not generated for this stats test, so I just output an

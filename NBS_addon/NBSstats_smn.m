@@ -188,16 +188,25 @@ GLM = NBSglm_setup_smn(GLM);
 edge_stats__target = get_univariate_stats(STATS,GLM,precomputed,1);
 [cluster_stats__target, max_stat__target] = get_cluster_stats(edge_stats__target,STATS,ind_upper, N, Intensity,bgl);
 
-disp(STATS.ground_truth)
-
 % If gt - we only need the result from the glm and the cluster stats
 if STATS.ground_truth
-    con_mat = [];
-    pval = [];
-    any_significant = 0;
+     % Get the shape of cluster_stats__target
+    shape = size(cluster_stats__target);
+
+    % Create variables with the same shape
+    con_mat = false(shape);  % Logical array (not inside a cell)
+    
+    % Check if Omnibus method
+    if strcmp(STATS.statistic_type, 'Omnibus')
+        pval = 1;         % Scalar p-value
+    else
+        pval = NaN(shape);  % NaN array (not inside a cell)
+    end
+
+    any_significant = false; % Ensures downstream code doesn't break
     return;
 end
-    
+
 % 2, Permuted cluster statistics
 %First row of test_stat is the observed test statistics, so start at the second row
 for i=2:K+1
