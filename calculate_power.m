@@ -2,14 +2,14 @@
 scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));
 cd(scriptDir);
-clearvars -except RepData GtData;
+clearvars -except RepData GtData Study_Info;
 clc;
 
 %% Directory to save and find rep data
 Params = setparams();
 
 % Load dataset information
-if ~exist('Dataset', 'var')
+if ~exist('Study_Info', 'var')
     Study_Info = load(Params.data_dir, 'study_info');
 end
 [Params.data_set, ~, ~] = get_data_set_name(Study_Info);

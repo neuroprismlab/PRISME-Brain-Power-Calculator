@@ -1,4 +1,4 @@
-function PowerRes = summarize_tprs(summary_type, rep_data, GtData, varargin)
+function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, varargin)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -122,11 +122,7 @@ case 'calculate_tpr'
     %if isfile(file_name)
     %    PowerRes = nan;
     %    return;
-    %end
-
-    gt_data = struct;
-    gt_data.brain_data = getfield(GtData, rep_data.meta_data.gt_location{:});
-    gt_data.meta_data = getfield(GtData, rep_data.meta_data.gt_meta_data_location{:});
+    %end    
     
 
     %% Calculate positives here

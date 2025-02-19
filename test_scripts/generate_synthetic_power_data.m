@@ -72,8 +72,8 @@ function generate_synthetic_power_data()
         
         % Generate mock meta_data
         meta_data = struct();
-        meta_data.dataset = 'synthetic_test';
-        meta_data.map = 'mock_map';
+        meta_data.dataset = 'syn';
+        meta_data.map = 'power';
         meta_data.test = 'synthetic';  % Placeholder test type
         meta_data.test_components = {'REST', 'TASK'};
         meta_data.omnibus = NaN;
@@ -87,7 +87,7 @@ function generate_synthetic_power_data()
         meta_data.rep_parameters.n_repetitions = n_repetitions; % Number of repetitions
 
         % Generate filename
-        filename = sprintf('%ssynthetic_%s.mat', output_dir, tt);
+        filename = name_file_from_meta_data(meta_data, false);
 
         % Save synthetic data
         save(filename, 'brain_data', 'meta_data');

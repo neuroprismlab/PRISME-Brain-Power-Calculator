@@ -22,16 +22,16 @@ function test_power_calculation_from_gt_and_data()
     Params = setparams(); % Get default parameters
     Params.save_directory = './power_calculator_results/';  % Directory for repetition data
     Params.gt_data_dir = './power_calculator_results/ground_truth/';  % GT data directory
+    
+    Study_Info.study_info.dataset = 'syn';
+    Study_Info.study_info.map = 'power';
 
     % Call function to load repetition and GT data
-    [GtData, RepData] = load_rep_and_gt_results(Params, 'dataset', 'syn_power');
+    assignin('base', 'Study_Info', Study_Info);
+    calculate_power;
+
+    clear Study_Info
     
-    Params.save_directory = [Params.save_directory, '/power_calculation/syn_power/'];
-
-    power_calculation_tprs = @(x) summarize_tprs('calculate_tpr', x, GtData, ...
-                                                 'save_directory', Params.save_directory);
-    dfs_struct(power_calculation_tprs, RepData);
-
     test_final_power_results()
 
 end

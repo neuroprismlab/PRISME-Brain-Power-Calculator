@@ -44,11 +44,16 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
     else
         rep_file_name = strcat(rep_file_name, '.mat');
     end
-
-    % Create the full path to the file
-    full_file_path = fullfile(data_dir, rep_file_name);
     
-    % Check if the file exists
-    existence = isfile(full_file_path);
+    if ~isnan(data_dir)
+        % Create the full path to the file
+        full_file_path = fullfile(data_dir, rep_file_name);
+        
+        % Check if the file exists
+        existence = isfile(full_file_path);
+    else
+        full_file_path = rep_file_name;
+        existence = false;
+    end
     
 end

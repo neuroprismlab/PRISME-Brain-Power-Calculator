@@ -19,11 +19,11 @@ function generate_synthetic_gt_data()
 
     % Common metadata fields for both edge and network level tests
     meta_data = struct();
-    meta_data.dataset = 'synthetic_test';
-    meta_data.map = 'mock_map';
+    meta_data.dataset = 'syn';
+    meta_data.map = 'power';
     meta_data.test = 'synthetic';  % Placeholder test type
     meta_data.test_components = {'REST', 'TASK'};
-    meta_data.omnibus = 'none';
+    meta_data.omnibus = NaN;
     meta_data.subject_number = 40; % Fixed subject number for testing
     meta_data.testing_code = 1; % Indicator for test mode
     meta_data.run_time = rand() * 10; % Fake runtime
@@ -48,7 +48,7 @@ function generate_synthetic_gt_data()
     meta_data.test_type = 'Parametric_Bonferroni'; % Edge-level method
 
     % Save edge-level ground truth
-    filename_edge = sprintf('%sgt_synthetic_edge.mat', output_dir);
+    filename_edge = name_file_from_meta_data(meta_data, true);
     save(filename_edge, 'brain_data', 'meta_data');
     
     % ----- Network-Level Ground Truth -----
@@ -70,7 +70,7 @@ function generate_synthetic_gt_data()
     meta_data.test_type = 'Constrained'; % Network-level method
 
     % Save network-level ground truth
-    filename_network = sprintf('%sgt_synthetic_network.mat', output_dir);
+    filename_network = name_file_from_meta_data(meta_data, true);
     save(filename_network, 'brain_data', 'meta_data');
 
 end
