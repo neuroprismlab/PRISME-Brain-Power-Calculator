@@ -15,21 +15,31 @@ function gt_filename = construct_gt_filename(meta_data)
     switch stat_type
         case 'Parametric_Bonferroni'
             stat_level = 'edge';
+        case 'Parametric_FDR'
+            stat_level = 'edge';
+        case 'Size'
+            stat_level = 'edge';
+        case 'TFCE'
+            stat_level = 'edge';
         case 'Constrained'
+            stat_level = 'network';
+        case 'Constrained_FWER'
             stat_level = 'network';
         case 'Omnibus'
             stat_level = 'whole_brain';
         otherwise
-            error('Stat type not necessary for GT calculation');
+            error('Stat type not supported');
     end
 
     % Construct the GT filename
-    gt_filename = sprintf('gt_%s_%s_%s_%s_%s.mat', ...
+    gt_filename = sprintf('gt_%s_%s_%s_%s_%s', ...
                           data_set_name, test_components, ...
                           test_type, stat_level, omnibus_type);
 
     if meta_data.testing_code 
         gt_filename = strcat(gt_filename, '_test.mat');
+    else
+        gt_filename = strcat(gt_filename, '.mat');
     end
 
 end

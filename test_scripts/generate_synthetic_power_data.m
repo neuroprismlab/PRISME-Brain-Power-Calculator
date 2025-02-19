@@ -88,9 +88,10 @@ function generate_synthetic_power_data()
 
         % Generate filename
         filename = name_file_from_meta_data(meta_data, false);
+        full_file = ['./power_calculator_results/syn_power/', filename];
 
         % Save synthetic data
-        save(filename, 'brain_data', 'meta_data');
+        save(full_file, 'brain_data', 'meta_data');
 
     end
 

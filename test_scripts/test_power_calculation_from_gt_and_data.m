@@ -19,10 +19,7 @@ function test_power_calculation_from_gt_and_data()
     generate_synthetic_gt_data()
 
      % --- Define params ---
-    Params = setparams(); % Get default parameters
-    Params.save_directory = './power_calculator_results/';  % Directory for repetition data
-    Params.gt_data_dir = './power_calculator_results/ground_truth/';  % GT data directory
-    
+     
     Study_Info.study_info.dataset = 'syn';
     Study_Info.study_info.map = 'power';
 

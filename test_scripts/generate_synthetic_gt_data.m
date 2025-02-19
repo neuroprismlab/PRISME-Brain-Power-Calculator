@@ -49,7 +49,8 @@ function generate_synthetic_gt_data()
 
     % Save edge-level ground truth
     filename_edge = name_file_from_meta_data(meta_data, true);
-    save(filename_edge, 'brain_data', 'meta_data');
+    full_file = ['./power_calculator_results/ground_truth/syn_power/', filename_edge];
+    save(full_file, 'brain_data', 'meta_data');
     
     % ----- Network-Level Ground Truth -----
     brain_data = struct();
@@ -71,6 +72,7 @@ function generate_synthetic_gt_data()
 
     % Save network-level ground truth
     filename_network = name_file_from_meta_data(meta_data, true);
-    save(filename_network, 'brain_data', 'meta_data');
+    full_file = ['./power_calculator_results/ground_truth/syn_power/', filename_network];
+    save(full_file, 'brain_data', 'meta_data');
 
 end
