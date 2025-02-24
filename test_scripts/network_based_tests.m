@@ -30,6 +30,15 @@ function network_based_tests(data_set_name)
 
         % Ensure second row is all ones
         assert(all(pvals(2, :) == 1), 'Network-Level Test Failed: Effect detected in second row');
+
+
+        %% Test meta-data results 
+        query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'meta_data'};
+
+        meta_data = getfield(ResData, query{:});
+
+        check_test_meta_data(meta_data, method)
+        
     end
 
 end
