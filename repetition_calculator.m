@@ -22,6 +22,8 @@
     %% TODO
     % - shen atlas check 
     % - what atlas for the abcd dataset? what are the other atlases
+    % - fix t2 test
+    % - check git task list
     %
     % PARAMETRIC METHOD MIGHT HAVE AN ISSUE
 

@@ -30,14 +30,14 @@ function X = create_design_matrix(varargin)
                 error('For a t2 desing matrix the number of subjects from both coditions must be supplied')
             end
 
-            % Make sure the sum of n_subs_1 and n_subs_2 does not exceed n_subs
-            if n_subs_1 + n_subs_2 > n_subs
-                error('The sum of n_subs_1 and n_subs_2 cannot exceed n_subs');
-            end
-
-            X = zeros(n_subs, 2);
+            X = zeros(n_subs_1 + n_subs_2, 2);
             X(1:n_subs_1, 1) = 1;
-            X(n_subs_1:n_subs_1 + n_subs_2, 2) = 1;
+            X(n_subs_1 + 1:end, 2) = 1;
+
+            % Check if any row has both elements as 1 (invalid design)
+            if any(sum(X, 2) > 1)
+                error('Invalid design matrix: At least one row has both elements set to 1.');
+            end
 
         case 'pt'
 

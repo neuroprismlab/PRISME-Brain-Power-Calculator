@@ -80,19 +80,15 @@ if STATS.ground_truth
     return;
 end
 
-
+%% CHECK IF NUMBER OF UNIQUE SUBJECTS
 if strcmp(GLM.test,'onesample') 
     % Calculate degrees of freedom for one-sample t-test
     df = GLM.n_observations - 1; 
     % Calculate uncorrected p-values from the t distribution
     p_uncorr = tcdf(-edge_stats__target, df);
 elseif strcmp(GLM.test,'ttest') 
-    %if strcmp(ttest_type,'paired') % TODO: create
-    % warning('Assuming paired sample and right-tailed t-test.');
-    df = GLM.n_observations/2-1; % observations are 2 per subject
-    %elseif strcmp(ttest_type,'unpaired')
-    %    df=GLM.n_observations-2; % assuming equal variances
-    %end
+    df = GLM.n_observations - 2; 
+    
     p_uncorr = tcdf(-edge_stats__target, df);
 elseif strcmp(GLM.test,'ftest') 
     error('Under development.');

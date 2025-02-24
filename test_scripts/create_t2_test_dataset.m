@@ -33,7 +33,7 @@ function create_t2_test_dataset()
     for i = 1:subject_number
         brain_data.REST.data(:, i) = [-1, -1, -1, -1, -1, -1, 0.2, 0.8, 0.5, 0];
     end
-
+    
     data_dir = './data/';
     mkdir(data_dir);
 

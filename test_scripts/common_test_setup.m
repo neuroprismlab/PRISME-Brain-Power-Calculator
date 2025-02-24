@@ -7,7 +7,7 @@ function Params = common_test_setup(data_set_name)
 
     Params = setparams();
 
-    Params.save_directory = './test_power_calculator/';
+    Params.save_directory = './power_calculator_results/';
     Params.data_dir = ['./data/', data_set_name];
 
     % Tests in actions can only be run sequentially in MatLab

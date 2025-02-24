@@ -16,8 +16,8 @@ function ids_sampled = draw_repetition_ids(RP)
     
             case 't2'
                 
-                ids_1 = randperm(RP.n_subs_1, floor(RP.n_subs_subset/2));
-                ids_2 = randperm(RP.n_subs - RP.n_subs_1, ceil(RP.n_subs_subset/2)) + RP.n_subs_1;
+                ids_1 = randperm(RP.n_subs_1, RP.n_subs_subset);
+                ids_2 = randperm(RP.n_subs - RP.n_subs_1, RP.n_subs_subset) + RP.n_subs_1;
     
                 ids = [ids_1, ids_2]';
     

@@ -47,12 +47,14 @@ function test_stat=NBSglm_smn(GLM)
 
 test_stat=zeros(1, GLM.n_GLMs);
 
-beta = zeros(GLM.n_predictors,GLM.n_GLMs);
 beta = GLM.X\GLM.y;
+
+% Round beta to the nearest multiple of 1e-14 to remove numerical issues
+beta = round(beta, 14);
 
 %Compute statistic of interest
 % TODO: consider moving to switch/case in glm_setup
-if strcmp(GLM.test,'onesample')
+if strcmp(GLM.test,'onesample') || strcmp(GLM.test,'ttest')
 
     % Compute the residuals
     resid = GLM.y - GLM.X * beta; 
@@ -60,17 +62,10 @@ if strcmp(GLM.test,'onesample')
     mse = sum(resid.^2) / (GLM.n_observations - GLM.n_predictors); 
     % Compute the standard error using contrast
     se = sqrt(mse .* (GLM.contrast / (GLM.X' * GLM.X) * GLM.contrast'));
+    % Prevent division by zero - numerical fix
+    se(se < 1e-15) = 1e-15;
     % Compute the t-statistic
     test_stat(:) = (GLM.contrast * beta) ./ se;
-
-elseif strcmp(GLM.test,'ttest')
-
-    resid=zeros(GLM.n_observations,GLM.n_GLMs);
-    mse=zeros(GLM.n_observations,GLM.n_GLMs);
-    resid=GLM.y-GLM.X*beta;
-    mse=sum(resid.^2)/(GLM.n_observations-GLM.n_predictors);
-    se=sqrt(mse*(GLM.contrast*inv(GLM.X'*GLM.X)*GLM.contrast'));
-    test_stat(:)=(GLM.contrast*beta)./se;
 
 elseif strcmp(GLM.test,'ftest')
 

@@ -50,6 +50,25 @@ RepParams.X_rep = create_design_matrix(RepParams.test_type, RepParams.n_subs_sub
 create_test_contrast(RepParams.test_type, RepParams.n_subs_subset);
 
 
+%% Number of observations
+switch RepParams.test_type
+
+    case 't'
+        RepParams.observations = RepParams.n_subs_subset;
+
+    case 't2'
+        RepParams.observations = RepParams.n_subs_subset_c1 + RepParams.n_subs_subset_c2;
+
+    case 'r'
+        RepParams.observations = RepParams.n_subs_subset;
+
+    otherwise
+        error('Test type not supported')
+
+end
+
+
+
 %% Assign params to structures
 % Goal: should be able to run config file, load rep_params and UI from reference, and replicate reference results
 
@@ -90,7 +109,7 @@ UI.ground_truth = RepParams.ground_truth;
 
 %% Set up DIMS
 UI.DIMS.nodes = RepParams.n_nodes;
-UI.DIMS.observations = RepParams.n_subs_subset;
+UI.DIMS.observations = RepParams.observations;
 UI.DIMS.predictors = size(RepParams.X_rep, 2);
 
 

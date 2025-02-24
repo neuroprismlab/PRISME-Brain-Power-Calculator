@@ -1,0 +1,4 @@
+data/*
+power_calculator_results/*
+*.asv
+/test_power_calculator/*
