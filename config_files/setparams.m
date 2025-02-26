@@ -10,8 +10,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-%Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';

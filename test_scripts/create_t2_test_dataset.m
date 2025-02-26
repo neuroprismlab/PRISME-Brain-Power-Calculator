@@ -13,6 +13,7 @@ function create_t2_test_dataset()
     outcome.test1.sub_ids = NaN;
     outcome.test1.score = NaN;
     outcome.test1.score_label = NaN;
+    outcome.test1.reference_condition = NaN;
     outcome.test1.contrast = {'TASK', 'REST'};
     outcome.test1.category = 'cognitive';
     

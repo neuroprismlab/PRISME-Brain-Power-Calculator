@@ -21,6 +21,7 @@ function create_test_fc_data_set()
     outcome.test1.sub_ids = NaN;
     outcome.test1.score = NaN;
     outcome.test1.score_label = NaN;
+    outcome.test1.reference_condition = NaN;
     outcome.test1.contrast = {'TASK', 'REST'};
     outcome.test1.category = 'cognitive';
     

@@ -32,6 +32,12 @@ edge_based_tests('test_t2_fc.mat')
 
 network_based_tests('test_t2_fc.mat')
 
+create_r_test_dataset()
+
+edge_based_tests('test_r_fc.mat')
+
+network_based_tests('test_r_fc.mat')
+
 
 
 

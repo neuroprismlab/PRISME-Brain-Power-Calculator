@@ -16,12 +16,13 @@ function edge_based_tests(data_set_name)
     if isempty(ResData) || (isstruct(ResData) && isempty(fieldnames(ResData)))
         error('No results found in the specified directory: %s', ['./power_calculator_results/', data_set_name, '/']);
     end
-
+    
+    task_name = get_task_name_for_test(data_set);
     for i = 1:length(stat_method_cell)
         method = stat_method_cell{i};
 
         % The query is based on how the dataset is created
-        query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'brain_data'};
+        query = {'testing', data_set_name, task_name, method, 'subs_40', 'brain_data'};
         
         %% Test regression results
         brain_data = getfield(ResData, query{:});
@@ -48,7 +49,7 @@ function edge_based_tests(data_set_name)
         end
 
         %% Test meta-data results 
-        query = {'testing', data_set_name, 'REST_TASK', method, 'subs_40', 'meta_data'};
+        query = {'testing', data_set_name, task_name, method, 'subs_40', 'meta_data'};
 
         meta_data = getfield(ResData, query{:});
 

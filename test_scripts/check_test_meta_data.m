@@ -18,7 +18,7 @@ function check_test_meta_data(meta_data, method)
             assert(meta_data.rep_parameters.observations == 80)
 
         case 'r' 
-            assert(meta_data.rep_parameters.nbs_test_stat == 'onesample')
+            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'onesample'))
             assert(meta_data.rep_parameters.observations == 40)
         
         otherwise
