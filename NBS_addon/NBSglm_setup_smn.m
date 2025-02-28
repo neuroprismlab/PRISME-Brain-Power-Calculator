@@ -1,4 +1,4 @@
-function GLM=NBSglm_setup_smn(GLM)
+function GLM = NBSglm_setup_smn(GLM)
 %NBSglm_setup_smn  Sets up for running the general linear model (GLM) in
 %NBSglm, include performing nuisance regression
 %

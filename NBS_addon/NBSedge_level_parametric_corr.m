@@ -1,4 +1,4 @@
-function [any_significant,con_mat,pval,edge_stats__target]=NBSedge_level_parametric_corr(varargin)
+function [any_significant,con_mat,pval,edge_stats__target] = NBSedge_level_parametric_corr(varargin)
 %This script performs Bonferroni or FDR correction over all edges in the
 %network, with uncorrected p-values of each edge determined parametrically
 %
@@ -87,12 +87,13 @@ if strcmp(GLM.test,'onesample')
     % Calculate uncorrected p-values from the t distribution
     p_uncorr = tcdf(-edge_stats__target, df);
 elseif strcmp(GLM.test,'ttest') 
+
     df = GLM.n_observations - 2; 
-    
     p_uncorr = tcdf(-edge_stats__target, df);
+        
 elseif strcmp(GLM.test,'ftest') 
     error('Under development.');
-    df1=GLM.n_predictors-1; % TODO: check this
+    df1=GLM.n_predictors - 1; % TODO: check this
     df2=GLM.n_observations-GLM.n_predictors; % TODO: check this
     df1_vec=repmat(df1,size(edge_stats__target));
     df2_vec=repmat(df2,size(edge_stats__target));

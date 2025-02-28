@@ -5,10 +5,10 @@ function [n_node_nets, trilmask_net, edge_groups] = extract_atlas_related_parame
     % 'Constrained_FWER'cases
     n_node_nets = NaN;
     trilmask_net = NaN;
+    edge_groups = NaN;
 
     % Only apply atlas to the network-based stats
-    if strcmp(RP.cluster_stat_type, 'Constrained') || strcmp(RP.cluster_stat_type, 'Omnibus') || ...
-        strcmp(RP.cluster_stat_type, 'Constrained_FWER')
+    if ~isnan(RP.atlas_file)
        
         template_net = summarize_matrix_by_atlas(Y(:, 1), RP.atlas_file, 'suppressimg', 1, 'mask', RP.mask);
     
@@ -19,12 +19,6 @@ function [n_node_nets, trilmask_net, edge_groups] = extract_atlas_related_parame
         % edge_groups = tril(edge_groups,-1);
         edge_groups = triu(edge_groups, 1);
         
-    else
-        % plus 1 because the script expects there to be a "0" (and will subsequently ignore..."
-        %% TODO set edge groups to NaN if no atlas 
-        edge_groups = sum(RP.mask(:));
-
     end
-
 
 end

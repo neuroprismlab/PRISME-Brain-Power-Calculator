@@ -207,7 +207,7 @@ WaitbarPos=[0.69 0.021 0.05 0.21];
 %User inputs
 UI=varargin{1}; 
 
-%Handles to GUI objects to enable progress updates to be written to GUI
+% Handles to GUI objects to enable progress updates to be written to GUI
 if nargin==2
     S=varargin{2};
     try 
@@ -233,7 +233,7 @@ UI.size.ok=1;
 UI.omnibus_type.ok=1;
 UI.use_preaveraged_constrained.ok=1;
 UI.edge_groups.ok=1;
-%UI.do_Constrained_FWER_second_level.ok=1;
+% UI.do_Constrained_FWER_second_level.ok=1;
 UI.perms.ok=1;
 UI.alpha.ok=1;
 UI.exchange.ok=1;
@@ -241,8 +241,8 @@ UI.exchange.ok=1;
 %% Asing mask to stats NBS
 nbs.STATS.mask = UI.mask.ui;
 
-%Read UI and assign to appropriate structure
-%Connectivity matrices
+% Read UI and assign to appropriate structure
+% Connectivity matrices
 
 % Matrices and dimensions and contrast
 nbs.GLM.y = UI.matrices.ui';
@@ -251,7 +251,7 @@ DIMS = UI.DIMS;
 nbs.GLM.contrast = UI.contrast.ui;
 
 
-%Exchange blocks for permutation [optional]
+% Exchange blocks for permutation [optional]
 [tmp, UI.exchange.ok] = read_exchange(UI.exchange.ui, DIMS);
 
 if UI.exchange.ok
@@ -262,7 +262,7 @@ elseif isfield(nbs,'GLM')
     end
 end
 
-%Test statistic
+% Test statistic
 try nbs.GLM.test=UI.test.ui; 
     if strcmp(nbs.GLM.test,'One Sample')
         nbs.GLM.test='onesample';
@@ -275,7 +275,7 @@ catch
     UI.test.ok = 0;
 end
 
-%Number of permutations
+% Number of permutations
 try 
     if ischar(UI.perms.ui)
         nbs.GLM.perms = str2num(UI.perms.ui);
@@ -294,7 +294,7 @@ catch
     UI.perms.ok=0;
 end
 
-%Test statistic threshold
+% Test statistic threshold
 try 
     if ischar(UI.thresh.ui)
         nbs.STATS.thresh=str2num(UI.thresh.ui); 
@@ -314,7 +314,7 @@ catch
     UI.thresh.ok=0; 
 end
 
-%Corrected p-value threshold
+% Corrected p-value threshold
 try 
     if ischar(UI.alpha.ui)
         nbs.STATS.alpha = str2num(UI.alpha.ui); 
@@ -481,7 +481,7 @@ end
 %Do NBS
 if strcmp(UI.method.ui, 'Run NBS')
 
-    str = sprintf('Computing network components (%s)...',nbs.STATS.statistic_type);
+    str = sprintf('Computing network components (%s)...', nbs.STATS.statistic_type);
     try 
         tmp=get(S.OUT.ls,'string'); 
         set(S.OUT.ls,'string',[{str};tmp]);
@@ -533,7 +533,7 @@ end
     
 %Update the UI in the nbs structure to the UI that has just been used for
 %the current run
-nbs.UI=UI; 
+nbs.UI = UI; 
 
 %Copy test statistics to NBS strucutre so that they can be displayed with
 %each link

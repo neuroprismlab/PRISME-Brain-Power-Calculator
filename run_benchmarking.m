@@ -16,36 +16,40 @@ function run_benchmarking(RP, Y, X)
     %disp('Temporary assigment still here')
     %RP.all_cluster_stat_types = {'#Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE', ...
     %'#Constrained', 'Constrained_FWER', '#Omnibus'};
-  
-    % RP.list_of_nsubset = {40};
+    
+    for id_nsub_list=1:length(RP.list_of_nsubset)
+        RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
+        RP = set_n_subs_subset(RP);
 
-    for stat_id=1:length(RP.all_cluster_stat_types)
-        RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
-        
-        tic
-        
         [RP.node_nets, RP.trilmask_net, RP.edge_groups] = ...
-            extract_atlas_related_parameters(RP, Y);
+                extract_atlas_related_parameters(RP, Y);
         
-        % If omnibus, we'll loop through all the specified omnibus types
-        if ~strcmp(RP.cluster_stat_type, 'Omnibus')
-            loop_omnibus_types = {NaN};
-        else
-            loop_omnibus_types = RP.all_omnibus_types;
-        end
-        
-        for omnibus_id=1:length(loop_omnibus_types) 
-            RP.omnibus_type = loop_omnibus_types{omnibus_id};
-             
-            if ~isnan(RP.omnibus_type)
-                RP.omnibus_str = RP.omnibus_type;
-            else 
-                RP.omnibus_str = 'nobus'; 
+        [UI, RP] = setup_benchmarking(RP);
+        %% Sample rep ids
+        ids_sampled = draw_repetition_ids(RP);
+        GLM_stats = precompute_glm_data(X, Y, RP, UI, ids_sampled);
+
+        for stat_id=1:length(RP.all_cluster_stat_types)
+            RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
+            
+            tic
+            
+            % If omnibus, we'll loop through all the specified omnibus types
+            if ~strcmp(RP.cluster_stat_type, 'Omnibus')
+                loop_omnibus_types = {NaN};
+            else
+                loop_omnibus_types = RP.all_omnibus_types;
             end
             
-            for id_nsub_list=1:length(RP.list_of_nsubset)
-                RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
-                RP = set_n_subs_subset(RP);
+            for omnibus_id=1:length(loop_omnibus_types) 
+                RP.omnibus_type = loop_omnibus_types{omnibus_id};
+                 
+                if ~isnan(RP.omnibus_type)
+                    RP.omnibus_str = RP.omnibus_type;
+                else 
+                    RP.omnibus_str = 'nobus'; 
+                end
+            
 
                 %% Create_file_name
                 [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
@@ -109,9 +113,7 @@ function run_benchmarking(RP, Y, X)
         
                 end
                 
-                %% Sample rep ids
-                ids_sampled = draw_repetition_ids(RP);               
-             
+                            
                 if RP.testing
                     fprintf('\n*** TESTING MODE ***\n\n')
                 end
