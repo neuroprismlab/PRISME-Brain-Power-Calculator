@@ -38,9 +38,7 @@ function nbs = set_up_nbs_parameters(varargin)
     UI.matrices.ok=1;
     UI.node_coor.ok=1;
     UI.node_label.ok=1;
-    UI.statistic_type.ok=1;
     UI.size.ok=1;
-    UI.omnibus_type.ok=1;
     UI.use_preaveraged_constrained.ok=1;
     UI.edge_groups.ok=1;
     % UI.do_Constrained_FWER_second_level.ok=1;
@@ -73,14 +71,8 @@ function nbs = set_up_nbs_parameters(varargin)
     end
     
     % Test statistic
-    try nbs.GLM.test=UI.test.ui; 
-        if strcmp(nbs.GLM.test,'One Sample')
-            nbs.GLM.test='onesample';
-        elseif strcmp(nbs.GLM.test,'t-test')
-            nbs.GLM.test='ttest';
-        elseif strcmp(nbs.GLM.test,'F-test')
-            nbs.GLM.test='ftest';
-        end
+    try 
+        nbs.GLM.test=UI.test.ui; 
     catch
         UI.test.ok = 0;
     end
@@ -144,29 +136,12 @@ function nbs = set_up_nbs_parameters(varargin)
     end
     
     
-    %Statistic type [required to specify for now, but all should be optional w 'Size' as default]
-    % if isfield(UI.statistic_type,'ui') ... ; elseif isfield(nbs,'NBS') ...; end
-    try 
-        nbs.STATS.statistic_type = UI.statistic_type.ui; 
-    catch
-        UI.statistic_type.ok = 0; 
-    end 
-    
-    
     try 
         nbs.STATS.size = UI.size.ui;
     catch 
         UI.size.ok = 0;
     end
     
-    
-   
-    try 
-        nbs.STATS.omnibus_type = UI.omnibus_type.ui; 
-    catch
-        UI.omnibus_type.ok=0; 
-    end 
-
     try 
         nbs.STATS.use_preaveraged_constrained = UI.use_preaveraged_constrained.ui; 
     catch 
@@ -367,21 +342,9 @@ function [msg,stop]=errorcheck(UI,DIMS,S)
         catch; end
         return;
     end
-    if ~UI.statistic_type.ok
-        msg={'Stop: Statistic type not found or inconsistent'};
-        try set(S.ADV.statistic_type.text,'ForegroundColor','red');
-        catch; end
-        return;
-    end
     if ~UI.size.ok
         msg={'Stop: Component Size not found or inconsistent'};
         try set(S.ADV.size.text,'ForegroundColor','red');
-        catch; end
-        return;
-    end
-    if ~UI.omnibus_type.ok
-        msg={'Stop: Omnibus type not found or inconsistent'};
-        try set(S.ADV.statistic_type.text,'ForegroundColor','red');
         catch; end
         return;
     end

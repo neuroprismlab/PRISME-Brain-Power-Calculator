@@ -25,9 +25,8 @@ function run_benchmarking(RP, Y, X)
                 extract_atlas_related_parameters(RP, Y);
         
         [UI, RP] = setup_benchmarking(RP);
-        %% Sample rep ids
         ids_sampled = draw_repetition_ids(RP);
-        GLM_stats = precompute_glm_data(X, Y, RP, UI, ids_sampled);
+        [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
 
         for stat_id=1:length(RP.all_cluster_stat_types)
             RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
@@ -49,13 +48,17 @@ function run_benchmarking(RP, Y, X)
                 else 
                     RP.omnibus_str = 'nobus'; 
                 end
-            
+           
 
                 %% Create_file_name
                 [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
                                                                     RP.test_type, RP.cluster_stat_type, ...
                                                                     RP.omnibus_str, RP.n_subs_subset, ...
                                                                     RP.testing, RP.ground_truth);
+
+                %% Get complete stats for downstream
+                STATS.statistic_type = RP.cluster_stat_type;
+                STATS.omnibus_type = RP.omnibus_type;
                 
                 if existence && RP.recalculate == 0
                     fprintf('Skipping %s \n', output_dir)
@@ -63,8 +66,6 @@ function run_benchmarking(RP, Y, X)
                 else
                     fprintf('Calculating %s \n', output_dir)
                 end
-
-                [UI, RP] = setup_benchmarking(RP);
     
                 FWER = 0;
                 FWER_neg = 0;
@@ -72,10 +73,9 @@ function run_benchmarking(RP, Y, X)
                     
                 %% PREALOCATE SPACE FOR OUTPUT DATA
                 edge_stats_all = zeros(RP.n_var, RP.n_repetitions);
-                edge_stats_all_neg = zeros(RP.n_var, RP.n_repetitions); 
-               
+                edge_stats_all_neg = zeros(RP.n_var, RP.n_repetitions);
 
-                if contains(UI.statistic_type.ui,'Constrained') || strcmp(UI.statistic_type.ui,'SEA')
+                if contains(RP.cluster_stat_type,'Constrained') || strcmp(RP.cluster_stat_type,'SEA')
                   
                     % minus 1 in all - to not count "zero"
                     cluster_stats_all = zeros(length(unique(UI.edge_groups.ui)) - 1, 1, RP.n_repetitions); 
@@ -84,9 +84,9 @@ function run_benchmarking(RP, Y, X)
                     pvals_all=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
                     pvals_all_neg=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions); 
         
-                elseif strcmp(UI.statistic_type.ui,'Omnibus')
+                elseif strcmp(RP.cluster_stat_type,'Omnibus')
         
-                    if strcmp(UI.omnibus_type.ui,'Multidimensional_cNBS')
+                    if strcmp(RP.omnibus_type,'Multidimensional_cNBS')
                         n_nulls = length(unique(UI.edge_groups.ui))-1;
                     else
                         n_nulls = 1;
@@ -97,7 +97,7 @@ function run_benchmarking(RP, Y, X)
                     pvals_all=zeros(1, RP.n_repetitions);
                     pvals_all_neg=zeros(1, RP.n_repetitions);
         
-                elseif contains(UI.statistic_type.ui,'Parametric')
+                elseif contains(RP.cluster_stat_type,'Parametric')
         
                     cluster_stats_all=zeros(1,1, RP.n_repetitions);
                     cluster_stats_all_neg=zeros(1,1, RP.n_repetitions);
@@ -134,7 +134,7 @@ function run_benchmarking(RP, Y, X)
 
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
+                         pf_repetition_loop(i_rep, ids_sampled, STATS, GLM_stats);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -189,6 +189,9 @@ function run_benchmarking(RP, Y, X)
                 
                 run_time = toc;
                 
+                disp('Testing in SetParams')
+                keyboard;
+
                 %% Save
                 
                 if false
