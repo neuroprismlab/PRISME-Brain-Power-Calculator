@@ -31,29 +31,30 @@ function [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled)
         nbs = set_up_nbs_parameters(UI_new);
         GLM = NBSglm_setup_smn(nbs.GLM);
         GLM_stats.edge_stats_all(:, i_rep) = NBSglm_smn(GLM);
-
-        UI_new_neg = UI_new;
-        UI_new_neg.contrast.ui = RP.nbs_contrast_neg;
-        
-        %% Fit GLM and get edge stats with NEGATIVE contrast
-        nbs_neg = set_up_nbs_parameters(UI_new);
-        GLM_neg = NBSglm_setup_smn(nbs_neg.GLM);
-        GLM_stats.edge_stats_all_neg(:, i_rep) = NBSglm_smn(GLM_neg);
+        GLM_stats.edge_stats_all_neg(:, i_rep) = -GLM_stats.edge_stats_all(:, i_rep);
         
         %% Average everything for network-based stats
         edge_stat_square = unflatten_matrix(GLM_stats.edge_stats_all(:, i_rep), RP.mask);
         edge_stat_square = get_network_average(edge_stat_square, RP.edge_groups);
         GLM_stats.cluster_stats_all(:, i_rep) = edge_stat_square;
+        GLM_stats.cluster_stats_all_neg(:, i_rep) = -edge_stat_square;
         
-        edge_stat_square_neg = unflatten_matrix(GLM_stats.edge_stats_all_neg(:, i_rep), RP.mask);
-        edge_stat_square_neg = get_network_average(edge_stat_square_neg, RP.edge_groups);
-        GLM.cluster_stats_all_neg(:, i_rep) = edge_stat_square_neg;
-        
+        if check_if_permutation_method(RP)
+            generate_permutation_for_repetition(i_rep, GLM, RP.n_perms, RP.n_var)
+        end 
+
     end
     
     %% Get an example of stats here
+    % And pass reusable variables from GLM
     STATS = nbs.STATS;
-    
+    GLM_stats.parameters.contrast = GLM.contrast;
+    GLM_stats.parameters.test = GLM.test;
+    GLM_stats.parameters.perm = GLM.perms;
+    GLM_stats.parameters.n_predictors = GLM.n_predictors;
+    GLM_stats.parameters.n_GLMs = GLM.n_GLMs;
+    GLM_stats.parameters.n_observations = GLM.n_observations;
+
 end
 
 

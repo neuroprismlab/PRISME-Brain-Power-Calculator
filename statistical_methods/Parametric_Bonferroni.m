@@ -1,4 +1,4 @@
-function [any_significant, con_mat, pval] = Parametric_Bonferroni(varargin)
+function pval = Parametric_Bonferroni(varargin)
     % Perform Bonferroni correction with uncorrected p-value computation.
     %
     % Inputs:
@@ -12,8 +12,7 @@ function [any_significant, con_mat, pval] = Parametric_Bonferroni(varargin)
     %   - pval: Bonferroni-corrected p-values.
     params = struct(varargin{:});
 
-    RP = params.repetition_parameters;
-    GLM = params.GLM;
+    GLM = params.glm_parameters;
     edge_stats__target = params.edge_stats;
   
     % Compute uncorrected p-values based on the test type
@@ -22,9 +21,5 @@ function [any_significant, con_mat, pval] = Parametric_Bonferroni(varargin)
     % Apply Bonferroni correction
     pval = p_uncorr * numel(edge_stats__target);
     pval = min(pval, 1); % Ensure p-values don’t exceed 1
-    
-    % Determine significant edges
-    con_mat{1} = pval(:) < STATS.alpha;
-    any_significant = any(con_mat{1});
     
 end

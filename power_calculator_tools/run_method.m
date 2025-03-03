@@ -1,7 +1,7 @@
 function result = run_method(method_name, varargin)
 
     % Path to statistical methods directory
-    methods_dir = fullfile(fileparts(mfilename('fullpath')), 'methods');
+    methods_dir = './statistical_methods/';
     
     % Check if method exists
     method_path = fullfile(methods_dir, [method_name, '.m']);

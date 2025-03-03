@@ -50,7 +50,6 @@ switch RepParams.test_type
 end
 
 
-
 %% Assign params to structures
 % Goal: should be able to run config file, load rep_params and UI from reference, and replicate reference results
 
@@ -85,6 +84,7 @@ UI.use_preaveraged_constrained.ui = RepParams.edge_groups;
 UI.exchange.ui = RepParams.nbs_exchange;
 UI.mask.ui = RepParams.mask;
 % UI.do_Constrained_FWER_second_level.ui=do_Constrained_FWER_second_level;
+UI.test_stat.ui = RepParams.test_type;
 
 % Ground truth calculations do not require p-values
 UI.ground_truth = RepParams.ground_truth;

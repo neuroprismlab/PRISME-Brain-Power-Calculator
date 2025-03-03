@@ -134,7 +134,7 @@ function run_benchmarking(RP, Y, X)
 
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, STATS, GLM_stats);
+                         pf_repetition_loop(i_rep, STATS, GLM_stats);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -156,7 +156,7 @@ function run_benchmarking(RP, Y, X)
                         % Encapsulation of the most computationally intensive loop
                         [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
                          FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, ids_sampled, RP, UI, RP.X_rep, Y, X);
+                         pf_repetition_loop(i_rep, STATS, GLM_stats);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
