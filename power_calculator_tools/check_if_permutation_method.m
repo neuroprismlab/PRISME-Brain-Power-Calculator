@@ -3,7 +3,11 @@ function is_permutation = check_if_permutation_method(RP)
     % This function determines whether at least one of the methods in
     % `RP.all_cluster_stat_types` requires precomputed permutations.
     %
-
+    if RP.ground_truth
+        is_permutation = false;
+        return;
+    end
+    
     % List of methods that require permutations
     permutation_methods = {'Size', 'TFCE', 'Constrained', 'Constrained_FWER', 'Omnibus'};
 

@@ -14,6 +14,7 @@ function pval = Size(varargin)
     STATS = params.statistical_parameters;
     edge_stats_target = params.edge_stats;
     GLM = params.glm_parameters;
+    permuted_edge_stats = params.permuted_edge_data;
 
     % Get number of nodes and edges
     N = STATS.N;
@@ -30,17 +31,15 @@ function pval = Size(varargin)
         get_edge_components(adj, STATS.size, edge_stats_target, ...
                             STATS.thresh, N, find(triu(STATS.mask)), exist('components', 'file'));
 
-    % If no precomputed permutations, generate them
+    % Get number of permutations
     K = GLM.perm; 
-    
     % Compute permutation-based null distribution
     null_dist = zeros(K, 1);
-    for i = 2:K+1
-        GLM.y = permute_signal(GLM);  % Generate permuted data
-        edge_stats_perm = get_univariate_stats(STATS, GLM, ~isempty(STATS.test_stat), i);
+    for i = 1:K
+        edge_stats_perm = permuted_edge_stats(:, i);
         [~, max_stat] = get_edge_components(unflatten_matrix(edge_stats_perm > STATS.thresh, STATS.mask), ...
             STATS.size, edge_stats_perm, STATS.thresh, N, find(triu(STATS.mask)), exist('components', 'file'));
-        null_dist(i-1) = max_stat;
+        null_dist(i) = max_stat;
     end
 
     % Compute FWER-corrected p-values

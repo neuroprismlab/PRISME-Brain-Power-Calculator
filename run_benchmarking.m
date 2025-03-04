@@ -24,9 +24,22 @@ function run_benchmarking(RP, Y, X)
         [RP.node_nets, RP.trilmask_net, RP.edge_groups] = ...
                 extract_atlas_related_parameters(RP, Y);
         
+        %% Prepare for GLM precomputation
         [UI, RP] = setup_benchmarking(RP);
         ids_sampled = draw_repetition_ids(RP);
         [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
+
+        %% Get some of the statical result data
+        edge_stats_all = GLM_stats.edge_stats_all;
+        edge_stats_all_neg = GLM_stats.edge_stats_all_neg;
+
+        cluster_stats_all = GLM_stats.cluster_stats_all;
+        cluster_stats_all_neg = GLM_stats.cluster_stats_all_neg;
+
+        if RP.ground_truth
+            create_gt_files(GLM_stats, RP)
+            continue;
+        end
 
         for stat_id=1:length(RP.all_cluster_stat_types)
             RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
@@ -71,16 +84,9 @@ function run_benchmarking(RP, Y, X)
                 FWER_neg = 0;
 
                     
-                %% PREALOCATE SPACE FOR OUTPUT DATA
-                edge_stats_all = zeros(RP.n_var, RP.n_repetitions);
-                edge_stats_all_neg = zeros(RP.n_var, RP.n_repetitions);
 
                 if contains(RP.cluster_stat_type,'Constrained') || strcmp(RP.cluster_stat_type,'SEA')
                   
-                    % minus 1 in all - to not count "zero"
-                    cluster_stats_all = zeros(length(unique(UI.edge_groups.ui)) - 1, 1, RP.n_repetitions); 
-                    cluster_stats_all_neg = zeros(length(unique(UI.edge_groups.ui)) - 1, 1, RP.n_repetitions); 
-                    
                     pvals_all=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
                     pvals_all_neg=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions); 
         
@@ -91,23 +97,17 @@ function run_benchmarking(RP, Y, X)
                     else
                         n_nulls = 1;
                     end
-        
-                    cluster_stats_all=zeros(1, n_nulls, RP.n_repetitions);
-                    cluster_stats_all_neg=zeros(1, n_nulls, RP.n_repetitions);
+       
                     pvals_all=zeros(1, RP.n_repetitions);
                     pvals_all_neg=zeros(1, RP.n_repetitions);
         
                 elseif contains(RP.cluster_stat_type,'Parametric')
         
-                    cluster_stats_all=zeros(1,1, RP.n_repetitions);
-                    cluster_stats_all_neg=zeros(1,1, RP.n_repetitions);
                     pvals_all=zeros(RP.n_nodes*(RP.n_nodes - 1)/2, RP.n_repetitions);
                     pvals_all_neg=zeros(RP.n_nodes*(RP.n_nodes - 1)/2, RP.n_repetitions); 
         
                 else
-                    
-                    cluster_stats_all = zeros(RP.n_nodes, RP.n_nodes, RP.n_repetitions); 
-                    cluster_stats_all_neg = zeros(RP.n_nodes, RP.n_nodes, RP.n_repetitions); 
+                       
                     pvals_all=zeros(RP.n_var, RP.n_repetitions);
                     pvals_all_neg=zeros(RP.n_var, RP.n_repetitions);
         
@@ -127,70 +127,49 @@ function run_benchmarking(RP, Y, X)
                 % need to mimmic and change bellow
                 % For whoever fix this - create function with signature
                 % with everything and encapsulate 
-
+                
                 if ~RP.parallel
                     for i_rep=1: RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
 
-                        [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
-                         FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, STATS, GLM_stats);
+                        [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
+                        pf_repetition_loop(i_rep, STATS, GLM_stats);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
             
-                        edge_stats_all(:,i_rep) = edge_stats_all_rep;
                         pvals_all(:,i_rep) = pvals_all_rep;
-                        edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
                         pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
-                        
-                        % If it is an edge method, no need for the
-                        % network stats  
-                        if ~strcmp(RP.stat_level, 'edge')
-                            cluster_stats_all(:,:,i_rep) = cluster_stats_all_rep;
-                            cluster_stats_all_neg(:,:,i_rep) = cluster_stats_all_neg_rep;
-                        end
+                         
                     end
                 else
                     parfor (i_rep=1: RP.n_repetitions)
                         % Encapsulation of the most computationally intensive loop
-                        [FWER_rep, edge_stats_all_rep, pvals_all_rep, cluster_stats_all_rep, ...
-                         FWER_neg_rep, edge_stats_all_neg_rep, pvals_all_neg_rep, cluster_stats_all_neg_rep] = ...
-                         pf_repetition_loop(i_rep, STATS, GLM_stats);
+                        [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
+                        pf_repetition_loop(i_rep, STATS, GLM_stats);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
-            
-                        edge_stats_all(:,i_rep) = edge_stats_all_rep;
+     
                         pvals_all(:,i_rep) = pvals_all_rep;
-                        edge_stats_all_neg(:,i_rep) = edge_stats_all_neg_rep; 
                         pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
-                        
-                        % If it is an edge method, no need for the
-                        % network stats  
-                        if ~strcmp(RP.stat_level, 'edge')
-                            cluster_stats_all(:,:,i_rep) = cluster_stats_all_rep;
-                            cluster_stats_all_neg(:,:,i_rep) = cluster_stats_all_neg_rep;
-                        end
+                     
                     end
                 end
                 
                 % An NaN for network-level in the edge case
-                if strcmp(RP.stat_level, 'edge')
-                    cluster_stats_all = NaN;
-                    cluster_stats_all_neg = NaN;
-                end
+                %if strcmp(RP.stat_level, 'edge')
+                %    cluster_stats_all = NaN;
+                %    cluster_stats_all_neg = NaN;
+                %end
                 
-                if contains(UI.statistic_type.ui,'Constrained') || strcmp(UI.statistic_type.ui,'SEA') ...
-                    || strcmp(UI.statistic_type.ui,'Omnibus')
-                    cluster_stats_all = squeeze(cluster_stats_all);
-                    cluster_stats_all_neg = squeeze(cluster_stats_all_neg);
-                end
+                %if contains(UI.statistic_type.ui,'Constrained') || strcmp(UI.statistic_type.ui,'SEA') ...
+                %    || strcmp(UI.statistic_type.ui,'Omnibus')
+                %    cluster_stats_all = squeeze(cluster_stats_all);
+                %    cluster_stats_all_neg = squeeze(cluster_stats_all_neg);
+                %end
                 
-                run_time = toc;
-                
-                disp('Testing in SetParams')
-                keyboard;
+                run_time = toc;          
 
                 %% Save
                 
@@ -218,11 +197,8 @@ function run_benchmarking(RP, Y, X)
                     else 
                         condition_str = rep_params.task1;
                     end
-                end  
-
-                %output_filename = [output_dir,'results__',condition_str,TPR_str,'_', ...
-                %                   UI.statistic_type.ui,size_str,omnibus_str,'_grsize', ...
-                %                   num2str(rep_params.n_subs_subset),test_str,'_', datestr(now,'mmddyyyy_HHMM'),'.mat'];
+                end        
+                
                 brain_data = add_brain_data_to_repetition_data('edge_stats_all', edge_stats_all, ...
                     'edge_stats_all_neg', edge_stats_all_neg, ...
                     'cluster_stats_all', cluster_stats_all, 'cluster_stats_all_neg', cluster_stats_all_neg, ...
