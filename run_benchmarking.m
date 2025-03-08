@@ -27,7 +27,7 @@ function run_benchmarking(RP, Y, X)
         %% Prepare for GLM precomputation
         [UI, RP] = setup_benchmarking(RP);
         ids_sampled = draw_repetition_ids(RP);
-        [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
+        [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
 
         %% Get some of the statical result data
         edge_stats_all = GLM_stats.edge_stats_all;
@@ -124,7 +124,7 @@ function run_benchmarking(RP, Y, X)
                         % Encapsulation of the most computationally intensive loop
 
                         [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS, GLM_stats);
+                        pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
@@ -137,7 +137,7 @@ function run_benchmarking(RP, Y, X)
                     parfor (i_rep=1: RP.n_repetitions)
                         % Encapsulation of the most computationally intensive loop
                         [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS, GLM_stats);
+                        pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP);
             
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;

@@ -1,4 +1,4 @@
-function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loop(i_rep, STATS, GLM_stats)
+function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP)
       
     % Select the edge statistics for this repetition
     edge_stats_rep = GLM_stats.edge_stats_all(:, i_rep);
@@ -14,9 +14,10 @@ function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loo
         perm_file = fullfile(parent_dir, 'GLM_permutations', sprintf('permutation_%d.mat', i_rep));
         
         if ~exist(perm_file, 'file')
-            error('Precomputed permutation file %s not found.', perm_file);
+            perm_data = generate_permutation_for_repetition(i_rep, GLM, RP, false); 
+        else 
+            perm_data = load(perm_file, 'permuted_data', 'permuted_network_data');
         end
-        perm_data = load(perm_file, 'permuted_data', 'permuted_network_data');
     else 
         perm_data.permuted_data = [];
         perm_data.permuted_network_data = [];

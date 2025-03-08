@@ -1,4 +1,4 @@
-function generate_permutation_for_repetition(rep_number, GLM, RP)
+function perm_data = generate_permutation_for_repetition(rep_number, GLM, RP, save_to_file)
     % generate_permutation_for_repetition
     % 
     % This function precomputes and saves permuted GLM data for a given repetition.
@@ -41,7 +41,12 @@ function generate_permutation_for_repetition(rep_number, GLM, RP)
         permuted_network_data(:, i) = network_stat;
     end
     
+     % Return as struct
+    perm_data.permuted_data = permuted_data;
+    perm_data.permuted_network_data = permuted_network_data;
+
     % Save permutations to file
-    save(perm_file, 'permuted_data', 'permuted_network_data', '-v7.3'); % Use '-v7.3' for large data compatibility
-    
+    if save_to_file
+        save(perm_file, 'permuted_data', 'permuted_network_data', '-v7.3'); % Use '-v7.3' for large data compatibility
+    end
 end

@@ -16,6 +16,7 @@ Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 %% Force permutation precalculation
 Params.force_permute = false;
+Params.precompute_permutations = true;
 
 Params.gt_origin = 'power_calculator';
 
@@ -51,7 +52,6 @@ Params.n_repetitions = 500;  % 500 recommended
 
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
-Params.list_of_nsubset = {40};
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
 % NBS parameters
@@ -65,7 +65,6 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
 Params.all_cluster_stat_types = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE', ...
     'Constrained', 'Constrained_FWER', 'Omnibus'};
-Params.all_cluster_stat_types = {'Omnibus'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'

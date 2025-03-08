@@ -1,4 +1,10 @@
-function [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled)
+function [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled)
+    
+    % Remove permutation directory and everything inside
+    if exist('./GLM_permutations', 'dir')
+        rmdir('./GLM_permutations', 's');  
+    end
+
     % Initialize GLM_stats structure
     edge_stats_all = zeros(RP.n_var, RP.n_repetitions);
     edge_stats_all_neg = zeros(RP.n_var, RP.n_repetitions);
@@ -55,6 +61,10 @@ function [GLM_stats, STATS] = precompute_glm_data(X, Y, RP, UI, ids_sampled)
     %% Return stat parameters 
     STATS = nbs.STATS;
     STATS.has_permutation = is_permutation_based;
+
+    if ~RP.precompute_permutations
+        fprintf('Skipping precomputing permutations (on-demand generation enabled).\n');
+    end
 end
 
 %% ======================= External Helper Function =======================
@@ -100,8 +110,8 @@ function GLM_stats_rep = process_repetition(i_rep, X, Y, RP, UI, ids_sampled, is
     GLM_stats_rep.cluster_stats_all_neg = -cluster_stat_pos;
     
     % Generate precomputed permutations if required
-    if is_permutation_based
-        generate_permutation_for_repetition(i_rep, GLM, RP);
+    if is_permutation_based && RP.precompute_permutations
+        generate_permutation_for_repetition(i_rep, GLM, RP, true);
     end
     
 end
