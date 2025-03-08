@@ -37,12 +37,15 @@ switch RepParams.test_type
 
     case 't'
         RepParams.observations = RepParams.n_subs_subset;
+        RepParams.nbs_test_stat = 'onesample';
 
     case 't2'
         RepParams.observations = RepParams.n_subs_subset_c1 + RepParams.n_subs_subset_c2;
+        RepParams.nbs_test_stat = 'ttest';
 
     case 'r'
         RepParams.observations = RepParams.n_subs_subset;
+        RepParams.nbs_test_stat = 'onesample';
 
     otherwise
         error('Test type not supported')

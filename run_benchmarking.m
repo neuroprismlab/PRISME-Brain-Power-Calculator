@@ -92,11 +92,11 @@ function run_benchmarking(RP, Y, X)
                         pvals_all = zeros(1, RP.n_repetitions);
                         pvals_all_neg = zeros(1, RP.n_repetitions);
                 
-                    case "network_level"
+                    case "network"
                         pvals_all = zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
                         pvals_all_neg = zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
                 
-                    case "edge_level"
+                    case "edge"
                         pvals_all = zeros(RP.n_var, RP.n_repetitions);
                         pvals_all_neg = zeros(RP.n_var, RP.n_repetitions);
                 

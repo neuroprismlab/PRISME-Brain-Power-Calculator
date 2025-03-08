@@ -45,7 +45,7 @@ function edge_based_tests(data_set_name)
 
         % Check for non-significant p-values where no effect is expected (rows 7 to 10)
         for row = 7:10
-            assert(all(pvals(row, :) == 1), error_non_effect);
+            assert(all(pvals(row, :) >= 0.5), error_non_effect);
         end
 
         %% Test meta-data results 

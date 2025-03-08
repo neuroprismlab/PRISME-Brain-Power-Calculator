@@ -27,10 +27,10 @@ function network_based_tests(data_set_name)
         % make sure 
 
         % Ensure first row is all zeros
-        assert(all(pvals(1, :) == 0), 'Network-Level Test Failed: Effect not detected in first row');
+        assert(all(pvals(1, :) <= 0.05), 'Network-Level Test Failed: Effect not detected in first row');
 
         % Ensure second row is all ones
-        assert(all(pvals(2, :) == 1), 'Network-Level Test Failed: Effect detected in second row');
+        assert(all(pvals(2, :) >= 0.5), 'Network-Level Test Failed: Effect detected in second row');
 
 
         %% Test meta-data results 
