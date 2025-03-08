@@ -12,8 +12,8 @@ function [nbs_contrast, nbs_contrast_neg, nbs_exchange] = create_test_contrast(t
        
         case 't2'
 
-            nbs_contrast=[1,-1];
-            nbs_contrast_neg=[-1,1];  
+            nbs_contrast=[0, 1];
+            nbs_contrast_neg=[0, -1];  
 
         case 'pt'  
             % set up contrasts - positive and negative

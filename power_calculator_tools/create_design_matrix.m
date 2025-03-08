@@ -27,17 +27,17 @@ function X = create_design_matrix(varargin)
         case 't2' 
             
             if n_subs_1 == -1 || n_subs_2 == -1
-                error('For a t2 desing matrix the number of subjects from both coditions must be supplied')
+                error('For a t2 design matrix, the number of subjects from both conditions must be supplied')
             end
-
+        
+            % Create the design matrix with intercept and one group indicator
             X = zeros(n_subs_1 + n_subs_2, 2);
-            X(1:n_subs_1, 1) = 1;
-            X(n_subs_1 + 1:end, 2) = 1;
-
-            % Check if any row has both elements as 1 (invalid design)
-            if any(sum(X, 2) > 1)
-                error('Invalid design matrix: At least one row has both elements set to 1.');
-            end
+        
+            % Intercept column (ones for all subjects)
+            X(:, 1) = 1;
+        
+            % Group membership column (1 for Group 1, 0 for Group 2)
+            X(1:n_subs_1, 2) = 1;  % Group 1
 
         case 'pt'
 
