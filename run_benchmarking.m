@@ -119,34 +119,45 @@ function run_benchmarking(RP, Y, X)
                 % For whoever fix this - create function with signature
                 % with everything and encapsulate 
                 
+                % Create parallel constants to avoid unnecessary duplication
+                STATS_const = parallel.pool.Constant(STATS);
+                GLM_stats_const = parallel.pool.Constant(GLM_stats);
+                GLM_const = parallel.pool.Constant(GLM);
+                RP_const = parallel.pool.Constant(RP);
+                
                 if ~RP.parallel
-                    for i_rep=1: RP.n_repetitions
+                    for i_rep = 1:RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
-
                         [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP);
-            
+                        pf_repetition_loop(i_rep, STATS_const.Value, GLM_stats_const.Value, ...
+                            GLM_const.Value, RP_const.Value);
+                
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
-            
-                        pvals_all(:,i_rep) = pvals_all_rep;
-                        pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
-                         
+                
+                        pvals_all(:, i_rep) = pvals_all_rep;
+                        pvals_all_neg(:, i_rep) = pvals_all_neg_rep;
                     end
                 else
-                    parfor (i_rep=1: RP.n_repetitions)
+                    parfor i_rep = 1:RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
                         [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP);
-            
+                        pf_repetition_loop(i_rep, STATS_const.Value, GLM_stats_const.Value, ...
+                            GLM_const.Value, RP_const.Value);
+                
                         FWER = FWER + FWER_rep;
                         FWER_neg = FWER_neg + FWER_neg_rep;
-     
-                        pvals_all(:,i_rep) = pvals_all_rep;
-                        pvals_all_neg(:,i_rep) = pvals_all_neg_rep;
-                     
+                
+                        pvals_all(:, i_rep) = pvals_all_rep;
+                        pvals_all_neg(:, i_rep) = pvals_all_neg_rep;
                     end
                 end
+                
+                % Cleanup: Delete parallel constants to free memory
+                delete(STATS_const);
+                delete(GLM_stats_const);
+                delete(GLM_const);
+                delete(RP_const);
                 
                 % An NaN for network-level in the edge case
                 %if strcmp(RP.stat_level, 'edge')

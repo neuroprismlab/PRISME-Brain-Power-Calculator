@@ -13,11 +13,17 @@ function [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled
     
     % Check if permutation-based methods are needed (done once to avoid redundant calls)
     is_permutation_based = check_if_permutation_method(RP);
+    
+    % Convert X, Y, and RP to parallel constants to avoid redundant memory copies
+    X_const = parallel.pool.Constant(X);
+    Y_const = parallel.pool.Constant(Y);
+    RP_const = parallel.pool.Constant(RP);
 
     % Parallel or sequential execution
     if RP.parallel
         parfor i_rep = 1:RP.n_repetitions
-            GLM_stats_rep = process_repetition(i_rep, X, Y, RP, UI, ids_sampled, is_permutation_based);
+            GLM_stats_rep = process_repetition(i_rep,  X_const.Value, Y_const.Value, RP_const.Value, ...
+                UI, ids_sampled, is_permutation_based);
             
             % Store computed results
             edge_stats_all(:, i_rep) = GLM_stats_rep.edge_stats_all;
@@ -27,7 +33,8 @@ function [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled
         end
     else
         for i_rep = 1:RP.n_repetitions
-            GLM_stats_rep = process_repetition(i_rep, X, Y, RP, UI, ids_sampled, is_permutation_based);
+            GLM_stats_rep = process_repetition(i_rep,  X_const.Value, Y_const.Value, RP_const.Value, ...
+                UI, ids_sampled, is_permutation_based);
             
             % Store computed results
             edge_stats_all(:, i_rep) = GLM_stats_rep.edge_stats_all;
@@ -36,6 +43,11 @@ function [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled
             cluster_stats_all_neg(:, i_rep) = GLM_stats_rep.cluster_stats_all_neg;
         end
     end
+
+    % Cleanup: Delete parallel constants to free memory
+    delete(X_const);
+    delete(Y_const);
+    delete(RP_const);
     
     %% Total GLM for parameters 
     UI.design.ui = X;
