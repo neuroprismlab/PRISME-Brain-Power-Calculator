@@ -27,14 +27,11 @@ function run_benchmarking(RP, Y, X)
         %% Prepare for GLM precomputation
         [UI, RP] = setup_benchmarking(RP);
         ids_sampled = draw_repetition_ids(RP);
-        [GLM_stats, STATS, GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
+        [GLM_stats, STATS, All_GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
 
         %% Get some of the statical result data
-        edge_stats_all = GLM_stats.edge_stats_all;
-        edge_stats_all_neg = GLM_stats.edge_stats_all_neg;
-
-        cluster_stats_all = GLM_stats.cluster_stats_all;
-        cluster_stats_all_neg = GLM_stats.cluster_stats_all_neg;
+        [edge_stats_all, edge_stats_all_neg, cluster_stats_all, cluster_stats_all_neg] = ...
+            extrac_cell_glm_stats(GLM_stats);
 
         if RP.ground_truth
             create_gt_files(GLM_stats, RP)
@@ -120,20 +117,11 @@ function run_benchmarking(RP, Y, X)
                 % with everything and encapsulate 
                 
                 % Create parallel constants to avoid unnecessary duplication
-                STATS_const = parallel.pool.Constant(STATS);
-                GLM_stats_const = parallel.pool.Constant(GLM_stats);
-                GLM_const = parallel.pool.Constant(GLM);
-                RP_const = parallel.pool.Constant(RP);
-                
                 if ~RP.parallel
                     for i_rep = 1:RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
-                        [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS_const.Value, GLM_stats_const.Value, ...
-                            GLM_const.Value, RP_const.Value);
-                
-                        FWER = FWER + FWER_rep;
-                        FWER_neg = FWER_neg + FWER_neg_rep;
+                        [pvals_all_rep, pvals_all_neg_rep] = pf_repetition_loop(i_rep, STATS, ...
+                            GLM_stats{i_rep}, All_GLM{i_rep}, RP);
                 
                         pvals_all(:, i_rep) = pvals_all_rep;
                         pvals_all_neg(:, i_rep) = pvals_all_neg_rep;
@@ -141,23 +129,14 @@ function run_benchmarking(RP, Y, X)
                 else
                     parfor i_rep = 1:RP.n_repetitions
                         % Encapsulation of the most computationally intensive loop
-                        [FWER_rep, pvals_all_rep, FWER_neg_rep, pvals_all_neg_rep] = ...
-                        pf_repetition_loop(i_rep, STATS_const.Value, GLM_stats_const.Value, ...
-                            GLM_const.Value, RP_const.Value);
-                
-                        FWER = FWER + FWER_rep;
-                        FWER_neg = FWER_neg + FWER_neg_rep;
+                        [pvals_all_rep, pvals_all_neg_rep] =  pf_repetition_loop(i_rep, STATS, ...
+                            GLM_stats{i_rep}, All_GLM{i_rep}, RP);
+              
                 
                         pvals_all(:, i_rep) = pvals_all_rep;
                         pvals_all_neg(:, i_rep) = pvals_all_neg_rep;
                     end
                 end
-                
-                % Cleanup: Delete parallel constants to free memory
-                delete(STATS_const);
-                delete(GLM_stats_const);
-                delete(GLM_const);
-                delete(RP_const);
                 
                 % An NaN for network-level in the edge case
                 %if strcmp(RP.stat_level, 'edge')

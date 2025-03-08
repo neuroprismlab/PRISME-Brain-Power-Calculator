@@ -1,10 +1,10 @@
-function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP)
+function [pvals_rep, pvals_rep_neg] = pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP)
       
     % Select the edge statistics for this repetition
-    edge_stats_rep = GLM_stats.edge_stats_all(:, i_rep);
-    edge_stats_rep_neg = GLM_stats.edge_stats_all_neg(:, i_rep);
-    cluster_stats_rep = GLM_stats.cluster_stats_all(:, i_rep);
-    cluster_stats_rep_neg = GLM_stats.cluster_stats_all_neg(:, i_rep);
+    edge_stats_rep = GLM_stats.edge_stats';
+    edge_stats_rep_neg = GLM_stats.edge_stats_neg';
+    cluster_stats_rep = GLM_stats.cluster_stats';
+    cluster_stats_rep_neg = GLM_stats.cluster_stats_neg';
     
     % Load precomputed permutations
     if STATS.has_permutation
@@ -38,10 +38,6 @@ function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loo
                            'glm_parameters', GLM_stats.parameters, ...
                            'permuted_edge_data', -perm_data.permuted_data, ...
                            'permuted_network_data', -perm_data.permuted_network_data);
-   
-
-    % Check for significant findings for FWER
-    FWER_rep = any(pvals_rep(:) < STATS.alpha);
-    FWER_rep_neg = any(pvals_rep_neg(:) < STATS.alpha);
+  
 
 end

@@ -24,8 +24,7 @@ function create_gt_files(GLM_stats, RP)
 
 
     % Prepare data for saving
-    gt_data_edge = GLM_stats.edge_stats_all;
-    gt_data_network = GLM_stats.cluster_stats_all;
+    [gt_data_edge, ~, gt_data_network, ~] = extrac_cell_glm_stats(GLM_stats);
 
     brain_data = add_brain_data_to_repetition_data('edge_stats_all', gt_data_edge, ...
                                                     'cluster_stats_all', gt_data_network, ...
