@@ -1,4 +1,4 @@
-function [cluster_stat] = get_constrained_stats(test_stat,edge_groups)
+function [cluster_stat] = get_constrained_stats(test_stat, edge_groups)
 %GET_CONSTRAINED_STATS
 % Summarize stats by network defined by atlas
 % TODO: add option to do scaled by weight

@@ -14,7 +14,7 @@ function check_test_meta_data(meta_data, method)
             assert(meta_data.rep_parameters.observations == 40)
 
         case 't2'
-            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'t-test'))
+            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'ttest'))
             assert(meta_data.rep_parameters.observations == 80)
 
         case 'r' 

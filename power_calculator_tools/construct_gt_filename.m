@@ -4,13 +4,8 @@ function gt_filename = construct_gt_filename(meta_data)
     test_components = strjoin(meta_data.test_components, '_');
     test_type = meta_data.test;
     stat_type = meta_data.test_type;
-    omnibus_type = meta_data.omnibus;
-
-    % Handle missing omnibus type (convert NaN to 'nobus')
-    if isnan(omnibus_type)
-        omnibus_type = 'nobus';
-    end
-
+    omnibus_type = 'nobus';
+    
     % Determine the stat level based on stat type
     switch stat_type
         case 'Parametric_Bonferroni'

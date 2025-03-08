@@ -1,4 +1,4 @@
-function test_stat=NBSglm_smn(GLM)
+function test_stat = NBSglm_smn(GLM)
 %NBSglm  Fits a general linear model (GLM).
 %
 %   Test_Stat=NBSglm(GLM) operates on each GLM defined by the structure

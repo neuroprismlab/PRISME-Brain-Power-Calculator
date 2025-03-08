@@ -10,9 +10,13 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
+
+%% Force permutation precalculation
+Params.force_permute = false;
+Params.precompute_permutations = true;
 
 Params.gt_origin = 'power_calculator';
 
@@ -70,8 +74,8 @@ Params.all_omnibus_types = {'Multidimensional_cNBS'};
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = '20';
-Params.test_n_repetitions = 20;
+Params.test_n_perms = 10;
+Params.test_n_repetitions = 5;
 Params.test_n_workers = 8;
 
 end

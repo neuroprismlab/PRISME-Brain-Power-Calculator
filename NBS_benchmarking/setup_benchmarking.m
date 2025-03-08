@@ -21,24 +21,6 @@ if RepParams.testing
     RepParams.n_workers = RepParams.test_n_workers;
 end
 
-% Get the level - edge-level, network-level, or whole brain level
-RepParams.stat_level = set_statistic_level(RepParams.cluster_stat_type);
-
-%% Adjust NBS Method According to Stat Type
-% special setup for nonparametric FDR (part of classic NBS toolbox) and parametric FDR and Bonferroni (newly added here)  since can't run it using cluster_stat_type
-switch RepParams.cluster_stat_type
-
-    %case 'FDR'
-    %    RepParams.nbs_method = 'Run FDR';
-    case 'Parametric_Bonferroni'
-        RepParams.nbs_method = 'Run Parametric Edge-Level Correction';
-    case 'Parametric_FDR'
-        RepParams.nbs_method = 'Run Parametric Edge-Level Correction';
-    otherwise
-        RepParams.nbs_method = 'Run NBS';
-
-end
-
 %% Create Design Matrix
 RepParams.X_rep = create_design_matrix(RepParams.test_type, RepParams.n_subs_subset, ...
                                        'n_subs_1', RepParams.n_subs_subset_c1, ...
@@ -55,18 +37,20 @@ switch RepParams.test_type
 
     case 't'
         RepParams.observations = RepParams.n_subs_subset;
+        RepParams.nbs_test_stat = 'onesample';
 
     case 't2'
         RepParams.observations = RepParams.n_subs_subset_c1 + RepParams.n_subs_subset_c2;
+        RepParams.nbs_test_stat = 'ttest';
 
     case 'r'
         RepParams.observations = RepParams.n_subs_subset;
+        RepParams.nbs_test_stat = 'onesample';
 
     otherwise
         error('Test type not supported')
 
 end
-
 
 
 %% Assign params to structures
@@ -95,14 +79,15 @@ UI.test.ui = RepParams.nbs_test_stat; % alternatives are one-sample and F-test
 UI.perms.ui = RepParams.n_perms;
 UI.thresh.ui = RepParams.tthresh_first_level;
 UI.alpha.ui = RepParams.pthresh_second_level;
-UI.statistic_type.ui = RepParams.cluster_stat_type; 
+% UI.statistic_type.ui = RepParams.cluster_stat_type;
 UI.size.ui = RepParams.cluster_size_type;
-UI.omnibus_type.ui = RepParams.omnibus_type; 
+% UI.omnibus_type.ui = RepParams.omnibus_type; 
 UI.edge_groups.ui = RepParams.edge_groups;
 UI.use_preaveraged_constrained.ui = RepParams.edge_groups;
 UI.exchange.ui = RepParams.nbs_exchange;
 UI.mask.ui = RepParams.mask;
 % UI.do_Constrained_FWER_second_level.ui=do_Constrained_FWER_second_level;
+UI.test_stat.ui = RepParams.test_type;
 
 % Ground truth calculations do not require p-values
 UI.ground_truth = RepParams.ground_truth;
