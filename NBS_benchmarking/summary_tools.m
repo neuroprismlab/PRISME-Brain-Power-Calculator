@@ -217,23 +217,36 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
         case 'whole_brain'
             % the Cohen's d-coefficient threshold doesn't directly translate to this multivariate effect size - 
             % treating all nonzero as non-null
-            ids_pos_vec = gt_data.brain_data > 0;
-            ids_neg_vec = gt_data.brain_data < 0;
-            ids_zero_vec = 0;
-            ids_pos = 1;
-            ids_neg = 1;
-            ids_zero = nan;
+            pos_effect = any(gt_data.brain_data > 0);
+            neg_effect = any(gt_data.brain_data < 0);
+            
             
     end
 
     % calculate TPR
     true_positives=zeros(size(gt_data.brain_data));
     if contains(stat_gt_level_str,'edge')
+
         true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
         true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg_vec);
-    else
+
+    elseif contains(stat_gt_level_str,'network')
+
         true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos);
         true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg);
+
+    else contains(stat_gt_level_str,'whole_brain')
+
+        true_positives = 0;
+        if pos_effect
+            true_positives = true_positives + PowerRes.positives_total;
+        end
+        if neg_effect
+            true_positives = true_positives + PowerRes.positives_total_neg;
+        end
+        %% Divide by two since repetitions are "doubled" here
+        true_positives = floor(true_positives/2);
+
     end
     PowerRes.tpr=true_positives*100/rep_data.meta_data.rep_parameters.n_repetitions;
     

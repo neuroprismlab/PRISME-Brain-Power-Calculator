@@ -18,7 +18,8 @@ function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loo
         end
         perm_data = load(perm_file, 'permuted_data', 'permuted_network_data');
     else 
-        perm_data = [];
+        perm_data.permuted_data = [];
+        perm_data.permuted_network_data = [];
     end
 
     
@@ -28,7 +29,7 @@ function [FWER_rep, pvals_rep, FWER_rep_neg,  pvals_rep_neg] = pf_repetition_loo
                            'edge_stats', edge_stats_rep, 'network_stats', cluster_stats_rep, ...
                            'glm_parameters', GLM_stats.parameters, ...
                            'permuted_edge_data', perm_data.permuted_data, ...
-                           'permuted_network_data', -perm_data.permuted_network_data);
+                           'permuted_network_data', perm_data.permuted_network_data);
     
     % Negative effect pvalues
     pvals_rep_neg = run_method(STATS.statistic_type, 'statistical_parameters', STATS, ...

@@ -10,8 +10,7 @@ function result = run_method(method_name, varargin)
     end
 
     % Call the method dynamically
-    func_handle = str2func(method_name);
-    result = func_handle(varargin{:});
-
+    method_instance = feval(method_name);
+    result = method_instance.run_method(varargin{:});
 
 end

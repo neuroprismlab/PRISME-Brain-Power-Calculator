@@ -82,35 +82,26 @@ function run_benchmarking(RP, Y, X)
     
                 FWER = 0;
                 FWER_neg = 0;
-
-                    
-
-                if contains(RP.cluster_stat_type,'Constrained') || strcmp(RP.cluster_stat_type,'SEA')
-                  
-                    pvals_all=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
-                    pvals_all_neg=zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions); 
-        
-                elseif strcmp(RP.cluster_stat_type,'Omnibus')
-        
-                    if strcmp(RP.omnibus_type,'Multidimensional_cNBS')
-                        n_nulls = length(unique(UI.edge_groups.ui))-1;
-                    else
-                        n_nulls = 1;
-                    end
-       
-                    pvals_all=zeros(1, RP.n_repetitions);
-                    pvals_all_neg=zeros(1, RP.n_repetitions);
-        
-                elseif contains(RP.cluster_stat_type,'Parametric')
-        
-                    pvals_all=zeros(RP.n_nodes*(RP.n_nodes - 1)/2, RP.n_repetitions);
-                    pvals_all_neg=zeros(RP.n_nodes*(RP.n_nodes - 1)/2, RP.n_repetitions); 
-        
-                else
-                       
-                    pvals_all=zeros(RP.n_var, RP.n_repetitions);
-                    pvals_all_neg=zeros(RP.n_var, RP.n_repetitions);
-        
+               
+                % Instantiate method class dynamically
+                method_instance = feval(RP.cluster_stat_type);
+                
+                % Determine level from method instance
+                switch method_instance.level
+                    case "whole_brain"
+                        pvals_all = zeros(1, RP.n_repetitions);
+                        pvals_all_neg = zeros(1, RP.n_repetitions);
+                
+                    case "network_level"
+                        pvals_all = zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
+                        pvals_all_neg = zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
+                
+                    case "edge_level"
+                        pvals_all = zeros(RP.n_var, RP.n_repetitions);
+                        pvals_all_neg = zeros(RP.n_var, RP.n_repetitions);
+                
+                    otherwise
+                        error("Unknown statistic level: %s", method_instance.level);
                 end
                 
                             
@@ -212,7 +203,6 @@ function run_benchmarking(RP, Y, X)
                                                  'testing_code', RP.testing, 'test_type', RP.cluster_stat_type, ...
                                                  'rep_parameters', RP, 'date', datetime("today"), ...
                                                  'run_time', run_time);
-                
 
                 fprintf('###### Saving results in %s ######### \n', output_dir)
                 save(output_dir, 'brain_data', 'meta_data');
