@@ -1,4 +1,4 @@
-function perm_data = generate_permutation_for_repetition(rep_number, GLM, RP, save_to_file)
+function perm_data = generate_permutation_for_repetition(GLM, RP)
     % generate_permutation_for_repetition
     % 
     % This function precomputes and saves permuted GLM data for a given repetition.
@@ -10,17 +10,6 @@ function perm_data = generate_permutation_for_repetition(rep_number, GLM, RP, sa
     %
     % Outputs:
     %   - Saves a file named 'permutation_X.mat' inside 'GLM_permutations' folder.
-    
-    % Define output directory
-    perm_folder = fullfile(pwd, 'GLM_permutations');
-    
-    % Create folder if it doesn't exist
-    if ~exist(perm_folder, 'dir')
-        mkdir(perm_folder);
-    end
-    
-    % Define output file path
-    perm_file = fullfile(perm_folder, sprintf('permutation_%d.mat', rep_number));
     
     % Generate permutations
 
@@ -41,12 +30,8 @@ function perm_data = generate_permutation_for_repetition(rep_number, GLM, RP, sa
         permuted_network_data(:, i) = network_stat;
     end
     
-     % Return as struct
+    % Return as struct
     perm_data.permuted_data = permuted_data;
     perm_data.permuted_network_data = permuted_network_data;
 
-    % Save permutations to file
-    if save_to_file
-        save(perm_file, 'permuted_data', 'permuted_network_data', '-v7.3'); % Use '-v7.3' for large data compatibility
-    end
 end

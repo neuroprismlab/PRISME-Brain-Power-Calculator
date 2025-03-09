@@ -27,16 +27,53 @@ function run_benchmarking(RP, Y, X)
         %% Prepare for GLM precomputation
         [UI, RP] = setup_benchmarking(RP);
         ids_sampled = draw_repetition_ids(RP);
+        
+        existing_repetitions = check_calculation_status(RP);
+        
+        % define get_X_rep to avoid unecessary variable copying
+        % 
+        if strcmp(RP.test_type, 'r')
+            get_X_rep = @(rep_sub_ids) X(rep_sub_ids, :);
+        else
+            get_X_rep = @(~) RP.X_rep; % Ignoring input since we don't use rep_sub_ids
+        end
+
+
+        for i_rep = 1:RP.n_repetitions       
+         
+            [GLM_stats, GLM, STATS, perm_data] = ...
+                glm_and_perm_computation(get_X_rep(rep_sub_ids), Y(:, rep_sub_ids), RP, UI, ...
+                                         is_permutation_based);
+            
+            for stat_id=1:length(RP.all_cluster_stat_types)
+                RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
+                
+                STATS.statistic_type = RP.cluster_stat_type;
+                STATS.omnibus_type = RP.omnibus_type;
+                
+                pvals = pf_repetition_loop(i_rep, STATS, GLM_stats, GLM, RP);
+            
+            end
+            error('One more arch change lol')
+
+        end
+        
+        %% BELOW HERE - OLD CODE
+
+        %% CAREFUL DON ERASE BELOW HERE
+        %% I REALLY HATE THIS
+
         [GLM_stats, STATS, All_GLM] = precompute_glm_data(X, Y, RP, UI, ids_sampled);
 
         %% Get some of the statical result data
         [edge_stats_all, edge_stats_all_neg, cluster_stats_all, cluster_stats_all_neg] = ...
-            extrac_cell_glm_stats(GLM_stats);
+        extrac_cell_glm_stats(GLM_stats)
 
         if RP.ground_truth
             create_gt_files(GLM_stats, RP)
             continue;
         end
+
 
         for stat_id=1:length(RP.all_cluster_stat_types)
             RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
