@@ -31,64 +31,50 @@ function run_benchmarking(RP, Y, X)
             continue;
         end
 
-        fprintf('Computing %d repetitions...\n', num_pending);
+        fprintf('Computing %d repetitions...\n', num_pending); 
 
-      
         % Preallocate all_pvals structure before parfor
-        all_pvals = struct();
-        for stat_id = 1:length(RP.all_cluster_stat_types)
-            method_instance = feval(RP.all_cluster_stat_types{stat_id});  % Instantiate method
-            
-            % Get the required size based on method level
-            switch method_instance.level
-                case "whole_brain"
-                    all_pvals.(RP.all_cluster_stat_types{stat_id}) = zeros(1, num_pending);
-                
-                case "network"
-                    all_pvals.(RP.all_cluster_stat_types{stat_id}) = ...
-                        zeros(length(unique(UI.edge_groups.ui)) - 1, num_pending);
-                
-                case "edge"
-                    all_pvals.(RP.all_cluster_stat_types{stat_id}) = zeros(RP.n_var, num_pending);
-                
-                otherwise
-                    error("Unknown statistic level: %s", method_instance.level);
-            end
-        end
+        % Honestly, parfor is giving me such a headache - I had to do this
+        global all_pvals; 
+        initialize_global_pvals(RP, UI, num_pending);
 
         % **Loop through missing repetitions**
         RPc = parallel.pool.Constant(RP);
         if ~RP.parallel
 
             for rep_idx = 1:num_pending
+            
                 i_rep = pending_repetitions(rep_idx);
                 rep_sub_ids = ids_sampled(:, i_rep);
-    
+                
                 % Compute GLM and permutations
                 [GLM_stats, ~, STATS] = glm_and_perm_computation( ...
                     get_X_rep(rep_sub_ids), Y(:, rep_sub_ids), RPc.Value, UI, RPc.Value.is_permutation_based);
                 
-    
+                
                 % Compute p-values for each statistical method
-                for stat_id = 1:length(RP.all_cluster_stat_types)
+                for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
                     STATS.statistic_type = RPc.Value.all_cluster_stat_types{stat_id};
                     STATS.omnibus_type = RPc.Value.omnibus_type;
                     
-                    all_pvals.(RPc.Value.cluster_stat_type){rep_idx} = pf_repetition_loop(STATS, GLM_stats);
+                    pvals = pf_repetition_loop(STATS, GLM_stats);
+                    l_store_pvals(rep_idx, STATS.statistic_type, pvals);
                 end
                 
                 % **Save Every 25% of Repetitions**
-                save_every = ceil(RP.n_repetitions*RP.batch_save_fraction);
+                save_every = ceil(RPc.Value.n_repetitions*RPc.Value.batch_save_fraction);
                 if mod(rep_idx, save_every) == 0 || rep_idx == num_pending
                     fprintf('Saving progress at repetition %d/%d...\n', rep_idx, num_pending);
                     save_incremental_results(RP, all_pvals, GLM_stats.edge_stats', GLM_stats.cluster_stats', ...
                         pending_repetitions(1:rep_idx));
                 end
+
             end
         
         else
 
             parfor rep_idx = 1:num_pending
+
                 i_rep = pending_repetitions(rep_idx);
                 rep_sub_ids = ids_sampled(:, i_rep);
     
@@ -102,7 +88,8 @@ function run_benchmarking(RP, Y, X)
                     STATS.statistic_type = RPc.Value.all_cluster_stat_types{stat_id};
                     STATS.omnibus_type = RPc.Value.omnibus_type;
                     
-                    all_pvals.(RPc.Value.cluster_stat_type)(:, rep_idx) = pf_repetition_loop(STATS, GLM_stats);
+                    pvals = pf_repetition_loop(STATS, GLM_stats);
+                    l_store_pvals(rep_idx, STATS.statistic_type, pvals);
                 end
                 
                 % **Save Every 25% of Repetitions**
@@ -116,6 +103,11 @@ function run_benchmarking(RP, Y, X)
 
         end
 
-
     end
+  
+end
+
+function l_store_pvals(rep_idx, method_name, pvals_rep)
+    global all_pvals;
+    all_pvals.(method_name)(:, rep_idx) = pvals_rep; % Store p-values safely
 end

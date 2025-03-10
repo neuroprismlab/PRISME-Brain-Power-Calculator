@@ -78,7 +78,7 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 
 Params.testing = true;
 Params.test_n_perms = 10;
-Params.test_n_repetitions = 100;
+Params.test_n_repetitions = 30;
 Params.test_n_workers = 8;
 
 end
