@@ -7,7 +7,7 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
     subject_number_str = strcat('subs_', int2str(rep_subject_number));
    
     % If not omnibus, set it to none
-    if ~strcmp(RP.cluster_stat_type, 'Omnibus')
+    if ~strcmp(stat_type, 'Omnibus')
         omnibus_type = 'nobus';
     end
 

@@ -1,4 +1,4 @@
-function [GLM_stats, GLM, STATS, perm_data] = ...
+function [GLM_stats, GLM, STATS] = ...
     glm_and_perm_computation(X_rep, Y_rep, RP, UI, is_permutation_based)
 
     % Assign new parameters to UI
@@ -39,8 +39,8 @@ function [GLM_stats, GLM, STATS, perm_data] = ...
     GLM_stats.parameters.n_observations = GLM.n_observations;
     
     % Generate precomputed permutations if required
-    if is_permutation_based && RP.precompute_permutations
-        perm_data = generate_permutation_for_repetition(i_rep, GLM, RP, false);
+    if is_permutation_based
+        GLM_stats.perm_data = generate_permutation_for_repetition(GLM, RP);
     end
 
 end

@@ -18,6 +18,8 @@ Params.gt_data_dir = './power_calculator_results/ground_truth/';
 Params.force_permute = false;
 Params.precompute_permutations = false;
 
+Params.batch_save_fraction = 0.5;
+
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
@@ -76,7 +78,7 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 
 Params.testing = true;
 Params.test_n_perms = 10;
-Params.test_n_repetitions = 5;
+Params.test_n_repetitions = 100;
 Params.test_n_workers = 8;
 
 end

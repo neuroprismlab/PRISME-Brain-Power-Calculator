@@ -1,6 +1,7 @@
 classdef Constrained
     properties (Constant)
         level = "network";
+        permutation_based = true;
     end
     
     methods

@@ -19,7 +19,7 @@ function existing_repetitions = check_calculation_status(RP)
         if ~strcmp(RP.cluster_stat_type, 'Omnibus')
             omnibus_str = 'nobus';
         else
-            omnibus_str = RP.all_omnibus_types{1};
+            omnibus_str = RP.omnibus_type;
         end
 
         % Get the filename using create_and_check_rep_file

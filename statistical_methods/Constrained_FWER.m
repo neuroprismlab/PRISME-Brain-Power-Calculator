@@ -1,6 +1,7 @@
 classdef Constrained_FWER
     properties (Constant)
         level = "network";
+        permutation_based = true;
     end
 
 
