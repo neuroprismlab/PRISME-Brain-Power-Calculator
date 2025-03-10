@@ -38,6 +38,12 @@ function run_benchmarking(RP, Y, X)
         global all_pvals; 
         initialize_global_pvals(RP, UI, num_pending);
 
+        % Preallocate edge and cluster statistics storage
+        global edge_stats_all;
+        global cluster_stats_all;
+        edge_stats_all = zeros(RP.n_var, num_pending); 
+        cluster_stats_all = zeros(length(unique(RP.edge_groups)) - 1, num_pending); 
+
         % **Loop through missing repetitions**
         RPc = parallel.pool.Constant(RP);
         if ~RP.parallel
@@ -51,6 +57,8 @@ function run_benchmarking(RP, Y, X)
                 [GLM_stats, ~, STATS] = glm_and_perm_computation( ...
                     get_X_rep(rep_sub_ids), Y(:, rep_sub_ids), RPc.Value, UI, RPc.Value.is_permutation_based);
                 
+                % Store computed edge and cluster statistics
+                l_store_stats(rep_idx, GLM_stats.edge_stats', GLM_stats.cluster_stats');
                 
                 % Compute p-values for each statistical method
                 for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
@@ -65,7 +73,7 @@ function run_benchmarking(RP, Y, X)
                 save_every = ceil(RPc.Value.n_repetitions*RPc.Value.batch_save_fraction);
                 if mod(rep_idx, save_every) == 0 || rep_idx == num_pending
                     fprintf('Saving progress at repetition %d/%d...\n', rep_idx, num_pending);
-                    save_incremental_results(RP, all_pvals, GLM_stats.edge_stats', GLM_stats.cluster_stats', ...
+                    save_incremental_results(RP, all_pvals,  edge_stats_all, cluster_stats_all, ...
                         pending_repetitions(1:rep_idx));
                 end
 
@@ -74,15 +82,17 @@ function run_benchmarking(RP, Y, X)
         else
 
             parfor rep_idx = 1:num_pending
-
+            
                 i_rep = pending_repetitions(rep_idx);
                 rep_sub_ids = ids_sampled(:, i_rep);
-    
+                
                 % Compute GLM and permutations
                 [GLM_stats, ~, STATS] = glm_and_perm_computation( ...
                     get_X_rep(rep_sub_ids), Y(:, rep_sub_ids), RPc.Value, UI, RPc.Value.is_permutation_based);
                 
-    
+                % Store computed edge and cluster statistics
+                l_store_stats(rep_idx, GLM_stats.edge_stats', GLM_stats.cluster_stats');
+                
                 % Compute p-values for each statistical method
                 for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
                     STATS.statistic_type = RPc.Value.all_cluster_stat_types{stat_id};
@@ -96,11 +106,11 @@ function run_benchmarking(RP, Y, X)
                 save_every = ceil(RPc.Value.n_repetitions*RPc.Value.batch_save_fraction);
                 if mod(rep_idx, save_every) == 0 || rep_idx == num_pending
                     fprintf('Saving progress at repetition %d/%d...\n', rep_idx, num_pending);
-                    save_incremental_results(RP, all_pvals, GLM_stats.edge_stats', GLM_stats.cluster_stats', ...
+                    save_incremental_results(RP, all_pvals,  edge_stats_all, cluster_stats_all, ...
                         pending_repetitions(1:rep_idx));
                 end
-            end
 
+            end
         end
 
     end
@@ -110,4 +120,12 @@ end
 function l_store_pvals(rep_idx, method_name, pvals_rep)
     global all_pvals;
     all_pvals.(method_name)(:, rep_idx) = pvals_rep; % Store p-values safely
+end
+
+% **Local function to store statistics safely**
+function l_store_stats(rep_idx, edge_stats, cluster_stats)
+    global edge_stats_all;
+    global cluster_stats_all;
+    edge_stats_all(:, rep_idx) = edge_stats;
+    cluster_stats_all(:, rep_idx) = cluster_stats;
 end

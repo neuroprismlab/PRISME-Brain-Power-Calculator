@@ -77,8 +77,8 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 30;
+Params.test_n_perms = 5;
+Params.test_n_repetitions = 4;
 Params.test_n_workers = 8;
 
 end
