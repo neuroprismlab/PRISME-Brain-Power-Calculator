@@ -1,15 +1,17 @@
-function save_incremental_results(RP, all_pvals, edge_stats_all, cluster_stats_all, completed_reps)
+function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
+    edge_stats_all, cluster_stats_all, reps_per_method)
+
     for stat_id = 1:length(RP.all_cluster_stat_types)
-        RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
+        method_name = RP.all_cluster_stat_types{stat_id};
         
         [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
-                                                            RP.test_type, RP.cluster_stat_type, ...
+                                                            RP.test_type, method_name, ...
                                                             RP.omnibus_type, RP.n_subs_subset, ...
                                                             RP.testing, RP.ground_truth);
 
-        output_dir_path = fileparts(output_dir);  % Extract directory path
+        output_dir_path = fileparts(output_dir);
         if ~exist(output_dir_path, 'dir')
-            mkdir(output_dir_path);  % Create directory if it doesn't exist
+            mkdir(output_dir_path);
         end
 
         if existence
@@ -22,7 +24,7 @@ function save_incremental_results(RP, all_pvals, edge_stats_all, cluster_stats_a
         end
 
         % **Ensure pvals_all is initialized correctly**
-        method_instance = feval(RP.cluster_stat_type);  % Instantiate the method
+        method_instance = feval(method_name);  % Instantiate the method
         
         switch method_instance.level
             case "whole_brain"
@@ -39,29 +41,42 @@ function save_incremental_results(RP, all_pvals, edge_stats_all, cluster_stats_a
         if ~isfield(brain_data, 'pvals_all') || isempty(brain_data.pvals_all)
             brain_data.pvals_all = nan(required_size);  % Preallocate with NaNs
         end
-
-        % **Store computed repetitions without overwriting previous ones**
-        for rep_idx = 1:length(completed_reps)
-            rep_id = completed_reps(rep_idx);
-            
-            % Store computed p-values
-            brain_data.pvals_all(:, rep_id) = all_pvals.(RP.cluster_stat_type)(:, rep_idx);
+        if ~isfield(brain_data, 'pvals_neg') || isempty(brain_data.pvals_neg)
+            brain_data.pvals_neg = nan(required_size);  % Preallocate with NaNs
         end
 
         % **Ensure edge and cluster statistics are properly stored as matrices**
         if ~isfield(brain_data, 'edge_stats_all') || isempty(brain_data.edge_stats_all)
-            brain_data.edge_stats_all = nan(size(edge_stats_all, 1), RP.n_repetitions);  % Preallocate as NaNs
+            brain_data.edge_stats_all = nan(size(edge_stats_all, 1), RP.n_repetitions);
         end
         if ~isfield(brain_data, 'cluster_stats_all') || isempty(brain_data.cluster_stats_all)
             brain_data.cluster_stats_all = nan(size(cluster_stats_all, 1), RP.n_repetitions);
         end
+        
+        % Ensure method-specific range
+        reps_to_save = 1:reps_per_method.(method_name); 
 
-        % Store edge and cluster statistics if available
-        if ~isempty(edge_stats_all)
-            brain_data.edge_stats_all(:, completed_reps) = edge_stats_all(:, completed_reps);
-        end
-        if ~isempty(cluster_stats_all)
-            brain_data.cluster_stats_all(:, completed_reps) = cluster_stats_all(:, completed_reps);
+        for i = reps_to_save
+            % Ensure rep_id does not exceed allocated space
+            if i > size(brain_data.pvals_all, 2)
+                continue;
+            end
+        
+            % Extract method-specific p-values from struct inside cell array
+            if isfield(all_pvals{i}, method_name)  % Ensure the field exists
+                brain_data.pvals_all(:, i) = all_pvals{i}.(method_name);  % Store p-values
+            end
+            if isfield(all_pvals_neg{i}, method_name)  % Ensure the field exists for negative values
+                brain_data.pvals_neg(:, i) = all_pvals_neg{i}.(method_name);
+            end
+        
+            % Store edge and cluster statistics if they exist
+            if i <= length(edge_stats_all) && ~isempty(edge_stats_all{i})
+                brain_data.edge_stats_all(:, i) = edge_stats_all{i};
+            end
+            if i <= length(cluster_stats_all) && ~isempty(cluster_stats_all{i})
+                brain_data.cluster_stats_all(:, i) = cluster_stats_all{i};
+            end
         end
 
         % **Update metadata**
@@ -78,6 +93,7 @@ function save_incremental_results(RP, all_pvals, edge_stats_all, cluster_stats_a
 
         % **Save updated file**
         save(output_dir, 'brain_data', 'meta_data');
-        fprintf('Saved %d repetitions for %s to %s\n', length(completed_reps), RP.cluster_stat_type, output_dir);
+        fprintf('Saved file %s', output_dir);
     end
+    
 end

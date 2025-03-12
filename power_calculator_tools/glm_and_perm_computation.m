@@ -1,4 +1,4 @@
-function [GLM_stats, GLM, STATS, edge_stats_pos, cluster_stat_pos] = ...
+function [GLM_stats, GLM, STATS] = ...
     glm_and_perm_computation(X_rep, Y_rep, RP, UI, is_permutation_based)
 
     % Assign new parameters to UI
@@ -15,21 +15,20 @@ function [GLM_stats, GLM, STATS, edge_stats_pos, cluster_stat_pos] = ...
     
     % Find GLM and edge_stats
     GLM = NBSglm_setup_smn(nbs.GLM);
-    edge_stats_pos = NBSglm_smn(GLM);
-    
-    % Compute negative contrast directly from the positive
-    edge_stats_neg = -edge_stats_pos;
+    edge_stats = NBSglm_smn(GLM);
     
     % Compute network-based statistics
-    edge_stat_square = unflatten_matrix(edge_stats_pos, RP.mask);
-    cluster_stat_pos = get_network_average(edge_stat_square, RP.edge_groups);
+    edge_stat_square = unflatten_matrix(edge_stats, RP.mask);
+    cluster_stat = get_network_average(edge_stat_square, RP.edge_groups);
+    
+    % Transpose 
+    edge_stats = edge_stats';
+    cluster_stat = cluster_stat';
     
     % Store results in struct
     GLM_stats = struct();
-    GLM_stats.edge_stats = edge_stats_pos;
-    GLM_stats.edge_stats_neg = edge_stats_neg;
-    GLM_stats.cluster_stats = cluster_stat_pos;
-    GLM_stats.cluster_stats_neg = -cluster_stat_pos;
+    GLM_stats.edge_stats = edge_stats;
+    GLM_stats.cluster_stats = cluster_stat;
 
     GLM_stats.parameters.contrast = GLM.contrast;
     GLM_stats.parameters.test = GLM.test;

@@ -10,8 +10,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 %% Force permutation precalculation
@@ -48,8 +48,8 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 8; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 
 %% List of subjects per subset
@@ -79,6 +79,6 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 Params.testing = true;
 Params.test_n_perms = 5;
 Params.test_n_repetitions = 4;
-Params.test_n_workers = 8;
+Params.test_n_workers = 3;
 
 end

@@ -22,7 +22,7 @@ classdef Constrained
             % Extract relevant inputs
             STATS = params.statistical_parameters;
             edge_stats = params.edge_stats;
-            permuted_edge_stats = params.permuted_edge_data;  % Precomputed permutation data
+            permuted_edge_stats = params.permuted_edge_data; % Precomputed permutation data
         
             % Ensure permutation data is available
             if isempty(permuted_edge_stats)
