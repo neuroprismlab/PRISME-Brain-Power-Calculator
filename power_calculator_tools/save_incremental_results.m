@@ -1,5 +1,5 @@
 function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
-    edge_stats_all, cluster_stats_all, reps_per_method)
+    edge_stats_all, cluster_stats_all, current_batch)
 
     for stat_id = 1:length(RP.all_cluster_stat_types)
         method_name = RP.all_cluster_stat_types{stat_id};
@@ -38,15 +38,13 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
                 error("Unknown statistic level: %s", method_instance.level);
         end
 
-        % **Initialize pvals_all if it doesn't exist**
+        % **Initialize fields in brain_data if they don't exist**
         if ~isfield(brain_data, 'pvals_all') || isempty(brain_data.pvals_all)
             brain_data.pvals_all = nan(required_size);  % Preallocate with NaNs
         end
         if ~isfield(brain_data, 'pvals_neg') || isempty(brain_data.pvals_neg)
             brain_data.pvals_neg = nan(required_size);  % Preallocate with NaNs
         end
-
-        % **Ensure edge and cluster statistics are properly stored as matrices**
         if ~isfield(brain_data, 'edge_stats_all') || isempty(brain_data.edge_stats_all)
             brain_data.edge_stats_all = nan(RP.n_var, RP.n_repetitions);
         end
@@ -54,30 +52,28 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
             brain_data.cluster_stats_all = nan(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
         end
         
-        % Ensure method-specific range
-        reps_to_save = 1:reps_per_method.(method_name); 
+        % **Only save repetitions that are newly computed**
+        existing_reps = RP.existing_repetitions.(method_name);
+        reps_to_save = current_batch(cellfun(@(x) x > existing_reps, current_batch)); 
 
-        for i = reps_to_save
-            % Ensure rep_id does not exceed allocated space
-            if i > size(brain_data.pvals_all, 2)
-                continue;
-            end
-        
+        if isempty(reps_to_save)
+            continue; % Nothing to save for this method
+        end
+
+        for i_cell = 1:numel(reps_to_save)
+            i = reps_to_save{i_cell};
+            j = find(cellfun(@(x) isequal(x, i), current_batch));
+
             % Extract method-specific p-values from struct inside cell array
-            if isfield(all_pvals{i}, method_name)  % Ensure the field exists
-                brain_data.pvals_all(:, i) = all_pvals{i}.(method_name);  % Store p-values
+            if isfield(all_pvals{j}, method_name)  % Ensure the field exists
+                brain_data.pvals_all(:, i) = all_pvals{j}.(method_name);  % Store p-values
             end
-            if isfield(all_pvals_neg{i}, method_name)  % Ensure the field exists for negative values
-                brain_data.pvals_neg(:, i) = all_pvals_neg{i}.(method_name);
+            if isfield(all_pvals_neg{j}, method_name)  % Ensure the field exists for negative values
+                brain_data.pvals_neg(:, i) = all_pvals_neg{j}.(method_name);
             end
-        
-            % Store edge and cluster statistics if they exist
-            if i <= length(edge_stats_all) && ~isempty(edge_stats_all{i})
-                brain_data.edge_stats_all(:, i) = edge_stats_all{i};
-            end
-            if i <= length(cluster_stats_all) && ~isempty(cluster_stats_all{i})
-                brain_data.cluster_stats_all(:, i) = cluster_stats_all{i};
-            end
+          
+            brain_data.edge_stats_all(:, i) = edge_stats_all{j};
+            brain_data.cluster_stats_all(:, i) = cluster_stats_all{j};
         end
 
         % **Update metadata**
@@ -94,7 +90,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
         % **Save updated file**
         save(output_dir, 'brain_data', 'meta_data');
-        fprintf('Saved file %s\n', output_dir);
+        
     end
     
 end

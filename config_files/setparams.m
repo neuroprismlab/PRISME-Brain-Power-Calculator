@@ -14,12 +14,6 @@ Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 % Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
-%% Force permutation precalculation
-Params.force_permute = false;
-Params.precompute_permutations = false;
-
-Params.batch_save_fraction = 0.5;
-
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
@@ -48,9 +42,10 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 3; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
+Params.batch_size = 30;
 
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
@@ -61,11 +56,12 @@ Params.nbs_method = 'Run NBS';       % 'Run NBS' (all procedures except edge-lev
 % not needed anymore
 % Params.nbs_test_stat = 't-test';     % 't-test' | 'one-sample' | 'F-test'
                             % Current model (see above design matrix) only designed for t-test
+Params.force_permute = false;               
 Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
 Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF=10-1000)
                             % Only used if cluster_stat_type='Size'
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
-Params.all_cluster_stat_types = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE', ...
+Params.all_cluster_stat_types = {'Parametric_Bonferroni' 'Parametric_FDR', 'Size', 'TFCE', ...
     'Constrained', 'Constrained_FWER', 'Omnibus'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
@@ -77,8 +73,8 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = false;
-Params.test_n_perms = 5;
-Params.test_n_repetitions = 4;
-Params.test_n_workers = 3;
+Params.test_n_perms = 2;
+Params.test_n_repetitions = 50;
+Params.test_n_workers = 2;
 
 end

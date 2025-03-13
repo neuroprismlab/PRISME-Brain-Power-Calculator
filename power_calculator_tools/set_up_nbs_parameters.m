@@ -318,31 +318,8 @@ function [msg,stop]=errorcheck(UI,DIMS,S)
         return;
     end
     stop=0;
-    
-    msg=[{sprintf('Nodes: %d',DIMS.nodes)};...
-             {sprintf('Observations: %d',DIMS.observations)};...
-             {sprintf('Predictors: %d',DIMS.predictors)}]; 
-    
-    %Optional, but mandatory for NBSview
-    if ~UI.node_coor.ok
-        msg=[msg;{'Node Coordinates: No'}];
-        try set(S.DATA.node_coor.text,'ForegroundColor','red');
-        catch; end
-    end
-    
-    %Optional
-    if ~UI.exchange.ok
-        msg=[msg;{'Exchange Blocks: No'}];
-        try set(S.ADV.exchange.text,'ForegroundColor','red');
-        catch; end
-    else
-        msg=[msg;{'Exchange Blocks: Yes'}];
-    end
-    if ~UI.node_label.ok
-        msg=[msg;{'Node Labels: No'}];
-        try set(S.DATA.node_label.text,'ForegroundColor','red');
-        catch; end
-    end
+
+    msg = [];
     
     % SMN: todo: add report of statistic type and size type
 end
