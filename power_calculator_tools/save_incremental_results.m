@@ -3,6 +3,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
     for stat_id = 1:length(RP.all_cluster_stat_types)
         method_name = RP.all_cluster_stat_types{stat_id};
+        RP.cluster_stat_type = method_name;
         
         [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
                                                             RP.test_type, method_name, ...
@@ -47,10 +48,10 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
         % **Ensure edge and cluster statistics are properly stored as matrices**
         if ~isfield(brain_data, 'edge_stats_all') || isempty(brain_data.edge_stats_all)
-            brain_data.edge_stats_all = nan(size(edge_stats_all, 1), RP.n_repetitions);
+            brain_data.edge_stats_all = nan(RP.n_var, RP.n_repetitions);
         end
         if ~isfield(brain_data, 'cluster_stats_all') || isempty(brain_data.cluster_stats_all)
-            brain_data.cluster_stats_all = nan(size(cluster_stats_all, 1), RP.n_repetitions);
+            brain_data.cluster_stats_all = nan(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
         end
         
         % Ensure method-specific range
@@ -93,7 +94,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
         % **Save updated file**
         save(output_dir, 'brain_data', 'meta_data');
-        fprintf('Saved file %s', output_dir);
+        fprintf('Saved file %s\n', output_dir);
     end
     
 end

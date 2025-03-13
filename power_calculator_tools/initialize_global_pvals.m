@@ -1,4 +1,4 @@
-function all_pvals = initialize_global_pvals(RP, UI, max_rep_pending)
+function all_pvals = initialize_global_pvals(RP, max_rep_pending)
     % Preallocate a cell array for each repetition
     all_pvals = cell(1, max_rep_pending);
 
@@ -16,7 +16,7 @@ function all_pvals = initialize_global_pvals(RP, UI, max_rep_pending)
                 case "whole_brain"
                     method_struct.(method_name) = zeros(1, RP.n_repetitions);
                 case "network"
-                    method_struct.(method_name) = zeros(length(unique(UI.edge_groups.ui)) - 1, RP.n_repetitions);
+                    method_struct.(method_name) = zeros(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
                 case "edge"
                     method_struct.(method_name) = zeros(RP.n_var, RP.n_repetitions);
                 otherwise

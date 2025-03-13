@@ -48,8 +48,8 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 8; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = false; % run stuff sequentially or in parallel
+Params.n_workers = 3; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 
 %% List of subjects per subset
@@ -76,7 +76,7 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = 5;
 Params.test_n_repetitions = 4;
 Params.test_n_workers = 3;

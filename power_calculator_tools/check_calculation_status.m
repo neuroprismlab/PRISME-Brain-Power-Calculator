@@ -37,7 +37,9 @@ function existing_repetitions = check_calculation_status(RP)
                 
                 % Check how many repetitions exist
                 if isfield(loaded_data, 'brain_data') && isfield(loaded_data.brain_data, 'pvals_all')
-                    existing_repetitions.(RP.cluster_stat_type) = size(loaded_data.brain_data.pvals_all, 2);
+                    % Count only columns that contain at least one non-NaN value
+                    valid_reps = sum(any(~isnan(loaded_data.brain_data.pvals_all), 1));
+                    existing_repetitions.(RP.cluster_stat_type) = valid_reps;
                 else
                     existing_repetitions.(RP.cluster_stat_type) = 0; % File exists but no repetitions found
                 end

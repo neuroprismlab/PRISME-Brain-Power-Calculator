@@ -17,7 +17,9 @@ function run_parallel = setup_parallel_workers(flag, worker_number)
     end
 
     if flag
-        % Get the local parallel cluster
+        % **Ensure Any Existing Parallel Pool is Closed**
+        delete(gcp('nocreate')); % Closes any open parallel pool
+
         c = parcluster('local'); 
         
         % Limit workers to the maximum available
