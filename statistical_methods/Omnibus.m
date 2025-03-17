@@ -24,6 +24,8 @@ classdef Omnibus
             STATS = params.statistical_parameters;
             edge_stats = params.edge_stats;
             permuted_edge_stats = params.permuted_edge_data;  % Precomputed permutation data
+            network_stats = params.network_stats;
+            permuted_network_stats = params.permuted_network_data;
         
             % Ensure permutation data is available
             if isempty(permuted_edge_stats)
@@ -33,7 +35,7 @@ classdef Omnibus
             % Select appropriate Omnibus method
             switch STATS.omnibus_type
                 case 'Multidimensional_cNBS'
-                    pval = Multidimensional_cNBS(STATS, edge_stats, permuted_edge_stats);
+                    pval = Multidimensional_cNBS(network_stats, permuted_network_stats);
                 case 'Threshold_Positive'
                     pval = Threshold_Omnibus(STATS, edge_stats, permuted_edge_stats, 'positive');
                 case 'Threshold_Both_Dir'
