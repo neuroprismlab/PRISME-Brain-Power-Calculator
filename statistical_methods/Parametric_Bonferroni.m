@@ -1,6 +1,7 @@
 classdef Parametric_Bonferroni
     properties (Constant)
         level = "edge";
+        permutation_based = false;
     end
 
     methods

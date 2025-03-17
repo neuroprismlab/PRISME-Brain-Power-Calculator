@@ -133,9 +133,9 @@ function PowerRes = calculate_positives(rep_data)
       
       %% Get Params and Variables
       edge_stats_all = rep_data.brain_data.edge_stats_all;
-      edge_stats_all_neg = rep_data.brain_data.edge_stats_all_neg;
+      edge_stats_all_neg = -rep_data.brain_data.edge_stats_all;
       cluster_stats_all = rep_data.brain_data.cluster_stats_all;
-      cluster_stats_all_neg = rep_data.brain_data.cluster_stats_all_neg;
+      cluster_stats_all_neg = -rep_data.brain_data.cluster_stats_all;
 
       % get alpha - a little diferent
       if isstring(rep_data.meta_data.rep_parameters.pthresh_second_level)

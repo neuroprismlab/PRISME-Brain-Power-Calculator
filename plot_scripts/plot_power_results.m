@@ -1,8 +1,12 @@
 function plot_power_results(dataset_or_directory)
     % If input is a dataset name, construct the expected directory path
-    base_dir = './power_calculator_results/power_calculation/';
+    script_dir = fileparts(mfilename('fullpath'));
+    base_dir = fileparts(script_dir); % Go one level up
+    power_calculator_data = '/power_calculator_results/power_calculation/';
+    base_dir = fullfile(base_dir, power_calculator_data);
 
-    if isfolder(fullfile(base_dir, dataset_or_directory))
+    full_dir = fullfile(base_dir, dataset_or_directory);
+    if isfolder(full_dir)
         data_dir = fullfile(base_dir, dataset_or_directory);
     elseif isfolder(dataset_or_directory)
         data_dir = dataset_or_directory; % Assume full directory path is given

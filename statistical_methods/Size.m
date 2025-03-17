@@ -1,6 +1,7 @@
 classdef Size
     properties (Constant)
         level = "edge";
+        permutation_based = true;
     end
 
     methods

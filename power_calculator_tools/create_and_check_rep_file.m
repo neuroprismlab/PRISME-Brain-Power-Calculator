@@ -6,41 +6,22 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
     %% Preprocess inputs
     subject_number_str = strcat('subs_', int2str(rep_subject_number));
    
-    % Process nobus if there is none
-    if isnan(omnibus_type)
+    % If not omnibus, set it to none
+    if ~strcmp(stat_type, 'Omnibus')
         omnibus_type = 'nobus';
     end
 
     %% Make file name
-    rep_file_name = sprintf('%s-%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                            stat_type, omnibus_type, subject_number_str);
-
-
-    if ground_truth
-        
-        switch stat_type
-
-            case 'Parametric_Bonferroni'
-                stat_level = 'edge';
-
-            case 'Constrained'
-                stat_level = 'network';
-
-            case 'Omnibus'
-                stat_level = 'whole_brain';
-
-            otherwise
-                error('Stat type not necessary for gt calculation')
-            
-        end
-        
-        
-        rep_file_name = sprintf('gt_%s_%s_%s_%s_%s', data_set_name, test_components, test_type, ...
-                                 stat_level, omnibus_type);
+    if ~strcmp(stat_type, 'Ground_Truth')
+        rep_file_name = sprintf('%s-%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                                stat_type, omnibus_type, subject_number_str);
+    else
+        rep_file_name = sprintf('%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                            stat_type, omnibus_type);
     end
 
     if testing == 1
-        rep_file_name = strcat(rep_file_name, '_test.mat');
+        rep_file_name = strcat(rep_file_name, '-test.mat');
     else
         rep_file_name = strcat(rep_file_name, '.mat');
     end

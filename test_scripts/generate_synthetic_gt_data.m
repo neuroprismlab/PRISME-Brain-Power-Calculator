@@ -40,39 +40,27 @@ function generate_synthetic_gt_data()
     brain_data.edge_stats_all(split_25_edges+1:split_50_edges) = ...
         -abs(randn(split_50_edges - split_25_edges, 1)) - 1e-5;
 
+    % ----- Network-Level Ground Truth -----
+    brain_data.cluster_stats_all = zeros(num_networks, 1);
+    brain_data.cluster_stats_all_neg = zeros(num_networks, 1);
+
+     % ----- Network-Level GT Fix -----
+     % Assign 25% of networks as positive true positives
+    brain_data.cluster_stats_all(1:split_25_networks) = abs(randn(split_25_networks, 1)) + 1e-5;
+     % Assign next 25% of networks as negative true positives
+    brain_data.cluster_stats_all(split_25_networks+1:split_50_networks) = ...
+        -abs(randn(split_50_networks - split_25_networks, 1)) - 1e-5;
+
     % Set `edge_stats_all_neg` explicitly to match but with reversed sign
     brain_data.edge_stats_all_neg = -brain_data.edge_stats_all;
 
 
     % Update meta_data for edge-level test
-    meta_data.test_type = 'Parametric_Bonferroni'; % Edge-level method
+    meta_data.test_type = 'Ground_Truth'; % Edge-level method
 
     % Save edge-level ground truth
     filename_edge = name_file_from_meta_data(meta_data, true);
     full_file = ['./power_calculator_results/ground_truth/syn_power/', filename_edge];
-    save(full_file, 'brain_data', 'meta_data');
-    
-    % ----- Network-Level Ground Truth -----
-    brain_data = struct();
-    brain_data.cluster_stats_all = zeros(num_networks, 1);
-    brain_data.cluster_stats_all_neg = zeros(num_networks, 1);
-
-     % ----- Network-Level GT Fix -----
-    % Assign 25% of networks as positive true positives
-    brain_data.cluster_stats_all(1:split_25_networks) = abs(randn(split_25_networks, 1)) + 1e-5;
-    % Assign next 25% of networks as negative true positives
-    brain_data.cluster_stats_all(split_25_networks+1:split_50_networks) = ...
-        -abs(randn(split_50_networks - split_25_networks, 1)) - 1e-5;
-
-    % Set `cluster_stats_all_neg` explicitly to match but with reversed sign
-    brain_data.cluster_stats_all_neg = -brain_data.cluster_stats_all;
-
-    % Update meta_data for network-level test
-    meta_data.test_type = 'Constrained'; % Network-level method
-
-    % Save network-level ground truth
-    filename_network = name_file_from_meta_data(meta_data, true);
-    full_file = ['./power_calculator_results/ground_truth/syn_power/', filename_network];
     save(full_file, 'brain_data', 'meta_data');
 
 end

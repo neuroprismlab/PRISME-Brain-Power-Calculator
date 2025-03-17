@@ -1,6 +1,7 @@
 classdef Parametric_FDR
     properties (Constant)
         level = "edge";
+        permutation_based = false;
     end
 
     methods

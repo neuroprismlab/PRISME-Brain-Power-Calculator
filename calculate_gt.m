@@ -28,6 +28,7 @@ addpath(genpath(current_path));
 %% Prepare parameters and dataset
 Params = setparams();
 Params.ground_truth = true;
+Params.parallel = false;
 
 %% Load data
 if ~exist('Dataset', 'var')

@@ -1,6 +1,7 @@
 classdef Omnibus
     properties (Constant)
         level = "whole_brain";
+        permutation_based = true;
     end
     
     methods

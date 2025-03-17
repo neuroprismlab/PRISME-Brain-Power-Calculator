@@ -52,6 +52,8 @@ switch RepParams.test_type
 
 end
 
+%% Check if there is a permutation_based method
+RepParams.is_permutation_based = check_if_permutation_method(RepParams);
 
 %% Assign params to structures
 % Goal: should be able to run config file, load rep_params and UI from reference, and replicate reference results

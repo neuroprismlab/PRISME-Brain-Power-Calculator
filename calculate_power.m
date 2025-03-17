@@ -34,12 +34,11 @@ for i = 1:length(rep_files)
     if isfield(rep_data, 'meta_data') && isfield(rep_data.meta_data, 'test_components')
         gt_filename = construct_gt_filename(rep_data.meta_data);
         gt_file_path = [Params.gt_data_dir, Params.data_set, '/', gt_filename];
-        
-        % Load only the necessary GT data
+
         if exist(gt_file_path, 'file')
             gt_data = load(gt_file_path);
         else
-            warning('GT file %s not found. Skipping...', gt_filename);
+            fprintf('GT file %s not found. Skipping...\n', gt_filename);
             continue;
         end
         
