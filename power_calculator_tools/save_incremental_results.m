@@ -42,8 +42,8 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         if ~isfield(brain_data, 'pvals_all') || isempty(brain_data.pvals_all)
             brain_data.pvals_all = nan(required_size);  % Preallocate with NaNs
         end
-        if ~isfield(brain_data, 'pvals_neg') || isempty(brain_data.pvals_neg)
-            brain_data.pvals_neg = nan(required_size);  % Preallocate with NaNs
+        if ~isfield(brain_data, 'pvals_all_neg') || isempty(brain_data.pvals_all_neg)
+            brain_data.pvals_all_neg = nan(required_size);  % Preallocate with NaNs
         end
         if ~isfield(brain_data, 'edge_stats_all') || isempty(brain_data.edge_stats_all)
             brain_data.edge_stats_all = nan(RP.n_var, RP.n_repetitions);
@@ -69,7 +69,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
                 brain_data.pvals_all(:, i) = all_pvals{j}.(method_name);  % Store p-values
             end
             if isfield(all_pvals_neg{j}, method_name)  % Ensure the field exists for negative values
-                brain_data.pvals_neg(:, i) = all_pvals_neg{j}.(method_name);
+                brain_data.pvals_all_neg(:, i) = all_pvals_neg{j}.(method_name);
             end
           
             brain_data.edge_stats_all(:, i) = edge_stats_all{j};

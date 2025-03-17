@@ -6,12 +6,12 @@ function gt_filename = construct_gt_filename(meta_data)
     omnibus_type = 'nobus';   
 
     % Construct the GT filename
-    gt_filename = sprintf('%s_%s_%s_%s_%s', ...
+    gt_filename = sprintf('%s-%s-%s-%s-%s', ...
                           data_set_name, test_components, ...
                           test_type, 'Ground_Truth', omnibus_type);
 
     if meta_data.testing_code 
-        gt_filename = strcat(gt_filename, '_test.mat');
+        gt_filename = strcat(gt_filename, '-test.mat');
     else
         gt_filename = strcat(gt_filename, '.mat');
     end

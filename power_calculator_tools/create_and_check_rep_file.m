@@ -12,11 +12,16 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
     end
 
     %% Make file name
-    rep_file_name = sprintf('%s-%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                            stat_type, omnibus_type, subject_number_str);
+    if ~strcmp(stat_type, 'Ground_Truth')
+        rep_file_name = sprintf('%s-%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                                stat_type, omnibus_type, subject_number_str);
+    else
+        rep_file_name = sprintf('%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                            stat_type, omnibus_type);
+    end
 
     if testing == 1
-        rep_file_name = strcat(rep_file_name, '_test.mat');
+        rep_file_name = strcat(rep_file_name, '-test.mat');
     else
         rep_file_name = strcat(rep_file_name, '.mat');
     end
