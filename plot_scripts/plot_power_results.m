@@ -1,7 +1,7 @@
 function plot_power_results(dataset_or_directory)
     % If input is a dataset name, construct the expected directory path
-    current_dir = pwd; % Get the current working directory
-    base_dir = fileparts(current_dir); % Go one level up
+    script_dir = fileparts(mfilename('fullpath'));
+    base_dir = fileparts(script_dir); % Go one level up
     power_calculator_data = '/power_calculator_results/power_calculation/';
     base_dir = fullfile(base_dir, power_calculator_data);
 
