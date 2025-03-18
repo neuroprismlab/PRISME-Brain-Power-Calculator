@@ -63,7 +63,7 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
 Params.all_cluster_stat_types = {'Parametric_Bonferroni' 'Parametric_FDR', 'Size', 'TFCE', ...
     'Constrained', 'Constrained_FWER', 'Omnibus'};
-Params.all_cluster_stat_types = {'Omnibus'};
+Params.all_cluster_stat_types = {'TFCE'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
@@ -74,7 +74,7 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 50;
+Params.test_n_perms = 10;
 Params.test_n_repetitions = 5;
 Params.test_n_workers = 2;
 

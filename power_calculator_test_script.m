@@ -38,6 +38,8 @@ edge_based_tests('test_r_fc.mat')
 
 network_based_tests('test_r_fc.mat')
 
+%% TODO - write Omnibus test scripts
+
 
 
 
