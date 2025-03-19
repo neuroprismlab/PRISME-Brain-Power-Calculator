@@ -1,4 +1,4 @@
-function [comps, comp_sizes] = get_components(adj,varargin)
+function [comps, comp_sizes] = get_components2(adj,varargin)
 %GET_COMPONENTS     connected components
 %
 %   [comps,comp_sizes] = get_components(adj);
