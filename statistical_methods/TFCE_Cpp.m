@@ -1,4 +1,4 @@
-classdef TFCE
+classdef TFCE_Cpp
     
     properties (Constant)
         level = "edge";
@@ -30,8 +30,8 @@ classdef TFCE
             % Convert the edge statistics back into a matrix
             test_stat_mat = unflatten_matrix(edge_stats, STATS.mask);
         
-            % Apply TFCE transformation to the observed test statistics
-            cluster_stats_target = matlab_tfce_transform(test_stat_mat, 'matrix');
+            % **Call the C++ MEX function instead of the MATLAB function**
+            cluster_stats_target = tfce_mex(test_stat_mat, 'matrix'); 
             cluster_stats_target = flat_matrix(cluster_stats_target, STATS.mask);
         
             % Ensure permutation data is provided
@@ -43,10 +43,10 @@ classdef TFCE
             K = size(permuted_edge_stats, 2);
             null_dist = zeros(K, 1);
         
-            % Apply TFCE transformation to each permutation
+            % Apply TFCE transformation to each permutation using the MEX function
             for i = 1:K
                 perm_stat_mat = unflatten_matrix(permuted_edge_stats(:, i), STATS.mask);
-                tfce_null = matlab_tfce_transform(perm_stat_mat, 'matrix');
+                tfce_null = tfce_mex(perm_stat_mat, 'matrix');  % **Using MEX**
                 null_dist(i) = max(tfce_null(:)); % Store max TFCE value for permutation
             end
         

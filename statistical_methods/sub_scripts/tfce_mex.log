@@ -1,0 +1,53 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=mex 2025.1.18)  18 MAR 2025 13:04
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**tfce_mex.cpp -largeArrayDims CXXFLAGS=$CXXFLAGS -std=c++11
+(./tfce_mex.cpp
+This is MeX  Version 1.05  18 XII 1993  (B. Jackowski & M. Ry\'cko)
+! You can't use `macro parameter character #' in vertical mode.
+l.1 #
+     include "mex.h"
+? 
+! Interruption.
+<to be read again> 
+                   i
+l.1 #i
+      nclude "mex.h"
+? 
+! You can't use `macro parameter character #' in horizontal mode.
+l.2 #
+     include <vector>
+? 
+! Interruption.
+<to be read again> 
+                   i
+l.2 #i
+      nclude <vector>
+? 
+! You can't use `macro parameter character #' in horizontal mode.
+l.3 #
+     include <queue>
+? 
+! Interruption.
+<to be read again> 
+                   i
+l.3 #i
+      nclude <queue>
+? 
+! You can't use `macro parameter character #' in horizontal mode.
+l.4 #
+     include <algorithm>
+? 
+! Interruption.
+<to be read again> 
+                   i
+l.4 #i
+      nclude <algorithm>
+? :q
+Type <return> to proceed, S to scroll future error messages,
+R to run without stopping, Q to run quietly,
+I to insert something, E to edit your file,
+H for help, X to quit.
+? X
+No pages of output.
