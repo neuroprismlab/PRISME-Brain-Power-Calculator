@@ -1,16 +1,12 @@
-function tfced = apply_tfce(img, varargin)
+function tfced = apply_tfce(img)
 % Optimized TFCE function for connectivity-based analysis (Edge-Based).
 %
-% Reduces redundant computations by:
-%   1. Precomputing when each edge is removed.
-%   2. Implementing BFS manually on the sparse adjacency matrix.
-%   3. Tracking clusters efficiently using edge-based connectivity.
+% - Precomputes when each edge is introduced.
+% - Updates clusters incrementally instead of recomputing from scratch.
+% - Avoids redundant operations for better efficiency.
 %
 % Usage:
-%   tfced = apply_tfce(img, 'matrix')
-%
-% Reference:
-%   - Smith & Nichols (2009), TFCE in neuroimaging.
+%   tfced = apply_tfce(img)
 
     %% **Set Parameters**
     dh = 0.1; % Threshold step size
@@ -19,112 +15,103 @@ function tfced = apply_tfce(img, varargin)
        
     %% **Preprocessing**
     img(img > 1000) = 100; % Thresholding to avoid extreme values
-    perturbation = rand(size(img)) * 1e-15; % Generate perturbation
-    img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Make symmetric
+    perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
+    img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
     img(logical(eye(size(img)))) = 0; % Set diagonal to zero (for graphs)
-    
-    %% **Define Thresholds for Integration**
-    threshs = 0:dh:max(img(:));
-    threshs = threshs(2:end);
-    ndh = length(threshs);
-    
-    %% **Precompute Edge Removal Masks**
-    global adj_matrix;
-    
-    l_create_sparse_adjacency(img, threshs(1));
-   
 
-    % **Initialize TFCE accumulation variable**
-    tfce_vals = zeros(size(img));  
-    
-    %% **Iterate Over Thresholds and Compute Edge Clusters**
-    lonly_nodes = false(size(adj_matrix, 1), 1);
-    for h = 1:ndh
-        th = threshs(h);
-        
-        l_update_sparse_adjacency(th);
-      
-        
-        connected_nodes = get_components2(adj_matrix);
-      
-        % Get unique clusters
-        unique_clusters = unique(connected_nodes);
+    %% **Precompute Edge Introduction Rounds**
+    num_thresh = ceil(max(img(:)) / dh); % Number of threshold rounds
+    edges_by_thresh = cell(num_thresh, 1); % Store edges by threshold round
 
-        % Create logical mask for each cluster
-        cluster_masks = arrayfun(@(c) connected_nodes == c, unique_clusters, 'UniformOutput', false);
+    % Extract edges from adjacency matrix
+    [row, col, edge_weights] = find(triu(img)); % Only upper triangle
 
-        % Precompute cluster sizes (number of edges per cluster)
-        cluster_sizes = cellfun(@(mask) nnz(adj_matrix(mask, mask)) / 2, cluster_masks);
-
-        % Compute TFCE updates for all clusters
-        tfce_updates = (cluster_sizes .^ E) .* (th ^ H) * dh;
-
-        tfce_update_matrix = zeros(size(tfce_vals));
-        % Vectorized assignment using logical indexing
-        for i = 1:numel(unique_clusters)
-            tfce_update_matrix(cluster_masks{i}, cluster_masks{i}) = tfce_updates(i);
+    % Assign edges to their first appearance based on thresholding
+    for i = 1:numel(edge_weights)
+        if edge_weights(i) <= 0  % Skip edges with zero or negative weight
+            continue;
         end
-
-        % Update TFCE values in one step (vectorized)
-        tfce_vals = tfce_vals + tfce_update_matrix;
-        
+        round_idx = min(num_thresh, ceil(edge_weights(i) / dh)); % Ensure index is valid
+        edges_by_thresh{round_idx} = [edges_by_thresh{round_idx}; row(i), col(i)];
     end
-    
-    %% **Final Output**
-    tfced = tfce_vals;  % The final TFCE-transformed data
-end
 
-%% **Create Initial Sparse Adjacency Matrix**
-function l_create_sparse_adjacency(img, initial_thresh)
-    global adj_matrix;
-    adj_matrix = img .* bsxfun(@ge, img, initial_thresh);
-end
+    %% **Initialize Variables**
+    tfce_vals = zeros(size(img)); % TFCE accumulation matrix
 
-%% **Update Sparse Adjacency Matrix Based on Precomputed Edge Mask**
-function l_update_sparse_adjacency(th)
-    global adj_matrix 
-    adj_matrix = adj_matrix .* bsxfun(@ge, adj_matrix, th);
-end
+    %% **Initialize Clusters**
+    num_nodes = size(img, 1);
+    cluster_labels = (1:num_nodes)';  % Start with each node as its own cluster
+    cluster_sizes = ones(num_nodes, 1); % Each node starts as its own cluster
 
-%% **BFS on Sparse Adjacency Matrix to Find Connected Nodes (Logical Mask)**
-function connected_mask = bfs(start_node)
-    % Optimized BFS using a preallocated queue (circular array technique)
-    %
-    % INPUT:
-    %   start_node - The starting node for BFS
-    %
-    % OUTPUT:
-    %   connected_mask - Logical vector where `true` indicates connected nodes
-    
-    global adj_matrix;
-    n = size(adj_matrix, 1);
-    
-    % Preallocate queue for efficiency
-    queue = zeros(n, 1);
-    queue_start = 1;
-    queue_end = 1;
-    
-    % Initialize visited mask
-    connected_mask = false(n, 1);
-    connected_mask(start_node) = true;
-    
-    % Initialize queue
-    queue(queue_end) = start_node;
-    
-    while queue_start <= queue_end  % Efficient queue traversal
-        current = queue(queue_start);
-        queue_start = queue_start + 1;  % Move front pointer
-        
-        % Find unvisited neighbors
-        neighbors = find(adj_matrix(current, :) > 0);
-        unvisited_neighbors = neighbors(~connected_mask(neighbors));
+    clusters(num_nodes) = struct();
 
-        % Mark them as visited
-        connected_mask(unvisited_neighbors) = true;
-        
-        % Enqueue new neighbors
-        num_new = numel(unvisited_neighbors);
-        queue(queue_end + (1:num_new)) = unvisited_neighbors;
-        queue_end = queue_end + num_new;
+    for n = 1:num_nodes
+        clusters(n).edges = false(num_nodes, num_nodes);
+        clusters(n).nodes = false(num_nodes, 1);
+        clusters(n).size  = 1;
+        clusters(n).has_edges = false;
+        clusters(n).nodes(n) = true; % Each node starts alone
     end
+
+    %% **Iterate Over Thresholds and Incrementally Merge Clusters**
+    for h = num_thresh:-1:1  % Iterate from highest to lowest threshold
+        th = h * dh;  % Compute current threshold
+    
+        % Get edges introduced at this threshold
+        new_edges = edges_by_thresh{h};  
+    
+        % **Merge clusters based on new edges**
+        for k = 1:size(new_edges, 1)
+            i = new_edges(k, 1);
+            j = new_edges(k, 2);
+    
+            cluster_i = cluster_labels(i);
+            cluster_j = cluster_labels(j);
+
+            if cluster_i ~= cluster_j  % Merge only if they are different
+                % Merge smaller cluster into the larger one
+                if cluster_sizes(cluster_i) >= cluster_sizes(cluster_j)
+                    target_cluster = cluster_i;
+                    absorbed_cluster = cluster_j;
+                else
+                    target_cluster = cluster_j;
+                    absorbed_cluster = cluster_i;
+                end
+            
+                % ✅ **Add the new edge to the cluster before merging**
+                clusters(target_cluster).edges(i, j) = true;
+                clusters(target_cluster).edges(j, i) = true;
+                clusters(target_cluster).nodes(i) = true;
+                clusters(target_cluster).nodes(j) = true;
+  
+                clusters(target_cluster).edges = clusters(target_cluster).edges | clusters(absorbed_cluster).edges;
+                clusters(target_cluster).nodes = clusters(target_cluster).nodes | clusters(absorbed_cluster).nodes;
+                
+                % Update cluster size
+                clusters(target_cluster).size = clusters(target_cluster).size + clusters(absorbed_cluster).size;
+                clusters(target_cluster).has_edges = true; % Mark as active
+            
+                % Mark absorbed cluster as merged
+                clusters(absorbed_cluster).size = 0;
+                cluster_labels(cluster_labels == absorbed_cluster) = target_cluster;
+            end
+        end
+    
+        % **Compute TFCE Contribution Efficiently**
+        for c = 1:numel(clusters)
+            if clusters(c).size == 0 || ~clusters(c).has_edges  % Skip merged or inactive clusters
+                continue;
+            end
+
+            % Compute TFCE update for the cluster
+            cluster_size = clusters(c).size;  
+            tfce_update = (cluster_size .^ E) .* (th ^ H) * dh;
+
+            % Assign TFCE contributions efficiently
+            tfce_vals(clusters(c).edges) = tfce_vals(clusters(c).edges) + tfce_update;
+        end
+    end
+
+    tfced = tfce_vals;
+
 end

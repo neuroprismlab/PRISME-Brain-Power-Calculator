@@ -1,4 +1,4 @@
-classdef New_TFCE
+classdef Fast_TFCE
     
     properties (Constant)
         level = "edge";
@@ -31,7 +31,7 @@ classdef New_TFCE
             test_stat_mat = unflatten_matrix(edge_stats, STATS.mask);
         
             % Apply TFCE transformation to the observed test statistics
-            cluster_stats_target = apply_tfce(test_stat_mat, 'matrix');
+            cluster_stats_target = apply_tfce(test_stat_mat);
             cluster_stats_target = flat_matrix(cluster_stats_target, STATS.mask);
         
             % Ensure permutation data is provided
@@ -46,7 +46,7 @@ classdef New_TFCE
             % Apply TFCE transformation to each permutation
             for i = 1:K
                 perm_stat_mat = unflatten_matrix(permuted_edge_stats(:, i), STATS.mask);
-                tfce_null = apply_tfce(perm_stat_mat, 'matrix');
+                tfce_null = apply_tfce(perm_stat_mat);
                 null_dist(i) = max(tfce_null(:)); % Store max TFCE value for permutation
             end
         

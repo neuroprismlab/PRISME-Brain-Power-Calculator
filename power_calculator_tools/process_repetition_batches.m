@@ -1,6 +1,8 @@
 function process_repetition_batches(X, Y, RP, UI, ids_sampled)
    
     batches_indexes = split_into_batches(RP.max_rep_pending, RP.batch_size);
+    
+    tic;
 
     for i_bat = 1:numel(batches_indexes)
         batch = batches_indexes{i_bat};
@@ -55,12 +57,18 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 
         end
 
+        a = toc;
+        disp(a)
+        error('Stop test execution')
+
         save_incremental_results(RP, all_pvals, all_pvals_neg, ...
                                  edge_stats_all, cluster_stats_all, batch)
         
         fprintf('Repetition %d completed \n', batch{end});
         
     end 
+
+    
   
 end
 
