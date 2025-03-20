@@ -1,6 +1,27 @@
 function run_parallel = setup_parallel_workers(flag, worker_number)
-    % This variable is used to run tests sequentially - github workflows
-    % cannot run parallel
+    %% setup_parallel_workers
+    % **Description**
+    % Initializes or adjusts the parallel processing setup based on the specified 
+    % number of workers. If running in GitHub Actions (`testing_yml_workflow`), 
+    % parallel execution is disabled to ensure compatibility.
+    %
+    % **Inputs**
+    % - `flag` (logical): Enable (`true`) or disable (`false`) parallel execution.
+    % - `worker_number` (integer): Number of parallel workers to initialize.
+    %
+    % **Outputs**
+    % - `run_parallel` (logical): Indicates whether parallel execution is enabled.
+    %
+    % **Workflow**
+    % 1. If `testing_yml_workflow` is set (GitHub CI/CD), force serial execution.
+    % 2. If parallel execution is requested:
+    %    - Close any existing parallel pool.
+    %    - Limit workers to the maximum available.
+    %    - Start a new parpool
+    %
+    % **Author**: Fabricio Cravo  
+    % **Date**: March 2025
+
     global testing_yml_workflow;
     
     if exist('testing_yml_workflow', 'var')
@@ -29,19 +50,6 @@ function run_parallel = setup_parallel_workers(flag, worker_number)
             worker_number = c.NumWorkers;
         end
         
-        % Check the existing parallel pool
-        current_pool = gcp('nocreate');
-        if ~isempty(current_pool)
-            % If the existing pool has a different number of workers, delete it
-            if current_pool.NumWorkers ~= worker_number
-                fprintf('Current pool has %d workers. Deleting it...\n', current_pool.NumWorkers);
-                delete(current_pool);
-            else
-                fprintf('Parallel pool already running with %d workers.\n', current_pool.NumWorkers);
-                return; % No need to recreate the pool
-            end
-        end
-
         % Create a new parallel pool
         fprintf('Starting parallel pool with %d workers...\n', worker_number);
         parpool(worker_number);

@@ -78,7 +78,7 @@ function tfced = apply_tfce(img)
                     absorbed_cluster = cluster_i;
                 end
             
-                % ✅ **Add the new edge to the cluster before merging**
+                % **Add the new edge to the cluster before merging**
                 clusters(target_cluster).edges(i, j) = true;
                 clusters(target_cluster).edges(j, i) = true;
                 clusters(target_cluster).nodes(i) = true;

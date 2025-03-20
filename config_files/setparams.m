@@ -42,7 +42,7 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
+Params.parallel = true; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 30;
@@ -64,7 +64,6 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
 Params.all_cluster_stat_types = {'Parametric_Bonferroni' 'Parametric_FDR', 'Size', 'TFCE', ...
     'Constrained', 'Constrained_FWER', 'Omnibus'};
-Params.all_cluster_stat_types = {'New_TFCE'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
@@ -76,7 +75,7 @@ Params.omnibus_type = 'Multidimensional_cNBS';
 
 Params.testing = true;
 Params.test_n_perms = 50;
-Params.test_n_repetitions = 1;
+Params.test_n_repetitions = 5;
 Params.test_n_workers = 2;
 
 end
