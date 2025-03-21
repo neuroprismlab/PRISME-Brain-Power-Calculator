@@ -54,7 +54,6 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
             end
 
         end
-      
 
         save_incremental_results(RP, all_pvals, all_pvals_neg, ...
                                  edge_stats_all, cluster_stats_all, batch)
