@@ -1,8 +1,39 @@
 function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
-    %
-    % - Test type issues - load HPC 
-    % Should more tests be added?
-    % 
+%% infer_test_from_data
+% **Description**
+% Infers the type of statistical test to be used (e.g., correlation, paired t-test, 
+% unpaired t-test) based on the structure and content of `TestData` and `BrainData`. 
+% It also sets the appropriate fields in the `RP` structure accordingly.
+%
+% **Inputs**
+% - `RP` (struct): Experiment configuration structure, updated with test type info.
+% - `TestData` (struct): Contains test score or contrast information for the sample.
+% - `BrainData` (struct): Contains subject IDs under each condition.
+%
+% **Outputs**
+% - `RP` (struct): Updated structure with:
+%   * `test_type` – Inferred test type ('t', 't2', 'r').
+%   * `nbs_test_stat` – Corresponding test name for use with NBS tools.
+%   * `sub_ids_cond1`, `sub_ids_cond2` – Subject IDs for condition grouping.
+% - `test_type_origin` (string): Indicates the origin of the inference 
+%   ('score_cond' or 'contrast').
+%
+% **Workflow**
+% 1. Check the nature of `TestData.score` or `TestData.contrast`:
+%    - If numeric and continuous → correlation test (`r`)
+%    - If two categorical values → paired (`t`) or unpaired (`t2`) test
+%    - If contrast field is provided → paired or unpaired depending on group overlap
+% 2. Count overlapping and unique subjects between conditions to decide between `t` and `t2`.
+% 3. Assign appropriate `nbs_test_stat` and store test metadata in `RP`.
+%
+% **Dependencies**
+% - `get_test_score_set.m`
+%
+% **Notes**
+% - This function will error out if the contrast is invalid or inference fails.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025
 
     % initialize with default values in case there 
     test_type = 'unknown';

@@ -1,4 +1,39 @@
 function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, test_name)
+%% subs_data_from_score_condition
+% **Description**
+% Extracts and formats subject-level data (`X`, `Y`) for statistical analysis 
+% based on score-based conditions. Supports both unpaired t-tests (`t2`) and 
+% correlation analyses (`r`), and updates the experiment configuration structure (`RP`).
+%
+% **Inputs**
+% - `RP` (struct): Configuration structure containing test metadata, including `test_type`.
+% - `TestData` (struct): Includes subject scores, IDs, and the reference condition name.
+% - `BrainData` (struct): Brain data and subject IDs organized by condition.
+% - `test_name` (string): Label to identify the test in outputs.
+%
+% **Outputs**
+% - `X` (matrix): Design matrix for statistical testing.
+% - `Y` (matrix): Data matrix with subjects as columns.
+% - `RP` (struct): Updated configuration structure with subject information and test size.
+%
+% **Workflow**
+% - For `t2` (two-sample t-test):
+%   1. Identify subjects belonging to each score group.
+%   2. Retrieve brain data for both groups.
+%   3. Build design matrix `X` with group indicators.
+% - For `r` (correlation):
+%   1. Remove NaNs from scores.
+%   2. Extract brain data corresponding to valid subjects.
+%   3. Use scores directly as `X`.
+%
+% **Dependencies**
+% - `get_test_score_set.m`
+%
+% **Notes**
+% - The terms "rest" and "task" are used generically for the two groups.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025
     
     test_score_set = get_test_score_set(TestData);
     RP.test_name = test_name;

@@ -1,5 +1,43 @@
 function run_benchmarking(RP, Y, X)
-% Do NBS-based method benchmarking (cNBS, TFCE, etc)
+%% run_benchmarking
+% **Description**
+% Runs statistical benchmarking using the implemented and requested statistical methods 
+% across a range of subsample sizes. For each subset size, it sets up 
+% benchmarking configurations, checks for completed repetitions, and processes 
+% the remaining repetitions using batch execution.
+%
+% **Inputs**
+% - `RP` (struct): Configuration structure with experiment parameters, including:
+%   * `list_of_nsubset` – list of sample sizes.
+%   * `n_repetitions` – number of repetitions to compute.
+%   * `test_name` – test identifier.
+% - `Y` (matrix): Brain data matrix (features × subjects).
+% - `X` (matrix): Design matrix for statistical testing.
+%
+% **Workflow**
+% For each subsample size:
+% 1. Update configuration with current subset size.
+% 2. Extract atlas-related parameters (e.g., node networks).
+% 3. Set up the benchmarking UI and sample IDs for repetition.
+% 4. Check how many repetitions have already been computed for each method.
+% 5. Skip iteration if all repetitions are done.
+% 6. Otherwise, compute the remaining repetitions in batches.
+%
+% **Dependencies**
+% - `set_n_subs_subset.m`
+% - `extract_atlas_related_parameters.m`
+% - `setup_benchmarking.m`
+% - `draw_repetition_ids.m`
+% - `check_calculation_status.m`
+% - `process_repetition_batches.m`
+%
+% **Notes**
+% - Updates `RP` with fields like `existing_repetitions` and `max_rep_pending`.
+% - Skips processing if no repetitions are pending for a method.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025
+
 
     for id_nsub_list = 1:length(RP.list_of_nsubset)
         RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};

@@ -1,12 +1,44 @@
 function [UI, RepParams] = setup_benchmarking(RepParams)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% Setup for running NBS benchmarking
-% This will load data and set up the parameters needed to run NBS benchmarking
-% RepParams = RP 
-% Network Inference - apply atlas - calculate coehns 
-% Save all results 
-% See summarize_tprs for data collection
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% setup_benchmarking
+% **Description**
+% Prepares the configuration (`RepParams`) and user interface structure (`UI`) 
+% necessary to run NBS-based benchmarking methods. This includes initializing 
+% parameters, setting up the design matrix, configuring contrast vectors, and 
+% assembling the required fields for NBS execution.
+%
+% **Inputs**
+% - `RepParams` (struct): Experiment configuration containing:
+%   * `test_type` – type of statistical test (`t`, `t2`, or `r`).
+%   * `nbs_method`, `mask`, `nbs_dir`, `other_scripts_dir`, etc.
+%   * `n_subs_subset`, `n_subs_subset_c1`, `n_subs_subset_c2`.
+%   * `testing`, `ground_truth`, and test-specific settings.
+%
+% **Outputs**
+% - `UI` (struct): Structure with fields used by the NBS toolbox:
+%   * `contrast`, `perms`, `alpha`, `test`, `mask`, `edge_groups`, etc.
+% - `RepParams` (struct): Updated structure with derived values and test setup.
+%
+% **Workflow**
+% 1. Add NBS and script directories to the MATLAB path.
+% 2. If in testing mode, override permutation and repetition parameters.
+% 3. Build design matrix using `create_design_matrix`.
+% 4. Create contrast vectors using `create_test_contrast`.
+% 5. Set the number of observations and NBS test statistic based on test type.
+% 6. Check if the method is permutation-based.
+% 7. Assign benchmarking parameters to the `UI` structure.
+%
+%
+% **Dependencies**
+% - `create_design_matrix.m`
+% - `create_test_contrast.m`
+% - `check_if_permutation_method.m`
+%
+% **Notes**
+% - This function standardizes all parameter setup for NBS and simulation.
+% - Many UI fields directly reflect fields in `RepParams` for reproducibility.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025 
 
 addpath(genpath(RepParams.nbs_dir));
 addpath(genpath(RepParams.other_scripts_dir));

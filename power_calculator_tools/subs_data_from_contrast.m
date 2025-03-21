@@ -1,11 +1,36 @@
 function [X, Y, RP] = subs_data_from_contrast(RP, contrast, BrainData)
-    
-    %% TODO: To Optimize use create_design_matrix function for X
-    
-    % Get sub ids from contrast
-    % Maybe this changes? I don't know if all contrasts have two elements
+%% subs_data_from_contrast
+% **Description**
+% Constructs the design matrix `X` and response matrix `Y` for contrast-based 
+% statistical tests (`t`, `t2`, `pt`) using subject-level brain data. The 
+% contrast is defined by two condition labels, which are mapped to "rest" and "task".
+%
+% **Inputs**
+% - `RP` (struct): Configuration structure with `test_type` specified.
+% - `contrast` (cell): Cell array of two condition names (e.g., `{'REST', 'TASK'}`).
+% - `BrainData` (struct): Structure with fields for each condition containing:
+%   * `sub_ids` – list of subject IDs.
+%   * `data` – brain data matrix (features × subjects).
+%
+% **Outputs**
+% - `X` (matrix): Design matrix for statistical testing.
+% - `Y` (matrix): Data matrix (features × subjects).
+% - `RP` (struct): Updated configuration with subject IDs and sample sizes.
+%
+% **Workflow**
+% - Determine rest/task assignment from the contrast conditions.
+% - Based on `RP.test_type`, process:
+%   - `t`: use overlapping subjects, compute within-subject difference.
+%   - `t2`: use unique subjects per group, concatenate data side-by-side.
+%   - `pt`: build permutation-compatible design matrix and double the sample matrix.
+%
+% **Notes**
+% - The labels `REST` and `TASK` are symbolic; any valid keys can be used.
+% - If conditions have overlapping subjects, `t` or `pt` test types are appropriate.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025   
 
-    % Rest contrast my not always be rest contrast lol 
     if strcmp(contrast{1}, 'REST')
         rest_contrast = contrast{1};
         task_contrast = contrast{2};

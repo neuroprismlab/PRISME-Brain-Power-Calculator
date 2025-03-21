@@ -1,4 +1,32 @@
 function X = create_design_matrix(varargin)
+%% create_design_matrix
+% **Description**
+% Creates a design matrix `X` based on the specified test type for use in 
+% statistical testing (e.g., `t`, `t2`, `pt`, `r`). Supports paired, unpaired, 
+% and permutation test designs, with optional parameters for group sizes.
+%
+% **Inputs**
+% - `test_type` (string): Type of test to design (`'t'`, `'t2'`, `'pt'`, `'r'`).
+% - `n_subs` (int): Total number of subjects (or number of subjects in one group, depending on test).
+%
+% **Name-Value Parameters**
+% - `n_subs_1` (int, optional): Number of subjects in group 1 (used for `t2`).
+% - `n_subs_2` (int, optional): Number of subjects in group 2 (used for `t2`).
+%
+% **Outputs**
+% - `X` (matrix): Design matrix suitable for statistical testing. If test type is `'r'`, returns `NaN`.
+%
+% **Test Types**
+% - `'t'`: One-sample or paired t-test; returns a column of ones.
+% - `'t2'`: Two-sample t-test; returns a matrix with intercept and group labels.
+% - `'pt'`: Permutation t-test; returns a signed contrast matrix with block structure.
+% - `'r'`: Correlation test; returns `NaN` since the design comes from the data.
+%
+% **Notes**
+% - The design matrix for `'r'` is not constructed here—it's pulled directly from the score data.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025
 
     % Define a parser with default values
     p = inputParser;
