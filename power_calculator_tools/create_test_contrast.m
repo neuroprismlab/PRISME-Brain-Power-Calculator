@@ -11,14 +11,12 @@ function [nbs_contrast, nbs_contrast_neg, nbs_exchange] = create_test_contrast(t
 % - `n_subs` (int): Number of subjects (only used for 'pt' test type).
 %
 % **Outputs**
-% - `nbs_contrast` (vector): Contrast vector for detecting effects.
-% - `nbs_contrast_neg` (vector, deprecated): Legacy field, unused in current pipeline.
-% - `nbs_exchange` (string, deprecated): Empty placeholder string for exchangeability block.
-%
-% **Test Types**
+% - `nbs_contrast` (vector): Contrast vector for detecting effects
 % - `'t'` / `'r'`: One-sample test. Contrast is scalar `1`.
 % - `'t2'`: Two-sample test. Contrast is `[0, 1]`.
 % - `'pt'`: Permutation test. Returns a contrast vector of length `n_subs + 1` with 1 in the first position.
+% - `nbs_contrast_neg` (vector, deprecated): Legacy field, unused in current pipeline.
+% - `nbs_exchange` (string, deprecated): Empty placeholder string for exchangeability block.
 %
 % **Notes**
 % - `nbs_contrast_neg` is deprecated and maintained for compatibility only. 
