@@ -1,15 +1,44 @@
 function existing_repetitions = check_calculation_status(RP)
-    % Check how many repetitions exist for each statistical method file
-    %
-    % Outputs:
-    %   - existing_repetitions: A cell array where each entry corresponds to the
-    %     number of repetitions stored in each method file.
-    %   - files_checked: A cell array with the paths of the checked files.
+%% check_calculation_status
+% **Description**
+% Checks which statistical methods already have repetitions computed and saved to disk.
+% It returns a struct mapping each method to the number of repetitions available 
+% in the corresponding result file.
+%
+% **Inputs**
+% - `RP` (struct): Configuration structure containing:
+%   * `save_directory` – path to the directory with output files.
+%   * `data_set` – name of the dataset.
+%   * `test_name` – label of the statistical test.
+%   * `test_type` – type of test ('t', 't2', etc.).
+%   * `n_subs_subset` – number of subjects for current subsample.
+%   * `testing` – logical flag for test/debug mode.
+%   * `all_cluster_stat_types` – list of method names to check.
+%   * `omnibus_type` – string used for omnibus method labeling (only used when method is 'Omnibus').
+%
+% **Outputs**
+% - `existing_repetitions` (struct): Map from method name to the number of valid repetitions.
+%
+% **Workflow**
+% 1. Loop over all cluster stat types.
+% 2. For each method:
+%    - Use `create_and_check_rep_file` to get the expected result file path.
+%    - If the file exists, load it and inspect the `brain_data.pvals_all` field.
+%    - Count the number of valid repetitions as columns with non-NaN values.
+%    - If file is missing or malformed, default to 0 repetitions.
+%
+% **Dependencies**
+% - `create_and_check_rep_file.m`
+%
+% **Notes**
+% - If a method class is improperly named or missing, a warning is issued and zero repetitions are assumed.
+%
+% **Author**: Fabricio Cravo  
+% **Date**: March 2025
 
     % Initialize outputs
     num_methods = length(RP.all_cluster_stat_types);
     existing_repetitions = struct();
-    files_checked = cell(num_methods, 1);
 
     % Iterate through all methods and check existing repetitions
     for stat_id = 1:num_methods
@@ -26,9 +55,7 @@ function existing_repetitions = check_calculation_status(RP)
         [existence, file_path] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
                                                            RP.test_type, RP.cluster_stat_type, ...
                                                            omnibus_str, RP.n_subs_subset, ...
-                                                           RP.testing, RP.ground_truth);
-        
-        files_checked{stat_id} = file_path;
+                                                           RP.testing);
 
         if existence
             try
