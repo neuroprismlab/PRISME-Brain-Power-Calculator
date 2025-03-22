@@ -1,14 +1,32 @@
-%%%%%
-    %% Questions
-        % - subtraction and t-test is way more computationally efficient than
-        % paired -t
-        % - started calculations
-        % - in create_test_contrast
-            % nbs_exchange for t test? what is it? 
-        % - ground_truth code? what do remove what to keep?
-%%%%%
-
-% Change for test
+%% Ground Truth NBS Benchmarking Workflow
+% This script sets up and runs a ground-truth benchmarking workflow for the NBS 
+% calculator. It prepares parameters, loads data, configures the experiment, 
+% and executes tests across different outcomes.
+%
+% Workflow:
+% 1. Set the working directory to the script location and clear unwanted variables.
+% 2. Add necessary paths for NBS_Calculator and supporting code.
+% 3. Prepare parameters by calling setparams() and enabling ground truth mode 
+%    (Params.ground_truth = true) with parallel processing disabled.
+% 4. Load the dataset if it is not already in the workspace.
+% 5. Setup experiment data (n_nodes, n_var, n_repetitions) via setup_experiment_data.
+% 6. Create the output directory, get dataset name, and assign atlas file.
+% 7. Create a ground truth-specific output directory.
+% 8. Initialize parallel workers as specified.
+% 9. For each test (field in OutcomeData):
+%    a. Copy Params to RP and assign the test name.
+%    b. Infer test type origin using infer_test_from_data.
+%    c. Depending on the test type:
+%       - Call subs_data_from_score_condition for 'score_cond' tests.
+%       - Call subs_data_from_contrast for 'contrast' tests.
+%    d. Create node masks.
+%    e. Setup ground truth-specific parameters via setup_ground_truth_parameters.
+%    f. Run the benchmarking process using run_benchmarking.
+%
+% Author: Fabricio Cravo | Date: March 2025
+%
+% Usage:
+%   Simply run the script to execute the ground truth benchmarking workflow.
 
 addpath('/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator')
 

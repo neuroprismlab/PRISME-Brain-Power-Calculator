@@ -1,17 +1,22 @@
 function perm_data = generate_permutation_for_repetition(GLM, RP)
-    % generate_permutation_for_repetition
-    % 
-    % This function precomputes and saves permuted GLM data for a given repetition.
-    %
-    % Inputs:
-    %   - rep_number: Integer, the repetition index (used for file naming).
-    %   - GLM: Struct, original GLM structure containing design matrix & data.
-    %   - num_permutations: Integer, number of permutations to generate.
-    %
-    % Outputs:
-    %   - Saves a file named 'permutation_X.mat' inside 'GLM_permutations' folder.
-    
-    % Generate permutations
+%% generate_permutation_for_repetition
+% Generates permutation data for one repetition.
+%
+% Inputs:
+% - GLM: Fitted GLM structure.
+% - RP: Config struct with fields n_var, n_perms, edge_groups, and mask.
+%
+% Outputs:
+% - perm_data: Struct with fields:
+%       permuted_data: Matrix (n_var x n_perms) of edge stats.
+%       permuted_network_data: Matrix of network stats per permutation.
+%
+% Workflow:
+% 1. For each permutation, permute GLM signal and compute edge stats using NBSglm_smn.
+% 2. Unflatten edge stats and compute network averages.
+% 3. Store results in perm_data.
+%
+% Author: Fabricio Cravo | Date: March 2025
 
     permuted_data = zeros(RP.n_var, RP.n_perms); % Prelocate double
     permuted_network_data = zeros(numel(unique(RP.edge_groups)) - 1, RP.n_perms);

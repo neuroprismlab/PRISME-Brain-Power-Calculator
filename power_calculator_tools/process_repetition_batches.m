@@ -1,12 +1,12 @@
 function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 %% process_repetition_batches
-% **Description**
+% Description:
 % Executes benchmarking repetitions in mini-batches, optionally using parallel 
 % computation. For each batch of repetition indices, data is subsampled, analyzed, 
 % and saved incrementally. Handles test-type-specific design matrix behavior and 
 % manages output across repetitions.
 %
-% **Inputs**
+% Inputs:
 % - `X` (matrix): Design matrix or input scores (used only for correlation tests).
 % - `Y` (matrix): Brain connectivity data (edges × subjects).
 % - `RP` (struct): Configuration structure for benchmarking, includes:
@@ -15,7 +15,7 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 % - `UI` (struct): Structure with NBS test configuration (see `setup_benchmarking`).
 % - `ids_sampled` (matrix): Subsampled subject indices (columns = repetitions).
 %
-% **Workflow**
+% Workflow:
 % 1. Split repetition IDs into batches of size `batch_size`.
 % 2. For each batch:
 %    - Subsample `X` and `Y` for each repetition.
@@ -23,21 +23,21 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 %    - Execute `pf_repetition_loop` using either serial or parallel execution.
 %    - Save results incrementally via `save_incremental_results`.
 %
-% **Outputs**
+% Outputs:
 % - Results are saved to disk in batches; no in-memory output is returned.
 %
-% **Dependencies**
+% Dependencies:
 % - `split_into_batches.m`
 % - `initialize_global_pvals.m`
 % - `pf_repetition_loop.m`
 % - `save_incremental_results.m`
 %
-% **Notes**
+% Notes:
 % - For test type `'r'`, `X` is subsampled; otherwise, `RP.X_rep` is reused.
 % - `RP` is passed as a `parallel.pool.Constant`(RPc) in parallel mode.
 %
-% **Author**: Fabricio Cravo  
-% **Date**: March 2025
+% Author: Fabricio Cravo  
+% Date: March 2025
    
     batches_indexes = split_into_batches(RP.max_rep_pending, RP.batch_size);
 

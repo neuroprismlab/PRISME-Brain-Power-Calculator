@@ -1,14 +1,51 @@
 function nbs = set_up_nbs_parameters(varargin)
-        
-    %Declare the nbs structure global to avoid passing between NBS and NBSrun
-    % TODO: I'm not sure this is a good idea - look into alternatives - SMN
-    % global nbs
-    
-    %Don't precompute randomizations if the number of test statistics populates 
-    %a matrix with more elements than Limit. Slows down computation but saves 
-    %memory.   
-    % Redefine limit for now - to skip
-    % Limit=10^8/3;
+%% set_up_nbs_parameters
+% **Description**
+% Sets up the NBS (Network Based Statistics) parameters for the current analysis.
+% This function reads user input from the UI structure, assigns it to the NBS 
+% structure (nbs), and performs error checking on critical inputs. It also loads 
+% exchange blocks, edge groups, and connectivity matrices while updating the UI 
+% status flags.
+%
+% **Inputs**
+% - varargin: 
+%     The first argument must be UI, a structure containing fields such as:
+%       - mask.ui, matrices.ui, design.ui, contrast.ui, test.ui, thresh.ui, 
+%         perms.ui, alpha.ui, size.ui, use_preaveraged_constrained.ui, 
+%         edge_groups.ui, exchange.ui, and ground_truth.
+%     Optionally, a second argument S (GUI handles) can be provided for progress 
+%     updates.
+%
+% **Outputs**
+% - nbs (struct): Structure with the following fields:
+%     - GLM: Contains connectivity matrices, design matrix, contrast, exchange, 
+%       test type, and number of permutations.
+%     - STATS: Contains mask, threshold, alpha, size, edge groups (if provided), 
+%       number of nodes, and ground truth flag.
+%
+% **Workflow**
+% 1. Set a limit (currently fixed) for precomputation.
+% 2. Load the UI input and (if provided) GUI handles S.
+% 3. Initialize UI flags (ok fields) to indicate valid input.
+% 4. Assign UI values to nbs.GL and nbs.STATS (e.g., design, contrast, matrices).
+% 5. Read optional exchange blocks using read_exchange; remove if invalid.
+% 6. Read the number of permutations and test thresholds; update UI flags if needed.
+% 7. Read edge groups via read_edge_groups if provided.
+% 8. Assign number of nodes and ground_truth flag.
+% 9. Call errorcheck to verify mandatory inputs; display messages if errors occur.
+%
+% **Dependencies**
+% - read_exchange.m
+% - read_edge_groups.m
+% - errorcheck.m
+%
+% **Notes**
+% - The function uses a global-like approach (commented out) to avoid passing nbs 
+%   between NBS and NBSrun; consider alternatives.
+% - GUI handle S is optional for command-line usage.
+% 
+% **Date**: March 2025
+ 
     Limit = 1;
     
     %Waitbar position in figure

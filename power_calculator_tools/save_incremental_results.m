@@ -1,5 +1,43 @@
 function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     edge_stats_all, cluster_stats_all, current_batch)
+%% save_incremental_results
+% Updates and saves incremental results for each statistical method in the NBS
+% benchmarking pipeline. For each method specified in RP.all_cluster_stat_types, it
+% loads existing results (if any), updates the p-values and statistics for new
+% repetitions from the current batch, and then saves the updated file.
+%
+% Inputs:
+%   - RP: Configuration structure containing fields such as save_directory, data_set,
+%         test_name, test_type, omnibus_type, n_subs_subset, testing, ground_truth,
+%         all_cluster_stat_types, edge_groups, n_repetitions, n_var, and existing_repetitions.
+%   - all_pvals: Cell array where each cell contains a struct of positive p-values
+%                for each method.
+%   - all_pvals_neg: Cell array with a struct of negative p-values (deprecated) for each method.
+%   - edge_stats_all: Cell array of edge statistics for each repetition.
+%   - cluster_stats_all: Cell array of cluster statistics for each repetition.
+%   - current_batch: Cell array of repetition indices for the current batch.
+%
+% Outputs:
+%   - No in-memory output. Results are saved to disk.
+%
+% Workflow:
+%   1. Loop through each method in RP.all_cluster_stat_types.
+%   2. For each method, generate the expected output file name using
+%      create_and_check_rep_file.
+%   3. Load existing results if the file exists; otherwise, initialize new storage.
+%   4. Ensure that result fields (pvals_all, pvals_all_neg, edge_stats_all,
+%      cluster_stats_all) are properly initialized.
+%   5. For each repetition in the current batch that is new, update the result fields.
+%   6. Update metadata and save the updated file.
+%
+% Dependencies:
+%   - create_and_check_rep_file.m
+%   - get_omnibus_type.m
+%
+% Notes:
+%   - Only repetitions that have not been computed previously are updated.
+%
+% Author: Fabricio Cravo | Date: March 2025
 
     for stat_id = 1:length(RP.all_cluster_stat_types)
         method_name = RP.all_cluster_stat_types{stat_id};

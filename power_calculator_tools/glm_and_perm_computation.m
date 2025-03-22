@@ -1,5 +1,49 @@
 function [GLM_stats, GLM, STATS] = ...
     glm_and_perm_computation(X_rep, Y_rep, RP, UI, is_permutation_based)
+%% glm_and_perm_computation
+% Description:
+% Fits a general linear model (GLM) to the data and computes permutation‐based
+% statistics if required. It sets up NBS parameters from the provided UI and RP,
+% fits the GLM, calculates edge-level statistics, computes network-based statistics,
+% and optionally generates permutation data.
+%
+% Inputs:
+% - X_rep (matrix): Design matrix for the GLM.
+% - Y_rep (matrix): Data matrix (features × subjects) for the GLM.
+% - RP (struct): Configuration structure with parameters such as nbs_contrast,
+%   mask, and edge_groups.
+% - UI (struct): Structure containing NBS parameters (design, contrast, etc.).
+% - is_permutation_based (logical): Flag indicating whether to generate permutation data.
+%
+% Outputs:
+% - GLM_stats (struct): Structure containing edge and cluster statistics, and various GLM parameters.
+% - GLM (struct): Fitted GLM structure from NBSglm_setup_smn.
+% - STATS (struct): Statistics extracted from the NBS parameter setup.
+%
+% Workflow:
+% 1. Update the UI structure with current design, matrices, and contrast.
+% 2. Set up NBS parameters using the updated UI.
+% 3. Extract STATS from the NBS parameter structure.
+% 4. Fit the GLM and compute edge-level statistics.
+% 5. Compute network-based statistics by unflattening edge statistics and averaging
+%    over predefined edge groups.
+% 6. Store GLM outputs and parameters into GLM_stats.
+% 7. If permutation-based analysis is enabled, generate permutation data.
+%
+% Dependencies:
+% - set_up_nbs_parameters.m
+% - NBSglm_setup_smn.m
+% - NBSglm_smn.m
+% - unflatten_matrix.m
+% - get_network_average.m
+% - generate_permutation_for_repetition.m
+%
+% Notes:
+% - The computed edge and network statistics (= cluster) are transposed before storage.
+% - Permutation data is generated only if is_permutation_based is true.
+%
+% Author: Fabricio Cravo  
+% Date: March 2025
 
     % Assign new parameters to UI
     UI_new = UI;
