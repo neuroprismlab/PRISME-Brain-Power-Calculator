@@ -87,7 +87,7 @@ function generate_synthetic_power_data()
         meta_data.rep_parameters.n_repetitions = n_repetitions; % Number of repetitions
 
         % Generate filename
-        filename = name_file_from_meta_data(meta_data, false);
+        filename = name_file_from_meta_data(meta_data);
         full_file = ['./power_calculator_results/syn_power/', filename];
 
         % Save synthetic data

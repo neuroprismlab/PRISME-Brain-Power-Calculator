@@ -59,7 +59,7 @@ function generate_synthetic_gt_data()
     meta_data.test_type = 'Ground_Truth'; % Edge-level method
 
     % Save edge-level ground truth
-    filename_edge = name_file_from_meta_data(meta_data, true);
+    filename_edge = name_file_from_meta_data(meta_data);
     full_file = ['./power_calculator_results/ground_truth/syn_power/', filename_edge];
     save(full_file, 'brain_data', 'meta_data');
 

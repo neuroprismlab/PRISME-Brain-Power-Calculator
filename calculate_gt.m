@@ -1,6 +1,8 @@
 %% Ground Truth NBS Benchmarking Workflow
-% This script sets up and runs a ground-truth benchmarking workflow for the NBS 
-% calculator. It prepares parameters, loads data, configures the experiment, 
+% This script sets up and runs a ground-truth workflow for the power 
+% calculator. It is used to estimate the true effect locations using all
+% subjects from a dataset. 
+%  It prepares parameters, loads data, configures the experiment, 
 % and executes tests across different outcomes.
 %
 % Workflow:
