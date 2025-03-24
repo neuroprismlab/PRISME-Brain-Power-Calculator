@@ -95,9 +95,8 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
         end
         
         [pvals, pvals_neg] = p_value_from_method(STATS, GLM_stats);
-        pvals_method.(STATS.statistic_type) = pvals;
-        pvals_method_neg.(STATS.statistic_type) = pvals_neg;
-
+        
+        %% Assign pvals to results
         if isstruct(pvals) && isstruct(pvals_neg)
             submethods = fieldnames(pvals);
             for i = 1:numel(submethods)

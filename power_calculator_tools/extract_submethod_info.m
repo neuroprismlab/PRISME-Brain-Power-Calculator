@@ -23,28 +23,35 @@ function [all_stat_types, method_map] = extract_submethod_info(Params)
         method_obj = feval(method);
 
         if isprop(method_obj, 'submethod')
-            submethods = method_obj.submethod;
+            submethods = method_obj.submethod; % Default to compute all
         else
-            submethods = {''};  % No submethod — treat as default
+            submethods = {};  % No submethod — treat as default
         end
 
         if ~isempty(Params.all_submethods)
             submethods = submethods(ismember(submethods, Params.all_submethods));
         end
+        
+        if ~isempty(submethods)
 
-        for j = 1:numel(submethods)
-            sub = submethods{j};
-
-            if isempty(sub)
-                full_name = method;
-            else
+            for j = 1:numel(submethods)
+                sub = submethods{j};
+                
                 full_name = [method '_' sub];
+    
+                all_stat_types{end+1} = full_name; %#ok<AGROW>
+                method_map(full_name) = method;
+                
             end
 
+        else
+
+            full_name = method;
             all_stat_types{end+1} = full_name; %#ok<AGROW>
             method_map(full_name) = method;
-            
+
         end
+
     end
     
     if isempty(all_stat_types)

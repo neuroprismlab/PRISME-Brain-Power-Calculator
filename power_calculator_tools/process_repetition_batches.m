@@ -93,7 +93,11 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
             end
 
         end
-
+        
+        % Check output format before saving
+        check_pval_output_data(RP, all_pvals, all_pvals_neg);
+        
+        % Save
         save_incremental_results(RP, all_pvals, all_pvals_neg, ...
                                  edge_stats_all, cluster_stats_all, batch)
         

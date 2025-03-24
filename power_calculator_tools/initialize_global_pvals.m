@@ -36,17 +36,22 @@ function all_pvals = initialize_global_pvals(RP, max_rep_pending)
             method_instance = feval(method_name); % Instantiate class
             
             % Check submethods exist
-            if isprop(method_instance, 'sub_method')
-                submethods = method_instance.sub_method;
+            if isprop(method_instance, 'submethod')
+                submethods = method_instance.submethod;
             else
-                submethods = {method_name};  % fallback
+                submethods = {''};  
             end
-
+           
             % Preallocate for each submethod
             for i = 1:numel(submethods)
                 submethod_name = submethods{i};
-                full_method_name = [method_name '_' submethod_name];
 
+                if ~strcmp(submethods{1},'')
+                    full_method_name = [method_name '_' submethod_name];
+                else
+                    full_method_name = method_name;
+                end
+            
                 switch method_instance.level
                     case "whole_brain"
                         method_struct.(full_method_name) = zeros(1, RP.n_repetitions);
