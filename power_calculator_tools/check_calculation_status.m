@@ -37,24 +37,16 @@ function existing_repetitions = check_calculation_status(RP)
 % **Date**: March 2025
 
     % Initialize outputs
-    num_methods = length(RP.all_cluster_stat_types);
+    num_methods = length(RP.all_full_stat_type_names);
     existing_repetitions = struct();
 
     % Iterate through all methods and check existing repetitions
     for stat_id = 1:num_methods
-        RP.cluster_stat_type = RP.all_cluster_stat_types{stat_id};
-        
-        % I hate the Omnibus thing. I need to fix this
-        if ~strcmp(RP.cluster_stat_type, 'Omnibus')
-            omnibus_str = 'nobus';
-        else
-            omnibus_str = RP.omnibus_type;
-        end
-
+        stat_type = RP.all_full_stat_type_names{stat_id};
+       
         % Get the filename using create_and_check_rep_file
         [existence, file_path] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
-                                                           RP.test_type, RP.cluster_stat_type, ...
-                                                           omnibus_str, RP.n_subs_subset, ...
+                                                           RP.test_type, stat_type, RP.n_subs_subset, ...
                                                            RP.testing);
 
         if existence
@@ -66,17 +58,17 @@ function existing_repetitions = check_calculation_status(RP)
                 if isfield(loaded_data, 'brain_data') && isfield(loaded_data.brain_data, 'pvals_all')
                     % Count only columns that contain at least one non-NaN value
                     valid_reps = sum(any(~isnan(loaded_data.brain_data.pvals_all), 1));
-                    existing_repetitions.(RP.cluster_stat_type) = valid_reps;
+                    existing_repetitions.(stat_type) = valid_reps;
                 else
-                    existing_repetitions.(RP.cluster_stat_type) = 0; % File exists but no repetitions found
+                    existing_repetitions.(stat_type) = 0; % File exists but no repetitions found
                 end
 
             catch
                 warning('Error loading %s. Assuming 0 repetitions.', file_path);
-                existing_repetitions.(RP.cluster_stat_type) = 0;
+                existing_repetitions.(stat_type) = 0;
             end
         else
-            existing_repetitions.(RP.cluster_stat_type) = 0; % File does not exist
+            existing_repetitions.(stat_type) = 0; % File does not exist
         end
     end
 end

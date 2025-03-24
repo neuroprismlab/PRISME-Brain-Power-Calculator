@@ -53,16 +53,65 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
     % Compute p-values for each statistical method
     for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
         STATS.statistic_type = RPc.Value.all_cluster_stat_types{stat_id};
-        STATS.omnibus_type = RPc.Value.omnibus_type;
+        method_instance = feval(STATS.statistic_type);
+        
+        % Check if the method has sub_methods
+        has_submethods = isprop(method_instance, 'submethod');
 
-        % Stop computing for this method if we reached its required repetitions
-        if rep_id <= RPc.Value.existing_repetitions.(STATS.statistic_type)
-            continue;
+        if has_submethods
+            submethods = method_instance.submethod;
+            submethods_struct = struct();
+        
+            for i = 1:numel(submethods)
+                sub = submethods{i};
+                full_name = [STATS.statistic_type '_' sub];
+        
+                % Compute only if:
+                % - this submethod is selected, AND
+                % - this repetition has not been completed yet
+                if ismember(sub, RPc.Value.all_submethods) && ...
+                   rep_id > RPc.Value.existing_repetitions.(full_name)
+                    submethods_struct.(sub) = true;
+                else
+                    submethods_struct.(sub) = false;
+                end
+            end
+        
+            % Skip method if no submethods need computation
+            if ~any(struct2array(submethods_struct))
+                continue;
+            end
+        
+            STATS.submethods = submethods_struct;
+        
+        else
+            % No submethods — check if this method should run
+            if ~ismember(STATS.statistic_type, RPc.Value.all_cluster_stat_types) || ...
+               rep_id <= RPc.Value.existing_repetitions.(STATS.statistic_type)
+                continue;
+            end
+        
+            STATS.submethods = struct();  % Just for consistency
         end
         
         [pvals, pvals_neg] = p_value_from_method(STATS, GLM_stats);
         pvals_method.(STATS.statistic_type) = pvals;
         pvals_method_neg.(STATS.statistic_type) = pvals_neg;
+
+        if isstruct(pvals) && isstruct(pvals_neg)
+            submethods = fieldnames(pvals);
+            for i = 1:numel(submethods)
+                name = [STATS.statistic_type '_' submethods{i}];
+                pvals_method.(name) = pvals.(submethods{i});
+                pvals_method_neg.(name) = pvals_neg.(submethods{i});
+            end
+        elseif ~isstruct(pvals) && ~isstruct(pvals_neg)
+            % Simple vector case
+            pvals_method.(STATS.statistic_type) = pvals;
+            pvals_method_neg.(STATS.statistic_type) = pvals_neg;
+        else
+            error("Mismatch between pvals and pvals_neg: one is a struct and the other is not.");
+        end
     end
     
  

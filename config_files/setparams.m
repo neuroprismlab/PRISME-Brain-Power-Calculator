@@ -1,17 +1,36 @@
 function Params = setparams()
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% User-defined parameters for running NBS with design matrix via command line
+%% setparams
+% User-defined parameters for running ground-truth and repetition calculations.
 %
-% Can define all numerical arguments as numeric or string types
-% (Original NBS designed to parse string data)
+% This script sets the parameters for both the ground-truth (gt) workflow and the
+% repetition calculation in the power calculator. Note that not all parameters are
+% used by both processes; some parameters are specific to the ground-truth workflow,
+% while others are specific to the repetition calculations. However, all are defined 
+% in this single file.
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Usage:
+%   Call setparams() at the beginning of your analysis to load all necessary 
+%   parameters. For example:
+%
+%       Params = setparams();
+%
+%   The returned structure 'Params' contains settings for:
+%     - Data and result directories (e.g., save_directory, data_dir, gt_data_dir)
+%     - Ground-truth settings (e.g., gt_origin)
+%     - NBS-related paths (nbs_dir, other_scripts_dir)
+%     - Scan and resampling parameters (e.g., n_frames, use_trimmed_rest)
+%     - Parallel processing options (parallel, n_workers)
+%     - Repetition and batching settings (n_repetitions, batch_size, list_of_nsubset)
+%     - Statistical test and threshold parameters (nbs_method, tthresh_first_level, pthresh_second_level,
+%       all_cluster_stat_types, omnibus_type)
+%     - Testing overrides for rapid development (testing, test_n_perms, test_n_repetitions, test_n_workers)
+%
+% Author: Fabricio Cravo | Date: March 2025
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -42,7 +61,7 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 30;
@@ -64,11 +83,15 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
 Params.all_cluster_stat_types = {'Parametric_Bonferroni' 'Parametric_FDR', 'Size', 'TFCE', ...
     'Constrained', 'Constrained_FWER', 'Omnibus'};
+% Params.all_cluster_stat_types = {'Parametric_Bonferroni'};
+Params.all_cluster_stat_types = {'Parametric'};
+
+Params.all_submethods = {'FWER', 'FDR'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
-%Params.all_omnibus_types = {'Multidimensional_cNBS'};
-Params.omnibus_type = 'Multidimensional_cNBS';
+% Params.all_omnibus_types = {'Multidimensional_cNBS'};
+% Params.omnibus_type = 'Multidimensional_cNBS';
                  
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
