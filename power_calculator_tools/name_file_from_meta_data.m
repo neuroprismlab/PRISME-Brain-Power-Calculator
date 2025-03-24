@@ -4,7 +4,6 @@ function file_name = name_file_from_meta_data(meta_data)
     test_name = get_test_components_from_meta_data(meta_data.test_components);
 
     [~, file_name] = create_and_check_rep_file(NaN, data_set_name, test_name, ...
-        meta_data.test, meta_data.test_type, meta_data.omnibus, meta_data.subject_number, ...
-        meta_data.testing_code);
+        meta_data.test, meta_data.test_type, meta_data.subject_number, meta_data.testing_code);
 
 end

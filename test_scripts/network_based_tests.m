@@ -5,16 +5,20 @@ function network_based_tests(data_set_name)
 
     Params = common_test_setup(data_set_name);
 
-    stat_method_cell = {'Constrained', 'Constrained_FWER'};
+    stat_method_cell = {'Constrained'};
+    submethod_cell = {'FWER', 'FDR'};
+    full_method_name_cell = {'Constrained_FWER', 'Constrained_FDR'};
+
     Params.all_cluster_stat_types = stat_method_cell;
+    Params.all_submethods = submethod_cell;
 
     rep_cal_function(Params)
     
     ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
     
     task_name = get_task_name_for_test(data_set);
-    for i = 1:length(stat_method_cell)
-        method = stat_method_cell{i};
+    for i = 1:length(full_method_name_cell)
+        method = full_method_name_cell{i};
 
         % The query is based on how the dataset is created
         query = {'testing', data_set_name, task_name, method, 'subs_40', 'brain_data'};
