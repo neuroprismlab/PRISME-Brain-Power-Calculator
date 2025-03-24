@@ -3,7 +3,7 @@ classdef Omnibus
         level = "whole_brain";
         permutation_based = true;
         % Add remaning methods here when implemented
-        sub_methods = {'Multidimensional_cNBS'};
+        submethod = {'Multidimensional_cNBS'};
     end
     
     methods

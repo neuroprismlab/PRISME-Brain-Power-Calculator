@@ -51,6 +51,9 @@ function rep_cal_function(Params)
     Params.atlas_file = atlas_data_set_map(Params);
     [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
     
+    %% Check method validity
+    check_stat_method_class_validity(Params);
+    
     %% Create output directory - setup save directory
     Params = create_output_directory(Params);
 

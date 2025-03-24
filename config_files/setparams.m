@@ -82,7 +82,6 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
                             % Only used if cluster_stat_type='Size'
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'TFCE', 'Constrained', 'Omnibus'};
-Params.all_cluster_stat_types = {'Omnibus'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
