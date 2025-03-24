@@ -169,7 +169,7 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     
     
     %% Get stat level - edge, network, or brain
-    stat_gt_level_str = set_statistic_level(rep_data.meta_data.test_type);
+    stat_gt_level_str = rep_data.meta_data.statistic_level;
 
     %dcoeff_edge=dcoeff.edge;
     %dcoeff=dcoeff.(stat_gt_level_str);

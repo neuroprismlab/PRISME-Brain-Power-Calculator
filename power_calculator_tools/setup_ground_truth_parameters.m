@@ -4,6 +4,8 @@ function RP = setup_ground_truth_parameters(RP)
     % organization}
     % Set types - one edge, one cluster, one brain
     RP.all_cluster_stat_types = {'Ground_Truth'};
+    RP.all_full_stat_type_names = {'Ground_Truth'};
+    RP.full_name_method_map = containers.Map({'Ground_Truth'}, {'Ground_Truth'});
 
     % This is a ground_truth calculation - set flag to true
     RP.ground_truth = true; 
