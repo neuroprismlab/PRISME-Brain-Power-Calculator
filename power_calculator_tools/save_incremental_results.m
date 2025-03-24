@@ -39,7 +39,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 %
 % Author: Fabricio Cravo | Date: March 2025
 
-    for stat_id = 1:length(RP.all_cluster_stat_types)
+    for stat_id = 1:length(RP.all_full_stat_type_names)
         method_name = RP.all_full_stat_type_names{stat_id};
         
         [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
