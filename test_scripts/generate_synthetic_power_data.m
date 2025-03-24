@@ -8,8 +8,8 @@ function generate_synthetic_power_data()
     end
 
     % Define test types based on whether they are edge-level or network-level
-    edge_level_tests = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE'};
-    network_level_tests = {'Constrained', 'Constrained_FWER'};
+    edge_level_tests = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'TFCE'};
+    network_level_tests = {'Constrained_FWER', 'Constrained_FDR'};
 
     % Set fixed number of edges and networks (arbitrary for synthetic testing)
     num_edges = 10;   % Example: 100 edges for edge-level tests
@@ -76,7 +76,7 @@ function generate_synthetic_power_data()
         meta_data.map = 'power';
         meta_data.test = 'synthetic';  % Placeholder test type
         meta_data.test_components = {'REST', 'TASK'};
-        meta_data.omnibus = NaN;
+        meta_data.statistic_level = get_statistic_level_from_test_type(tt, edge_level_tests, network_level_tests);
         meta_data.subject_number = 40; % Single fixed subject number
         meta_data.testing_code = 1; % Indicator for test mode
         meta_data.test_type = tt;  % Critical test type distinction

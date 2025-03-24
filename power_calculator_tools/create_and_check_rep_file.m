@@ -1,6 +1,5 @@
 function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_set_name, test_components, ...
-                                                                 test_type, stat_type, ...
-                                                                 omnibus_type, rep_subject_number, testing)
+                                                                 test_type, stat_type, rep_subject_number, testing)
 %% create_and_check_rep_file
 % **Description**
 % Constructs a filename for a repetition result file based on various test and 
@@ -43,18 +42,14 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
     %% Preprocess inputs
     subject_number_str = strcat('subs_', int2str(rep_subject_number));
    
-    % If not omnibus, set it to none
-    if ~strcmp(stat_type, 'Omnibus')
-        omnibus_type = 'nobus';
-    end
 
     %% Make file name
     if ~strcmp(stat_type, 'Ground_Truth')
-        rep_file_name = sprintf('%s-%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                                stat_type, omnibus_type, subject_number_str);
-    else
         rep_file_name = sprintf('%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                            stat_type, omnibus_type);
+                                stat_type, subject_number_str);
+    else
+        rep_file_name = sprintf('%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                                stat_type);
     end
 
     if testing == 1

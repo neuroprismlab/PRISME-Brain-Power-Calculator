@@ -23,7 +23,7 @@ function generate_synthetic_gt_data()
     meta_data.map = 'power';
     meta_data.test = 'synthetic';  % Placeholder test type
     meta_data.test_components = {'REST', 'TASK'};
-    meta_data.omnibus = NaN;
+    meta_data.statistic_level = 'whole_brain';
     meta_data.subject_number = 40; % Fixed subject number for testing
     meta_data.testing_code = 1; % Indicator for test mode
     meta_data.run_time = rand() * 10; % Fake runtime

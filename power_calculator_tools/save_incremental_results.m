@@ -39,14 +39,12 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 %
 % Author: Fabricio Cravo | Date: March 2025
 
-    for stat_id = 1:length(RP.all_cluster_stat_types)
-        method_name = RP.all_cluster_stat_types{stat_id};
-        RP.cluster_stat_type = method_name;
+    for stat_id = 1:length(RP.all_full_stat_type_names)
+        method_name = RP.all_full_stat_type_names{stat_id};
         
         [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
                                                             RP.test_type, method_name, ...
-                                                            RP.omnibus_type, RP.n_subs_subset, ...
-                                                            RP.testing);
+                                                            RP.n_subs_subset, RP.testing);
 
         output_dir_path = fileparts(output_dir);
         if ~exist(output_dir_path, 'dir')
@@ -63,7 +61,8 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         end
 
         % **Ensure pvals_all is initialized correctly**
-        method_instance = feval(method_name);  % Instantiate the method
+        method_class_name = RP.full_name_method_map(method_name);
+        method_instance = feval(method_class_name);  % Instantiate the method
         
         switch method_instance.level
             case "whole_brain"
@@ -119,10 +118,11 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         meta_data.map = RP.data_set_map;
         meta_data.test = RP.test_type;
         meta_data.test_components = strsplit(RP.test_name, '_');
-        meta_data.omnibus = get_omnibus_type(RP);
         meta_data.subject_number = RP.n_subs_subset;
         meta_data.testing_code = RP.testing;
-        meta_data.test_type = RP.cluster_stat_type;
+        meta_data.test_type = method_name;
+        meta_data.parent_method = method_class_name;
+        meta_data.statistic_level = method_instance.level;
         meta_data.rep_parameters = RP;
         meta_data.date = datetime("today");
 

@@ -42,7 +42,7 @@ for i = 1:length(rep_files)
             continue;
         end
         
-        stat_level = set_statistic_level(rep_data.meta_data.test_type);
+        stat_level = rep_data.meta_data.statistic_level;
         gt_data.brain_data = extract_gt_brain_data(gt_data, stat_level);
 
         % Compute power using the extracted repetition and GT data

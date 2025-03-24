@@ -1,4 +1,4 @@
-function stat_level = set_statistic_level(test_type)
+function stat_level = set_statistic_level(method_instance_name)
 
     switch test_type
         

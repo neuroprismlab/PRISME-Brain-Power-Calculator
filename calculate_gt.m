@@ -1,34 +1,36 @@
-%% Ground Truth NBS Benchmarking Workflow
-% This script sets up and runs a ground-truth workflow for the power 
-% calculator. It is used to estimate the true effect locations using all
-% subjects from a dataset. 
-%  It prepares parameters, loads data, configures the experiment, 
-% and executes tests across different outcomes.
-%
-% Workflow:
-% 1. Set the working directory to the script location and clear unwanted variables.
-% 2. Add necessary paths for NBS_Calculator and supporting code.
-% 3. Prepare parameters by calling setparams() and enabling ground truth mode 
-%    (Params.ground_truth = true) with parallel processing disabled.
-% 4. Load the dataset if it is not already in the workspace.
-% 5. Setup experiment data (n_nodes, n_var, n_repetitions) via setup_experiment_data.
-% 6. Create the output directory, get dataset name, and assign atlas file.
-% 7. Create a ground truth-specific output directory.
-% 8. Initialize parallel workers as specified.
-% 9. For each test (field in OutcomeData):
-%    a. Copy Params to RP and assign the test name.
-%    b. Infer test type origin using infer_test_from_data.
-%    c. Depending on the test type:
-%       - Call subs_data_from_score_condition for 'score_cond' tests.
-%       - Call subs_data_from_contrast for 'contrast' tests.
-%    d. Create node masks.
-%    e. Setup ground truth-specific parameters via setup_ground_truth_parameters.
-%    f. Run the benchmarking process using run_benchmarking.
-%
-% Author: Fabricio Cravo | Date: March 2025
+%% Ground-Truth Power Calculator Workflow
+% This script runs the ground-truth workflow for the power calculator. It uses 
+% the entire dataset to compute t-test statistics for each functional connectivity 
+% (FC) edge or network. A nonzero t-test value indicates the presence of an effect, 
+% with the sign of the t-statistic indicating effect direction. Since the full dataset 
+% is used, only one repetition is required.
 %
 % Usage:
-%   Simply run the script to execute the ground truth benchmarking workflow.
+%   1. Before running Calculate_gt, open setparams.m and manually update the 
+%      parameters to suit your analysis (e.g., dataset file name, directories, etc.).
+%   2. Save your changes in setparams.m.
+%   3. Run Calculate_gt, which will load the updated parameters, load the dataset, 
+%      configure the experiment (with ground_truth enabled), perform the t-tests, 
+%      and save the ground-truth effect estimates.
+%
+% Key Points:
+% - Uses the entire dataset (all subjects) for accurate effect size estimation.
+% - Only one repetition is performed since a full-sample estimate is computed.
+% - The t-test results are used to determine whether each FC edge shows a positive 
+%   or negative effect.
+% - Ground-truth results are saved for use in downstream power calculations.
+%
+% Workflow:
+%   1. Load or generate the dataset.
+%   2. Configure experiment parameters via setparams (ensure you update this file as needed).
+%   3. Enable ground_truth mode and disable parallel processing.
+%   4. Set up experiment parameters (n_nodes, n_var, n_repetitions) using setup_experiment_data.
+%   5. Create the output directory and assign dataset names/atlas.
+%   6. Load outcome and brain data from the dataset.
+%   7. For each test, infer the test type and compute t-test statistics.
+%   8. Set ground-truth-specific parameters and run the benchmarking workflow.
+%
+% Author: Fabricio Cravo | Date: March 2025
 
 addpath('/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator')
 

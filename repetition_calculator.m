@@ -1,31 +1,34 @@
-%% Questions
-    %
-    %% Potential issues
-    % - nbs_method different than statistic_type - ? 
-    % - UI.size.ui - what is it?
-    % - case 3,4, null_stats is not really stat, in get_constrained_stats
-    % in NBSstats_smn.m
-    %
-    %% THE ONE BELOW IS SUPER IMPORTANT
-    % - On NBSedge_level_parametric_corr - t-test (for t2) assumes that the
-    % number of subjects in both groups is equal 
-    % - should we correct for different group variances? Welch's app
-    % - NBSglm_smn.m is using a simple average to calculate the t-test
-    % statistics for the onesample case
-    %
-    % - Params.cluster_size_type - is it being used? 
-    % - bgl value?
-    % - Extent and Intensity - Which one?
-    %
-    % - Atlas name: map268_subnetwork.mat
-    %
-    %% TODO
-    % - shen atlas check 
-    % - what atlas for the abcd dataset? what are the other atlases
-    % - fix t2 test
-    % - check git task list
-    %
-    % PARAMETRIC METHOD MIGHT HAVE AN ISSUE
+%% Repetition Calculation Workflow
+% This script sets up and runs the repetition calculation workflow for the 
+% power calculator. It computes repeated statistical analyses on randomly 
+% sampled subsets of subjects to enable power estimation via simulation.
+%
+% Usage:
+%   1. Before running this script, open setparams.m and manually update the 
+%      parameters specific to the repetition calculation (e.g., dataset file name,
+%      number of repetitions, subset sizes, etc.).
+%   2. Save your changes in setparams.m.
+%   3. Run this script (e.g., calculate_repetitions) to load the data, configure 
+%      parameters, perform the t-tests on each subset, and save the repetition results.
+%
+% Key Points:
+% - Uses user-specified subset sizes and repetition counts to simulate repeated 
+%   analyses.
+% - Each repetition is based on a random sampling of subjects.
+% - Results (e.g., p-values, edge statistics, and cluster statistics) are saved 
+%   incrementally for downstream power calculations.
+%
+% Workflow:
+%   1. Load or generate the dataset.
+%   2. Configure experiment parameters using setparams.
+%   3. Load data and prepare the experiment (via setup_experiment_data).
+%   4. Create output directories and assign dataset names/atlas.
+%   5. Initialize parallel processing (if enabled).
+%   6. Loop over each test: infer test type, compute t-test statistics for 
+%      the repetition subsets, and run the repetition workflow.
+%   7. Save the updated results incrementally.
+%
+% Author: Fabricio Cravo | Date: March 2025
 
 % Set working directory to the directory of this script
 scriptDir = fileparts(mfilename('fullpath'));

@@ -5,9 +5,13 @@ function edge_based_tests(data_set_name)
 
     Params = common_test_setup(data_set_name);
     
-    stat_method_cell = {'Parametric_Bonferroni', 'Parametric_FDR', 'Size', 'TFCE'};
+    % Might have to improve this in the future
+    stat_method_cell = {'Parametric', 'Size', 'TFCE'};
+    submethod_cell = {'FWER', 'FDR'};
+    full_method_name_cell = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'TFCE'};
 
     Params.all_cluster_stat_types = stat_method_cell;
+    Params.all_submethods = submethod_cell;
 
     rep_cal_function(Params)
     
@@ -18,8 +22,8 @@ function edge_based_tests(data_set_name)
     end
     
     task_name = get_task_name_for_test(data_set);
-    for i = 1:length(stat_method_cell)
-        method = stat_method_cell{i};
+    for i = 1:length(full_method_name_cell)
+        method = full_method_name_cell{i};
 
         % The query is based on how the dataset is created
         query = {'testing', data_set_name, task_name, method, 'subs_40', 'brain_data'};

@@ -1,30 +1,71 @@
 function all_pvals = initialize_global_pvals(RP, max_rep_pending)
+%% initialize_global_pvals
+% Preallocates a cell array to store p-value arrays for each repetition.
+%
+% Inputs:
+%   - RP: Configuration structure containing:
+%         * all_cluster_stat_types: Cell array of statistical method names.
+%         * n_repetitions: Total number of repetitions.
+%         * n_var: Number of variables (edges) for edge-level methods.
+%         * edge_groups: Matrix or vector used to define network-level grouping.
+%   - max_rep_pending: The number of repetitions for which p-values need to be preallocated.
+%
+% Outputs:
+%   - all_pvals: A 1×max_rep_pending cell array. Each cell contains a structure
+%                with fields corresponding to each (sub)method. For each submethod,
+%                an array of zeros is preallocated with size depending on the method level:
+%                  - "whole_brain": 1×n_repetitions vector.
+%                  - "network": (number of unique networks – 1)×n_repetitions matrix.
+%                  - "edge": n_var×n_repetitions matrix.
+%
+% Example:
+%   all_pvals = initialize_global_pvals(RP, max_rep_pending);
+%
+% Author: Fabricio Cravo | Date: March 2025
+
     % Preallocate a cell array for each repetition
     all_pvals = cell(1, max_rep_pending);
 
     % Loop over repetitions
     for rep_idx = 1:max_rep_pending
-        method_struct = struct();  % Preallocate struct to store sparse matrices
+        method_struct = struct();  % Struct to store preallocated arrays
 
         % Loop over all statistical methods
         for stat_id = 1:length(RP.all_cluster_stat_types)
             method_name = RP.all_cluster_stat_types{stat_id};
-            method_instance = feval(method_name); % Instantiate method
+            method_instance = feval(method_name); % Instantiate class
             
-            % Allocate correct sparse matrix size based on method level
-            switch method_instance.level
-                case "whole_brain"
-                    method_struct.(method_name) = zeros(1, RP.n_repetitions);
-                case "network"
-                    method_struct.(method_name) = zeros(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
-                case "edge"
-                    method_struct.(method_name) = zeros(RP.n_var, RP.n_repetitions);
-                otherwise
-                    error("Unknown statistic level: %s", method_instance.level);
+            % Check submethods exist
+            if isprop(method_instance, 'submethod')
+                submethods = method_instance.submethod;
+            else
+                submethods = {''};  
+            end
+           
+            % Preallocate for each submethod
+            for i = 1:numel(submethods)
+                submethod_name = submethods{i};
+
+                if ~strcmp(submethods{1},'')
+                    full_method_name = [method_name '_' submethod_name];
+                else
+                    full_method_name = method_name;
+                end
+            
+                switch method_instance.level
+                    case "whole_brain"
+                        method_struct.(full_method_name) = zeros(1, RP.n_repetitions);
+                    case "network"
+                        method_struct.(full_method_name) = zeros(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
+                    case "edge"
+                        method_struct.(full_method_name) = zeros(RP.n_var, RP.n_repetitions);
+                    otherwise
+                        error("Unknown statistic level: %s", method_instance.level);
+                end
             end
         end
-        % Assign preallocated struct to corresponding repetition cell
+
+        % Store per-repetition struct
         all_pvals{rep_idx} = method_struct;
     end
-
 end
