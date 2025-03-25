@@ -1,8 +1,23 @@
-%% Important
-% Changed NBSrun_smn pvalue corrections scripts to <= for the test scripts
-% Notes - issue with <= / how much does it impact power?
-% FWER can become an issue ....
-% MatLab mafdr is not working so well ... I had to modify it 
+%% test_workflow
+% Executes a full test suite to validate the statistical power calculator framework.
+%
+% This script runs unit and integration tests for multiple core components, 
+% including edge-based and network-based inference, contrast-based test detection, 
+% and ground-truth benchmarking validation. It ensures that test datasets are 
+% correctly created, inference types are properly identified, and statistical 
+% procedures return outputs in expected formats.
+%
+% Workflow
+% - Create synthetic datasets for t-tests (one-sample, two-sample, and correlation).
+% - Run statistical procedures:
+%     - `edge_based_tests`: Executes edge-level statistical methods.
+%     - `network_based_tests`: Executes network-level inference using an atlas.
+% - Validate inference-type detection using contrast labels.
+% - Verify integration between simulated ground truth and power estimation.
+%
+% Notes
+% - This test suite is designed for local execution and development.
+% - Omnibus test validation is not yet implemented 
 
 clear;
 clc;

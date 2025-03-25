@@ -1,23 +1,26 @@
 function check_pval_output_data(RP, all_pvals, all_pvals_neg)
 %% check_pval_output_data
-% Validates the structure of p-value outputs to ensure consistency with the expected method names.
+% Validates the structure and dimensions of p-value outputs from each statistical method.
 %
-% This function checks that all p-values stored in the `all_pvals` and `all_pvals_neg` cell arrays
-% contain only valid keys corresponding to the expected full method names (e.g., `'Parametric_FDR'`).
-% It does not validate the dimensions of the outputs.
-%
-% This is typically used after p-value calculation to ensure that the results were produced
-% for the correct methods and that no invalid or unintended method names were included.
+% This function performs two key validation steps:
+%   1. Ensures that all method names in the p-value outputs match expected full method names 
+%      (e.g., 'Parametric_FDR').
+%   2. Verifies that the size of each output array is consistent with its expected shape based on
+%      the method's analysis level: whole-brain, network, or edge.
 %
 % Inputs:
-%   - RP: Repetition parameter struct with field:
-%       - `all_full_stat_type_names`: A list of expected full method names (e.g., {'TFCE', 'Size', 'Omnibus_XYZ'}).
-%   - all_pvals: Cell array of structs (per repetition) storing positive effect p-values.
-%   - all_pvals_neg: Cell array of structs (per repetition) storing negative effect p-values.
+%   - RP: Struct with benchmarking parameters. Must contain:
+%       * all_full_stat_type_names: Cell array of all valid method_submethod names.
+%       * full_name_method_map: Map from full names to base class names.
+%       * n_repetitions, n_var, edge_groups: For dimension validation.
+%   - all_pvals: Cell array of p-value structures (positive effects).
+%   - all_pvals_neg: Cell array of p-value structures (negative effects).
 %
-% Internal Functions:
-%   - `l_test_struct`: Verifies that the fields in each struct are all expected method names.
-%   - `l_test_output_size`: (defined but not called) Checks if the dimensions of the output arrays match the expected sizes.    
+% Example:
+%   check_pval_output_data(RP, all_pvals, all_pvals_neg)
+%
+% Notes:
+%   - Throws an error if any validation check fails.   
 
     % Only necessary to check a single repetition
     test_struct = all_pvals{1};
@@ -69,7 +72,7 @@ function l_test_output_size(RP, test_struct)
                 sz = size(test_struct.(full_method_name));
                 assert(isequal(sz, [RP.n_var, 1]) || isequal(sz, [1, RP.n_var]), ...
                     'Size mismatch for method "%s" (edge)', full_method_name);
-                
+
             otherwise
                 error("Unknown statistic level: %s", method_instance.level);
         

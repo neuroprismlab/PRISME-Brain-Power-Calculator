@@ -1,3 +1,46 @@
+%% Workflow for Power Calculation
+% This script performs the complete power calculation workflow by processing 
+% repetition files one-by-one and computing power metrics against ground-truth data.
+%
+% The workflow proceeds as follows:
+%   1. Initial Setup:
+%      - Sets the working directory to the script location.
+%      - Adds all subdirectories to the MATLAB path.
+%      - Clears variables (except Study_Info) and clears the Command Window.
+%
+%   2. Parameter and Data Loading:
+%      - Loads experiment parameters via setparams.
+%      - Loads dataset information (Study_Info) from Params.data_dir if not already in the workspace.
+%      - Determines the dataset name using get_data_set_name.
+%
+%   3. Repetition File Processing:
+%      - Searches for repetition files in the designated output directory.
+%      - Throws an error if no repetition files are found.
+%
+%   4. Output Directory Creation:
+%      - Ensures that the power output directory exists by calling create_power_output_directory.
+%
+%   5. Iterative Processing:
+%      - For each repetition file:
+%          a. Loads the repetition data.
+%          b. Extracts metadata and constructs the corresponding ground-truth (GT) filename.
+%          c. Loads GT data (skips file if not found).
+%          d. Extracts relevant brain data from the GT file using extract_gt_brain_data.
+%          e. Computes power using summarize_tprs.
+%          f. Clears repetition and GT data from memory.
+%
+% Dependencies:
+%   - setparams
+%   - get_data_set_name
+%   - create_power_output_directory
+%   - construct_gt_filename
+%   - extract_gt_brain_data
+%   - summarize_tprs
+%
+% Notes:
+%   - This script is designed to minimize memory usage by processing repetition files sequentially.
+%   - It requires that repetition and GT data files exist in the expected directories.
+
 %% Initial setup
 scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));

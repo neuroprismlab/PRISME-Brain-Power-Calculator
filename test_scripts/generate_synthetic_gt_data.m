@@ -1,4 +1,35 @@
 function generate_synthetic_gt_data()
+%% generate_synthetic_gt_data
+% Generates synthetic ground truth data for power calculation testing.
+%
+% This function creates and saves synthetic data representing ground-truth
+% outcomes for both edge-level and network-level tests. It simulates true
+% positive and negative effects by assigning nonzero edge and cluster statistics
+% to fixed percentages of edges and networks. The resulting data is saved in a 
+% designated output directory.
+%
+% Outputs:
+%   - No direct output; the synthetic ground truth data is saved as a MATLAB file
+%     in the './power_calculator_results/ground_truth/syn_power/' directory.
+%
+% Workflow:
+%   1. Define the output directory and ensure it exists.
+%   2. Set fixed numbers of edges and networks for synthetic testing.
+%   3. Calculate split points corresponding to 25% and 50% of edges/networks.
+%   4. Construct a meta_data structure with fixed parameters (e.g., dataset, map, test type).
+%   5. For edge-level ground truth:
+%      - Assign positive true positives to the first 25% of edges.
+%      - Assign negative true positives to the next 25% of edges.
+%      - Set the negative edge statistics as the negative of the positive ones.
+%   6. For network-level ground truth:
+%      - Similarly, assign positive and negative true positives based on split points.
+%   7. Update meta_data for the edge-level test and generate a filename using
+%      name_file_from_meta_data.
+%   8. Save the brain_data and meta_data structures to the specified output directory.
+%
+% Dependencies:
+%   - name_file_from_meta_data.m
+
     % Directory where synthetic ground truth files will be saved
     output_dir = './power_calculator_results/ground_truth/syn_power/';
     

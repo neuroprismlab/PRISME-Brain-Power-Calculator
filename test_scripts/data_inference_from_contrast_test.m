@@ -1,4 +1,26 @@
 function data_inference_from_contrast_test()
+%% data_inference_from_contrast_test
+% Runs a suite of tests to validate automatic test type inference logic.
+%
+% This function evaluates whether test types (`t` vs. `t2`) are correctly inferred
+% from subject ID overlap between two conditions (e.g., TASK and REST).
+%
+% It uses various configurations of overlapping and non-overlapping subject sets,
+% then confirms that the `subs_data_from_contrast` function correctly prepares
+% the design matrix (X), data matrix (Y), and subject IDs.
+%
+% Outputs:
+%   - None (assertion errors are thrown if validation fails).
+%
+% Workflow:
+%   1. Creates multiple contrast scenarios with different overlap levels between TASK and REST subjects.
+%   2. Calls `test_test_type_inference` to simulate experimental metadata and extract brain data.
+%   3. Uses `test_data_retrieval` to confirm that design matrices and brain data are correctly constructed.
+%
+% Notes:
+%   - Full subject overlap → inferred as one-sample t-test (`t`)
+%   - Partial overlap → should still be classified as (`t`)
+%   - No subject overlap → classified as two-sample t-test (`t2`)
 
     % Run tests for different subject configurations
     % total overlap - t test case
