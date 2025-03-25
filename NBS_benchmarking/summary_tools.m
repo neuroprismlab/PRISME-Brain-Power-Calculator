@@ -129,6 +129,18 @@ end
 %% -------------------------------------------------------------------------%
 % ******** Calculate positives (not *true* positives) **********
 function PowerRes = calculate_positives(rep_data)
+%% calculate_positives
+% Computes positive detection indicators and summary statistics from repetition data.
+% The function thresholds the p-value matrices to create binary indicators of positive
+% detections and then computes summary statistics to support subsequent power analysis.
+%
+% Inputs:
+%   - rep_data: Struct containing repetition data (e.g., p-value matrices and test statistics).
+%
+% Outputs:
+%   - PowerRes: Struct aggregating positive detection metrics and summary statistics.
+%
+
       PowerRes = struct;
       
       %% Get Params and Variables
@@ -166,34 +178,40 @@ end
 %% -------------------------------------------------------------------------%
 % ******** Calculate true positives **********
 function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
+%% calculate_tpr
+% Calculates true positive rates (TPR) from repetition and ground-truth data.
+%
+% This function compares the ground-truth brain data with the power calculation 
+% results to determine the percentage of true positives. It identifies indices with 
+% significant positive and negative effects (based on a threshold) and computes the TPR 
+% according to the statistic level (edge, network, or whole_brain).
+%
+% Inputs:
+%   - rep_data: Struct containing repetition data with meta_data, including the 
+%               field statistic_level and rep_parameters.
+%   - gt_data: Struct containing ground-truth brain data (field brain_data).
+%   - tpr_dthresh: Numeric threshold used to define significant ground-truth effects.
+%   - PowerRes: Struct containing computed detection totals (positives_total and 
+%               positives_total_neg) and possibly other summary metrics.
+%
+% Outputs:
+%   - PowerRes: The updated PowerRes struct with a new field 'tpr' (true positive rate)
+%               computed as a percentage.
+%
+% Workflow:
+%   1. Extracts the statistic level from rep_data.meta_data.
+%   2. Determines indices where ground-truth values exceed the positive threshold or 
+%      fall below the negative threshold.
+%   3. For 'edge' and 'network' levels, it assigns the corresponding positive and negative 
+%      detection totals.
+%   4. For 'whole_brain', it aggregates detections from both positive and negative effects,
+%      then adjusts for the doubled repetitions.
+%   5. Finally, it computes the TPR as the ratio of true positives to the total number of 
+%      repetitions, multiplied by 100.
     
     
     %% Get stat level - edge, network, or brain
     stat_gt_level_str = rep_data.meta_data.statistic_level;
-
-    %dcoeff_edge=dcoeff.edge;
-    %dcoeff=dcoeff.(stat_gt_level_str);
-    
-    % make masks
-    % count dimensions and make upper triangular masks
-    %n_features=length(dcoeff);
-    %n_nodes=int16(roots([1 1 -2*n_features])); % assuming n_nets x n_nets, x = n*(n+1)/2 -> n^2 + n - 2x
-    %n_nodes=n_nodes(end) + remove_matrix_diag.(stat_gt_level_str);
-    %triu_msk=triu(true(n_nodes),remove_matrix_diag.(stat_gt_level_str));
-    % ids_triu=find(triu_msk);
-    
-    % convert network-level ground truth results from lower triangle to upper triangle 
-    % - this sad mismatch is an unfortunate consequence of my summat scripts using the lower tri but NBS toolbox using 
-    % upper tri
-    %
-    % note: benchmarking positives_total is triu (?)
-    % TODO: consider whether here or in dcoeff script above (maybe here?)
-    %if strcmp(stat_gt_level_str,'network') 
-    %    tmp=tril(true(n_nodes));
-    %    dcoeff=structure_data(dcoeff,'mask',tmp);
-    %    dcoeff=dcoeff';
-    %    dcoeff=dcoeff(triu_msk);
-    %end
     
 
     % get indices of positive and negative ground truth dcoefficients

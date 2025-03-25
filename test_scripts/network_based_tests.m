@@ -1,4 +1,19 @@
 function network_based_tests(data_set_name)
+%% network_based_tests
+% Runs automated tests for network-level statistical methods on a given dataset.
+%
+% This function executes the power calculation workflow for constrained (network-based)
+% methods and verifies both the resulting p-values and metadata to ensure correctness.
+%
+% Inputs:
+%   - data_set_name: String specifying the dataset to test (e.g., 'test_hcp_fc.mat')
+%
+% Notes:
+%   - Applies only to constrained network-based methods such as Constrained_FWER and Constrained_FDR.
+%   - Assumes the input dataset was constructed with two networks:
+%       * First row (network 1) contains simulated effects (p < 0.05 expected).
+%       * Second row (network 2) contains no effects (p > 0.5 expected).
+%   - Also verifies metadata consistency using check_test_meta_data.
     
     data_set = load(['./data/', data_set_name]);
     data_set_name = get_data_set_name(data_set);

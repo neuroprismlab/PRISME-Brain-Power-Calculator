@@ -1,4 +1,16 @@
 function Params = common_test_setup(data_set_name)
+%% common_test_setup
+% Configures standard parameters for unit testing statistical methods using a toy dataset.
+%
+% This function sets default parameter values for use in testing workflows. It deletes any
+% previous output folders to avoid residual interference, disables parallel processing
+% (for deterministic behavior), and ensures test values match main parameters.
+%
+% Inputs:
+%   - data_set_name: String name of the test dataset (e.g., 'test_hcp_fc.mat')
+%
+% Output:
+%   - Params: Struct containing all required configuration fields for test execution.
     
     %% Remove output folder if it exists
     if isfolder(['./power_calculator_results/', data_set_name, '/'])

@@ -1,4 +1,25 @@
 function generate_synthetic_power_data()
+%% generate_synthetic_power_data
+% Generates synthetic power calculation data for testing the power calculator.
+%
+% This function creates synthetic brain data and corresponding meta_data for both 
+% edge-level and network-level tests. It simulates functional connectivity data by
+% generating random edge statistics and p-values, and it assigns significant p-values
+% in a predetermined pattern (every 4th repetition) to simulate a 25% power scenario.
+%
+% The synthetic data, including brain_data and meta_data, are saved to the directory
+% './power_calculator_results/syn_power/'.
+%
+% Dependencies:
+%   - get_statistic_level_from_test_type: Determines the statistic level from the test type.
+%   - name_file_from_meta_data: Constructs a filename based on meta_data.
+%
+% Notes:
+%   - For edge-level tests, p-values are generated for a fixed number of edges.
+%   - For network-level tests, p-values are generated for a fixed number of networks.
+%   - The function ensures that any index where both positive and negative p-values are zero
+%     is adjusted to avoid conflicts.
+
     % Directory where synthetic test files will be saved
     output_dir = './power_calculator_results/syn_power/';
     

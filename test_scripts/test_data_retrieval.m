@@ -1,4 +1,30 @@
 function test_data_retrieval(TestData, BrainData, RP)
+%% test_data_retrieval
+% Validates the correctness of the data extraction logic used in the contrast-based test setup.
+%
+% This function uses synthetic brain data and test metadata to ensure that
+% the function subs_data_from_contrast returns a design matrix (X) and 
+% functional connectivity data (Y) with the expected size, values, and subject mappings.
+%
+% Inputs:
+%   - TestData: Struct containing contrast-based test configuration, with a 'contrast' field.
+%   - BrainData: Struct containing synthetic functional connectivity data for TASK and REST.
+%   - RP: Struct of experiment parameters, modified in-place to store the correct sub_ids and test_type.
+%
+% Outputs:
+%   - None (throws assertion errors if validation fails).
+%
+% Workflow:
+%   1. Creates synthetic TASK and REST data with values between -1 and 1.
+%   2. Runs subs_data_from_contrast to extract the design matrix (X), data matrix (Y), and update RP.
+%   3. Validates:
+%       - The structure and values of X for both 't' and 't2' test types.
+%       - The dimensions of Y and consistency with X.
+%       - Subject ID mappings in RP against the expected subsets.
+%       - That the actual values in Y match the expected brain data subtraction or grouping.
+%
+% Throws an error if any check fails.
+
     % Ensures that subs_data_from_contrast correctly processes TestData & BrainData
 
     % Create mock brain data (assuming 100 features per subject)

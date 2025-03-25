@@ -1,6 +1,4 @@
 function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, varargin)
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script summarizes results data to ultimately compare true positive
 % rates across levels of inference.

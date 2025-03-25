@@ -1,11 +1,20 @@
 function create_test_fc_data_set()
-    %%%
-    %   - Creates dumy data to test the hpc related code
-    %   It is a 20 subject dataset with only 10 ROIs - 5 with fc during
-    %   task and 5 with equal fcs to rest - (no effect)
-    %   Whatever method executed must find the 5 ROIs as effects 
-    %
-    %%%
+%% create_test_fc_data_set
+% Generates a synthetic functional connectivity dataset for testing edge-based 
+% statistical methods in the power calculator pipeline.
+%
+% The simulated dataset mimics a task vs. rest contrast, with predefined effects in
+% the upper half of the connectivity matrix.
+%
+% Dataset Structure:
+%   - 50 subjects
+%   - 10 FC edges (from 5 ROIs)
+%   - 6 edges are assigned a task-based effect (fixed increase during TASK)
+%   - 4 edges show no effect (identical in TASK and REST)
+%
+% Notes:
+%   - Methods under test should reliably identify the first 6 edges as significant.
+%   - Saved to: ./data/test_hcp_fc.mat
     
     %% Definition of the tast dataset description
     nodes = 5;

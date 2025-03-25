@@ -9,6 +9,9 @@ function check_stat_method_class_validity(Params)
 % Inputs:
 %   - Params: struct with field 'all_cluster_stat_types'
 %
+% Notes:
+%   - Does not return anything. Only throws errors
+%
 % Author: Fabricio Cravo
 % Date: March 2025
 

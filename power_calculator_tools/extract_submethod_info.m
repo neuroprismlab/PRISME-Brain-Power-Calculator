@@ -1,5 +1,6 @@
 function [all_stat_types, method_map] = extract_submethod_info(Params)
-% extract_submethod_info - Expand method classes into method_submethod combinations
+%% extract_submethod_info 
+% Expand method classes into method_submethod combinations
 % and map each full name to its original method name.
 %
 % Inputs:

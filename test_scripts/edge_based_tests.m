@@ -1,4 +1,26 @@
 function edge_based_tests(data_set_name)
+%% edge_based_tests
+% Runs automated tests for edge-level statistical methods on a given dataset.
+%
+% This function sets up the appropriate parameters, runs the power calculation
+% workflow for edge-based methods, and verifies the output p-values and metadata
+% to ensure expected behavior.
+%
+% Inputs:
+%   - data_set_name: String containing the name of the test dataset (e.g., 'test_hcp_fc.mat')
+%
+% Dependencies:
+%   - common_test_setup
+%   - rep_cal_function
+%   - unite_results_from_directory
+%   - get_data_set_name
+%   - get_task_name_for_test
+%   - check_test_meta_data
+%
+% Notes:
+%   - Designed for synthetic test datasets generated during testing workflows.
+%   - Verifies that methods correctly detect simulated effects (rows 1-6) and ignore non-effects (rows 7-10).
+%   - Validates metadata fields for consistency and correctness.
 
     data_set = load(['./data/', data_set_name]);
     data_set_name = get_data_set_name(data_set);
