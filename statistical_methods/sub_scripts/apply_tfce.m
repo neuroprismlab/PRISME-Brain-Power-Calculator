@@ -41,16 +41,18 @@ function tfced = apply_tfce(img)
     %% **Initialize Clusters**
     num_nodes = size(img, 1);
     cluster_labels = (1:num_nodes)';  % Start with each node as its own cluster
-    cluster_sizes = ones(num_nodes, 1); % Each node starts as its own cluster
-
+    
+    %% Size is the number of edges connected to the cluster
     clusters(num_nodes) = struct();
     for n = 1:num_nodes
-        clusters(n).edges = false(num_nodes);
         clusters(n).nodes = false(num_nodes, 1);
         clusters(n).nodes(n) = true;
+        clusters(n).node_size = 1;
         clusters(n).size  = 1;
+        clusters(n).active = true;
         clusters(n).has_edges = false;
     end
+    active_edges = false(num_nodes, num_nodes);
 
     %% **Iterate Over Thresholds and Incrementally Merge Clusters**
     for h = num_thresh:-1:1  % Iterate from highest to lowest threshold
@@ -63,59 +65,58 @@ function tfced = apply_tfce(img)
         for k = 1:size(new_edges, 1)
             i = new_edges(k, 1);
             j = new_edges(k, 2);
-
+            active_edges(i, j) = true;
+            active_edges(j, i) = true;
+            
             cluster_i = cluster_labels(i);
             cluster_j = cluster_labels(j);
 
+            clusters(cluster_i).size = clusters(cluster_i).size + 1;
+            clusters(cluster_j).size = clusters(cluster_j).size + 1;
+
+            cluster(cluster_i).has_edges = true;
+            cluster(cluster_j).has_edges = true;
+          
             if cluster_i ~= cluster_j  % Merge only if they are different
                 % Merge smaller cluster into the larger one
-                if cluster_sizes(cluster_i) >= cluster_sizes(cluster_j)
+                if clusters(cluster_i).node_size >= clusters(cluster_j).node_size
                     target_cluster = cluster_i;
                     absorbed_cluster = cluster_j;
                 else
                     target_cluster = cluster_j;
                     absorbed_cluster = cluster_i;
                 end
-
-                % **Add the new edge to the cluster before merging**
-                clusters(target_cluster).edges(i, j) = true;
-                clusters(target_cluster).edges(j, i) = true;
-                clusters(target_cluster).nodes(i) = true;
-                clusters(target_cluster).nodes(j) = true;
-
-                clusters(target_cluster).edges(clusters(absorbed_cluster).edges) = true;
+                
+                % Combine clusters
                 clusters(target_cluster).nodes(clusters(absorbed_cluster).nodes) = true;
-
+                clusters(target_cluster).node_size = clusters(target_cluster).node_size + ...
+                                                        clusters(absorbed_cluster).node_size;
+ 
                 % Update cluster size
                 clusters(target_cluster).size = clusters(target_cluster).size + clusters(absorbed_cluster).size;
-                clusters(target_cluster).has_edges = true; % Mark as active
 
                 % Mark absorbed cluster as merged
-                clusters(absorbed_cluster).size = 0;
+                clusters(absorbed_cluster).active = false;
                 cluster_labels(clusters(absorbed_cluster).nodes) = target_cluster;
-            else
-                % Still add the new edge to the existing cluster
-                clusters(cluster_i).edges(i, j) = true;
-                clusters(cluster_i).edges(j, i) = true;
-                clusters(cluster_i).nodes(i) = true;
-                clusters(cluster_i).nodes(j) = true;
-                clusters(cluster_i).has_edges = true;
             end
+
         end
 
         % **Compute TFCE Contribution Efficiently**
         for c = 1:numel(clusters)
-            if clusters(c).size == 0 || ~clusters(c).has_edges  % Skip merged or inactive clusters
+            if ~clusters(c).active || ~clusters(c).has_edges  % Skip merged or inactive clusters
                 continue;
             end
 
-            % Compute TFCE update for the cluster
-            cluster_size = clusters(c).size; % Count unique edges
+            % Compute TFCE update for this cluster
+            cluster_size = clusters(c).size;  % Already tracked incrementally
             tfce_update = (cluster_size .^ E) .* (th ^ H) * dh;
 
-            % Assign TFCE contributions efficiently
-            tfce_vals(clusters(c).edges) = tfce_vals(clusters(c).edges) + tfce_update;
+            % Update TFCE values only for this cluster's edges
+            node_mask = clusters(c).nodes;
+            tfce_vals(node_mask, node_mask) = tfce_update .* active_edges(node_mask, node_mask);
         end
+        
     end
 
     tfced = tfce_vals;
