@@ -100,7 +100,7 @@ function generate_synthetic_power_data()
         meta_data.statistic_level = get_statistic_level_from_test_type(tt, edge_level_tests, network_level_tests);
         meta_data.subject_number = 40; % Single fixed subject number
         meta_data.testing_code = 1; % Indicator for test mode
-        meta_data.test_type = tt;  % Critical test type distinction
+        meta_data.significance_method = tt;  % Critical test type distinction
         meta_data.run_time = rand() * 10; % Fake runtime
         
         % Add critical power calculation parameters

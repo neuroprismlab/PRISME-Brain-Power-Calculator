@@ -56,8 +56,8 @@ function existing_repetitions = check_calculation_status(RP)
                 
                 % Find meta-data number of saved repetitions - assume
                 % meta-data always correct for efficiency
-                if isfield(loaded_data, 'meta_data') && isfield(loaded_data.meta_data, 'repetition_indices')
-                    valid_reps = length(loaded_data.meta_data.repetition_indices);
+                if isfield(loaded_data, 'meta_data') && isfield(loaded_data.meta_data, 'repetitions_saved')
+                    valid_reps = loaded_data.meta_data.repetitions_saved;
                     existing_repetitions.(stat_type) = valid_reps;
                 else
                     existing_repetitions.(stat_type) = 0; % File exists but no repetition metadata found

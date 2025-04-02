@@ -30,9 +30,9 @@ function RepetitionResults = unite_results_from_directory(varargin)
 
         subject_number = sprintf('subs_%d', meta_data.subject_number);
 
-        test_type = meta_data.test_type;
+        significance_method = meta_data.significance_method;
      
-        struct_query = {data_set_name, task_name, test_type, subject_number};
+        struct_query = {data_set_name, task_name, significance_method, subject_number};
 
         if meta_data.testing_code
             struct_query = [{'testing'}, struct_query];

@@ -87,7 +87,7 @@ function generate_synthetic_gt_data()
 
 
     % Update meta_data for edge-level test
-    meta_data.test_type = 'Ground_Truth'; % Edge-level method
+    meta_data.significance_method = 'Ground_Truth'; % Edge-level method
 
     % Save edge-level ground truth
     filename_edge = name_file_from_meta_data(meta_data);
