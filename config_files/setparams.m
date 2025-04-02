@@ -66,6 +66,10 @@ Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # c
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 5;
 
+%% Skip some tests
+Params.tests_to_skip = [];
+
+
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
