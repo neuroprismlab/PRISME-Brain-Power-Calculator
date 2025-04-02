@@ -21,7 +21,7 @@ function check_test_meta_data(meta_data, method)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset_c2)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
-    assert(strcmp(meta_data.test_type, method))
+    assert(strcmp(meta_data.significance_method, method))
 
     switch meta_data.rep_parameters.test_type
 
