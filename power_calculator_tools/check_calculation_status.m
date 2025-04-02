@@ -51,16 +51,16 @@ function existing_repetitions = check_calculation_status(RP)
 
         if existence
             try
-                % Load the saved file
-                loaded_data = load(file_path, 'brain_data');
+                % Load meta_dta
+                loaded_data = load(file_path, 'meta_data');
                 
-                % Check how many repetitions exist
-                if isfield(loaded_data, 'brain_data') && isfield(loaded_data.brain_data, 'pvals_all')
-                    % Count only columns that contain at least one non-NaN value
-                    valid_reps = sum(any(~isnan(loaded_data.brain_data.pvals_all), 1));
+                % Find meta-data number of saved repetitions - assume
+                % meta-data always correct for efficiency
+                if isfield(loaded_data, 'meta_data') && isfield(loaded_data.meta_data, 'repetition_indices')
+                    valid_reps = length(loaded_data.meta_data.repetition_indices);
                     existing_repetitions.(stat_type) = valid_reps;
                 else
-                    existing_repetitions.(stat_type) = 0; % File exists but no repetitions found
+                    existing_repetitions.(stat_type) = 0; % File exists but no repetition metadata found
                 end
 
             catch
