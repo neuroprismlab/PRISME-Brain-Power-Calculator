@@ -40,14 +40,20 @@ function update_meta_data_submethods(directory)
             end
 
             meta_data.parent_method = l_parent_method_name(meta_data);
-            meta_data.test_type = l_test_type_update(meta_data);
+            meta_data.significance_method = l_test_type_update(meta_data);
+            if isfield(meta_data, 'test_type')
+                meta_data = rmfield(meta_data, 'test_type');
+            end
+
             data_set_name = strcat(meta_data.dataset, '_', meta_data.map);
-            file_name = create_and_check_rep_file('', data_set_name, meta_data.test_components, meta_data.test ...
-                                                    meta_data.test_type)
-            
+            test_components = strjoin(meta_data.test_components, '_');
+            [~, new_file_name] = create_and_check_rep_file('', data_set_name, test_components, meta_data.test, ...
+                                                  meta_data.significance_method, meta_data.subject_number, ...
+                                                  meta_data.testing_code);
+
             % Save both brain_data and meta_data to the new output directory using the same filename
-            new_file_path = fullfile(output_dir, files(i).name);
-            %save(new_file_path, 'brain_data', 'meta_data');
+            new_file_path = fullfile(output_dir, new_file_name);
+            save(new_file_path, 'brain_data', 'meta_data');
         else
             error('File %s does not contain both brain_data and meta_data. Skipping...', files(i).name);
         end
@@ -61,7 +67,7 @@ function parent_name = l_parent_method_name(meta_data)
         case 'Constrained_FDR'
             parent_name = 'Constrained';
 
-        case 'Contrained'
+        case 'Constrained'
             parent_name = 'Constrained'; 
 
         case 'Constrained_FWER'
@@ -96,7 +102,7 @@ function new_test_type = l_test_type_update(meta_data)
 
     switch meta_data.test_type
 
-        case 'Contrained'
+        case 'Constrained'
             new_test_type = 'Constrained_FDR'; 
 
         case 'Constrained_FWER'
