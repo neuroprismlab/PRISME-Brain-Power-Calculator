@@ -9,7 +9,8 @@ function update_meta_data_submethods(directory)
     
     % Define input and output directories
     output_base = '/Users/f.cravogomes/Desktop/Pc_Res_Updated';
-    final_folder = 'abcd_fc'; % This folder name is constant for output
+
+    [~, final_folder, ~] = fileparts(directory);
     output_dir = fullfile(output_base, final_folder);
     
     % Create output directory if it doesn't exist
