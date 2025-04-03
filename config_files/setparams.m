@@ -66,8 +66,9 @@ Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # c
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 5;
 
-%% Skip some tests
-Params.tests_to_skip = [];
+%% Skip some tests - change ranges or the function
+ranges = {[18, 200]};
+Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
 %% List of subjects per subset
