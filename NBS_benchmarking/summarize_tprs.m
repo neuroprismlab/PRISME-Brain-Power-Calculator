@@ -133,6 +133,7 @@ case 'calculate_tpr'
     meta_data = rep_data.meta_data;
 
     save(file_name, "power_data", "meta_data");
+    fprintf('Saved file %s\n', file_name);
            
 end
 

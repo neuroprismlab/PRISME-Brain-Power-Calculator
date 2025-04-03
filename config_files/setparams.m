@@ -29,8 +29,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -67,7 +67,7 @@ Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 10;
 
 %% Skip some tests - change ranges or the function
-ranges = {[19, 200]};
+ranges = {[2, 100]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
