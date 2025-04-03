@@ -68,6 +68,12 @@ function rep_cal_function(Params)
     
     for ti = 1:length(tests)
         t = tests{ti};
+        
+        test_number = str2double(erase(string(ti), 'test'));
+        if ~isempty(Params.tests_to_skip) && Params.tests_to_skip(test_number)
+            continue          
+        end
+
         % Fix RP both tasks
         % RP - stands for Repetition Parameter
        

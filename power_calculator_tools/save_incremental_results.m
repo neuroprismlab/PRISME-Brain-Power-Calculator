@@ -123,7 +123,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         meta_data.significance_method = method_name;
         meta_data.parent_method = method_class_name;
         meta_data.statistic_level = method_instance.level;
-        meta_data.repetitions_saved = reps_to_save{end};
+        meta_data.current_rep_index = reps_to_save{end};
         meta_data.rep_parameters = RP;
         meta_data.date = datetime("today");
 

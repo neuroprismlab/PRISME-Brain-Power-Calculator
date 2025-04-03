@@ -29,8 +29,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -61,10 +61,15 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
+Params.parallel = true; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 30;
+Params.batch_size = 10;
+
+%% Skip some tests - change ranges or the function
+ranges = {[19, 200]};
+Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
+
 
 %% List of subjects per subset
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
@@ -93,9 +98,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = 10;
-Params.test_n_repetitions = 5;
+Params.test_n_repetitions = 20;
 Params.test_n_workers = 2;
 
 end

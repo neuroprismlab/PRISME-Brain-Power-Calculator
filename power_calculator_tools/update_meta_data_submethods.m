@@ -9,7 +9,18 @@ function update_meta_data_submethods(directory)
     
     % Define input and output directories
     output_base = '/Users/f.cravogomes/Desktop/Pc_Res_Updated';
-    final_folder = 'abcd_fc'; % This folder name is constant for output
+
+    %Get the last character
+    last_char = directory(end);
+    
+    % Check if last character is a slash or backslash
+    if last_char == '/' || last_char == '\'
+        directory = directory(1:end-1);
+    else
+        directory = directory;
+    end
+
+    [~, final_folder, ~] = fileparts(directory);
     output_dir = fullfile(output_base, final_folder);
     
     % Create output directory if it doesn't exist
@@ -39,11 +50,18 @@ function update_meta_data_submethods(directory)
                 meta_data = rmfield(meta_data, 'omnibus');
             end
 
-            meta_data.parent_method = l_parent_method_name(meta_data);
+            if isfield(meta_data, 'test_type')
+                meta_data.significance_method = meta_data.test_type;
+                meta_data = rmfield(meta_data, 'test_type');
+            end
+            
             meta_data.significance_method = l_test_type_update(meta_data);
+            meta_data.parent_method = l_parent_method_name(meta_data);
             if isfield(meta_data, 'test_type')
                 meta_data = rmfield(meta_data, 'test_type');
             end
+
+            meta_data.statistic_level = l_get_stat_level(meta_data);
 
             data_set_name = strcat(meta_data.dataset, '_', meta_data.map);
             test_components = strjoin(meta_data.test_components, '_');
@@ -53,6 +71,7 @@ function update_meta_data_submethods(directory)
 
             % Save both brain_data and meta_data to the new output directory using the same filename
             new_file_path = fullfile(output_dir, new_file_name);
+            fprintf('Saving %s\n', new_file_path)
             save(new_file_path, 'brain_data', 'meta_data');
         else
             error('File %s does not contain both brain_data and meta_data. Skipping...', files(i).name);
@@ -62,7 +81,7 @@ end
 
 function parent_name = l_parent_method_name(meta_data)
 
-    switch meta_data.test_type
+    switch meta_data.significance_method
 
         case 'Constrained_FDR'
             parent_name = 'Constrained';
@@ -74,6 +93,9 @@ function parent_name = l_parent_method_name(meta_data)
             parent_name = 'Constrained'; 
          
         case 'Parametric_Bonferroni'
+            parent_name = 'Parametric';
+
+        case 'Parametric_FWER'
             parent_name = 'Parametric';
 
         case 'Parametric_FDR'
@@ -90,25 +112,59 @@ function parent_name = l_parent_method_name(meta_data)
         
         case 'Omnibus'
             parent_name = 'Omnibus';
+
+        case 'Omnibus_Multidimensional_cNBS'
+            parent_name = 'Omnibus';
          
         otherwise
-            error('Method %s name not supported', meta_data.test_type)
+            error('Method %s name not supported', meta_data.significance_method)
     end
 
 end
 
 
-function new_test_type = l_test_type_update(meta_data)
+function level = l_get_stat_level(meta_data)
 
-    switch meta_data.test_type
+    switch meta_data.parent_method
 
         case 'Constrained'
+            level = 'network'; 
+
+        case 'Parametric'
+            level = 'edge';
+        
+        case 'TFCE'
+            level = 'edge';
+
+        case 'Size'
+            level = 'edge';
+        
+        case 'Omnibus'
+            level = 'whole_brain';
+         
+        otherwise
+            error('Method %s name not supported', meta_data.parent_method)
+    end
+
+end
+
+function new_test_type = l_test_type_update(meta_data)
+
+    switch meta_data.significance_method
+
+        case 'Constrained'
+            new_test_type = 'Constrained_FDR'; 
+
+        case 'Constrained_FDR'
             new_test_type = 'Constrained_FDR'; 
 
         case 'Constrained_FWER'
             new_test_type = 'Constrained_FWER'; 
          
         case 'Parametric_Bonferroni'
+            new_test_type = 'Parametric_FWER';
+
+        case 'Parametric_FWER'
             new_test_type = 'Parametric_FWER';
 
         case 'Parametric_FDR'
@@ -123,8 +179,11 @@ function new_test_type = l_test_type_update(meta_data)
         case 'Omnibus'
             new_test_type = 'Omnibus_Multidimensional_cNBS';
          
+        case 'Omnibus_Multidimensional_cNBS'
+            new_test_type = 'Omnibus_Multidimensional_cNBS';
+         
         otherwise
-            error('Method %s name not supported', meta_data.test_type)
+            error('Method %s name not supported', meta_data.significance_method)
     end
 
 end

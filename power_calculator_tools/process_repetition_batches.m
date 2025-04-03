@@ -39,7 +39,7 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 % Author: Fabricio Cravo  
 % Date: March 2025
    
-    batches_indexes = split_into_batches(RP.max_rep_pending, RP.batch_size);
+    batches_indexes = split_into_batches(RP.existing_repetitions, RP.max_rep_pending, RP.batch_size);
 
     for i_bat = 1:numel(batches_indexes)
         batch = batches_indexes{i_bat};
