@@ -1,4 +1,4 @@
-function process_repetition_batches(X, Y, RP, UI, ids_sampled)
+function process_repetition_batches(X, Y, RP, UI)
 %% process_repetition_batches
 % Description:
 % Executes benchmarking repetitions in mini-batches, optionally using parallel 
@@ -13,7 +13,7 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
 %   * `parallel` – use parallel execution (logical).
 %   * `test_type`, `X_rep`, `batch_size`, `max_rep_pending`, etc.
 % - `UI` (struct): Structure with NBS test configuration (see `setup_benchmarking`).
-% - `ids_sampled` (matrix): Subsampled subject indices (columns = repetitions).
+% - `RP.ids_sampled` (matrix): Subsampled subject indices (columns = repetitions).
 %
 % Workflow:
 % 1. Split repetition IDs into batches of size `batch_size`.
@@ -59,7 +59,7 @@ function process_repetition_batches(X, Y, RP, UI, ids_sampled)
         for j = 1:batch_size
             rep_id = batch{j};
 
-            rep_sub_ids = ids_sampled(:, rep_id);
+            rep_sub_ids = RP.ids_sampled(:, rep_id);
             Y_subs{j} = Y(:, rep_sub_ids);
         
             if strcmp(RP.test_type, 'r')

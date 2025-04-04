@@ -47,10 +47,10 @@ function run_benchmarking(RP, Y, X)
         
         % Prepare benchmarking setup
         [UI, RP] = setup_benchmarking(RP);
-        ids_sampled = draw_repetition_ids(RP);
 
         % Check which repetitions are already computed for each method
-        existing_repetitions = check_calculation_status(RP);
+        % Get repetition IDS here too - 
+        [existing_repetitions, RP.ids_sampled] = check_calculation_status(RP);
        
         num_pending_per_method = structfun(@(x) max(RP.n_repetitions - x, 0), existing_repetitions, ...
             'UniformOutput', false);
@@ -70,7 +70,7 @@ function run_benchmarking(RP, Y, X)
         fprintf('Computing repetitions for test "%s", subsample size %d: %s\n', ...
                 RP.test_name, RP.n_subs_subset, jsonencode(num_pending_per_method));
 
-        process_repetition_batches(X, Y, RP, UI, ids_sampled);
+        process_repetition_batches(X, Y, RP, UI);
          
         fprintf('Finished test %s and subs %d.\n', RP.test_name, RP.n_subs_subset);
 

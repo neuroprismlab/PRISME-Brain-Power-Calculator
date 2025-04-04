@@ -67,6 +67,8 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     meta_data.test_components = strsplit(RP.test_name, '_');
     meta_data.subject_number = RP.n_subs_subset;
     meta_data.testing_code = RP.testing;
+    meta_data.repetition_ids = RP.ids_sampled;
+    RP = rmfield(RP, 'ids_sampled');
     meta_data.rep_parameters = RP;
     meta_data.date = datetime("today");
     meta_data.method_list = {};

@@ -61,14 +61,13 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
-Params.n_repetitions = 5;  % 500 recommended
-disp('Current 10 reps')
-Params.batch_size = 5;
+Params.parallel = false; % run stuff sequentially or in parallel
+Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
+Params.n_repetitions = 500;  % 500 recommended
+Params.batch_size = 10;
 
 %% Skip some tests - change ranges or the function
-ranges = {[2, 100]};
+ranges = {[1000, 1001]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
@@ -100,7 +99,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
+Params.testing = true;
 Params.test_n_perms = 10;
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 2;
