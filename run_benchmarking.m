@@ -71,8 +71,6 @@ function run_benchmarking(RP, Y, X)
                 RP.test_name, RP.n_subs_subset, jsonencode(num_pending_per_method));
 
         process_repetition_batches(X, Y, RP, UI, ids_sampled);
-
-        keyboard;
          
         fprintf('Finished test %s and subs %d.\n', RP.test_name, RP.n_subs_subset);
 
