@@ -29,8 +29,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
     % Create a consolidated output filename
     [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
-                                                     RP.test_type, 'consolidated_results', ...
-                                                     RP.n_subs_subset, RP.testing);
+                                                        RP.test_type, RP.n_subs_subset, RP.testing, RP.ground_truth);
 
     output_dir_path = fileparts(output_dir);
     if ~exist(output_dir_path, 'dir')
@@ -194,5 +193,5 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     % Save the updated meta_data at the end
     save(output_dir, 'meta_data', '-append');
     
-    fprintf('Saved consolidated results to %s with optimized memory usage.\n', output_dir);
+    fprintf('Saved results to %s\n', output_dir);
 end

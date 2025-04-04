@@ -46,6 +46,7 @@ addpath(genpath(current_path));
 
 %% Get Params
 Params = setparams();
+Params.ground_truth = false;
 
 rep_cal_function(Params);
 

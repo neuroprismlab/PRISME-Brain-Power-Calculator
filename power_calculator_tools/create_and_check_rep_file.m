@@ -1,5 +1,6 @@
 function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_set_name, test_components, ...
-                                                                 test_type, stat_type, rep_subject_number, testing)
+                                                                 test_type, rep_subject_number, testing, ...
+                                                                 is_gt)
 %% create_and_check_rep_file
 % **Description**
 % Constructs a filename for a repetition result file based on various test and 
@@ -44,12 +45,12 @@ function [existence, full_file_path] = create_and_check_rep_file(data_dir, data_
    
 
     %% Make file name
-    if ~strcmp(stat_type, 'Ground_Truth')
-        rep_file_name = sprintf('%s-%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                                stat_type, subject_number_str);
+    if ~is_gt
+        rep_file_name = sprintf('%s-%s-%s-%s', data_set_name, test_components, test_type, ...
+                                subject_number_str);
     else
         rep_file_name = sprintf('%s-%s-%s-%s', data_set_name, test_components, test_type, ...
-                                stat_type);
+                                'Ground_Truth');
     end
 
     if testing == 1
