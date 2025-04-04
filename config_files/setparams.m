@@ -61,7 +61,7 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 10;
@@ -85,7 +85,8 @@ Params.force_permute = false;
 Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
 Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF=10-1000)
                             % Only used if cluster_stat_type='Size'
-Params.pthresh_second_level = 0.05;  % FWER or FDR rate   
+Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
+Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'TFCE', 'Constrained', 'Omnibus'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
@@ -98,7 +99,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
+Params.testing = true;
 Params.test_n_perms = 10;
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 2;

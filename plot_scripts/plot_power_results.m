@@ -30,7 +30,11 @@ function plot_power_results(dataset_or_directory)
         tpr_values = data.power_data.tpr(:);
     
         % Extract method name from meta_data
-        method_name = data.meta_data.significance_method;
+        if isfield(data.meta_data, 'significance_method')
+            method_name = data.meta_data.significance_method;
+        else
+            method_name = data.meta_data.test_type;
+        end
         test_components = get_test_components_from_meta_data(data.meta_data.test_components);
       
         % Define field path
