@@ -2,25 +2,24 @@ function generate_synthetic_power_data()
 %% generate_synthetic_power_data
 % Generates synthetic power calculation data for testing the power calculator.
 %
-% This function creates synthetic brain data and corresponding meta_data for both 
-% edge-level and network-level tests. It simulates functional connectivity data by
-% generating random edge statistics and p-values, and it assigns significant p-values
-% in a predetermined pattern (every 4th repetition) to simulate a 25% power scenario.
+% This function creates synthetic brain data for the repetition files in the proper format.
+% Each method contains:
+%   - sig_prob: Sparse matrix with significance probabilities (1 - p-value)
+%   - sig_prob_neg: Sparse matrix with negative significance probabilities
+%   - meta_data: Contains level, parent_method, and is_permutation_based
 %
-% The synthetic data, including brain_data and meta_data, are saved to the directory
-% './power_calculator_results/syn_power/'.
+% The function simulates a 25% power scenario by making every 4th repetition significant.
+% The synthetic data is saved to a single file in the directory './power_calculator_results/syn_power/'.
 %
 % Dependencies:
 %   - get_statistic_level_from_test_type: Determines the statistic level from the test type.
 %   - name_file_from_meta_data: Constructs a filename based on meta_data.
 %
 % Notes:
-%   - For edge-level tests, p-values are generated for a fixed number of edges.
-%   - For network-level tests, p-values are generated for a fixed number of networks.
-%   - The function ensures that any index where both positive and negative p-values are zero
-%     is adjusted to avoid conflicts.
+%   - For edge-level tests, data is generated for a fixed number of edges.
+%   - For network-level tests, data is generated for a fixed number of networks.
 
-    % Directory where synthetic test files will be saved
+    % Directory where synthetic test file will be saved
     output_dir = './power_calculator_results/syn_power/';
     
     % Ensure directory exists
@@ -28,92 +27,120 @@ function generate_synthetic_power_data()
         mkdir(output_dir);
     end
 
-    % Define test types based on whether they are edge-level or network-level
-    edge_level_tests = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'TFCE'};
-    network_level_tests = {'Constrained_FWER', 'Constrained_FDR'};
+    % Define test types and their parent methods
+    test_types = {
+        'Parametric_FWER', 'edge', 'Parametric', true;
+        'Parametric_FDR', 'edge', 'Parametric', true;
+        'Size', 'edge', 'Size', true;
+        'TFCE', 'edge', 'TFCE', true;
+        'Constrained_FWER', 'network', 'Constrained', true;
+        'Constrained_FDR', 'network', 'Constrained', true;
+    };
+    % Format: {method_name, level, parent_method, is_permutation_based}
+    
+    % Extract just the method names for convenience
+    method_names = test_types(:,1);
+    
+    % Set fixed number of elements and repetitions
+    num_edges = 10;     % Number of edges for edge-level tests
+    num_networks = 4;   % Number of networks for network-level tests
+    n_repetitions = 20; % Number of repetitions for power calculation
 
-    % Set fixed number of edges and networks (arbitrary for synthetic testing)
-    num_edges = 10;   % Example: 100 edges for edge-level tests
-    num_networks = 4; % Example: 10 networks for network-level tests
-    n_repetitions = 100; % Number of repetitions for power calculation
+    % Generate main meta_data for the file
+    meta_data = struct();
+    meta_data.dataset = 'syn';
+    meta_data.map = 'power';
+    meta_data.test = 'synthetic';
+    meta_data.test_components = {'REST', 'TASK'};
+    meta_data.subject_number = 40;
+    meta_data.testing_code = 1;
+    meta_data.method_list = method_names;
+    meta_data.run_time = rand() * 10;
+    
+    % Add critical power calculation parameters
+    meta_data.rep_parameters.pthresh_second_level = 0.05;
+    meta_data.rep_parameters.n_repetitions = n_repetitions;
 
-    % Compute split for 25% of elements
-    split_25_edges = floor(num_edges * 0.25);
-    split_25_networks = floor(num_networks * 0.25);
+    % Generate filename based on meta_data
+    filename = name_file_from_meta_data(meta_data, false);
+    full_file = fullfile(output_dir, filename);
+    
+    % First save just the meta_data to create the file
+    save(full_file, 'meta_data');
 
-    % Loop through each test type
-    for test_type = [edge_level_tests, network_level_tests]
-        tt = test_type{1};  % Extract string
-
-        % Generate mock brain_data structure
-        brain_data = struct();
-
-        if ismember(tt, edge_level_tests)
-            % Edge-level test: p-values should match number of edges
-            brain_data.edge_stats_all = randn(num_edges, n_repetitions);  
-            brain_data.edge_stats_all_neg = randn(num_edges, n_repetitions);
-            brain_data.cluster_stats_all = []; % Not used for edge tests
-            brain_data.cluster_stats_all_neg = [];
-
-            % Initialize arrays with non-significant values (>0.5)
-            brain_data.pvals_all = 0.6 * ones(num_edges, n_repetitions);
-            brain_data.pvals_all_neg = 0.6 * ones(num_edges, n_repetitions);
-
-            % Ensure 25% power: In 25% of repetitions, p-value is set to zero (significant)
-            for rep = 1:n_repetitions
-                if mod(rep, 4) == 0 % Every 4th repetition should have significant results
-                    brain_data.pvals_all([1, 2, 3], rep) = 0;  % Positive detections
-                    brain_data.pvals_all_neg([4, 5], rep) = 0; % Negative detections
+    % Loop through each test type and append to the file
+    for i = 1:size(test_types, 1)
+        method_name = test_types{i, 1};
+        level = test_types{i, 2};
+        parent_method = test_types{i, 3};
+        is_permutation_based = test_types{i, 4};
+        
+        % Number of elements based on test level
+        if strcmp(level, 'edge')
+            num_elements = num_edges;
+        else
+            num_elements = num_networks;
+        end
+        
+        % Create sparse matrices for p-values (stored as 1-p)
+        % Initialize with non-significant values (p = 0.6, so 1-p = 0.4)
+        sig_prob_data = sparse(num_elements, n_repetitions);
+        sig_prob_neg_data = sparse(num_elements, n_repetitions);
+        
+        % Compute number of elements for 25% power
+        significant_count = floor(num_elements * 0.25);
+        
+        % Set significant p-values for every 4th repetition
+        for rep = 1:n_repetitions
+            if mod(rep, 4) == 0  % Every 4th repetition has significant results
+                % For positive effects, first set of elements are significant
+                for idx = 1:significant_count
+                    sig_prob_data(idx, rep) = 1.0;  % p-value of 0, so 1-p = 1.0
                 end
-            end
-
-        elseif ismember(tt, network_level_tests)
-            % Network-level test: p-values should match number of networks
-            brain_data.edge_stats_all = []; % Not used for network tests
-            brain_data.edge_stats_all_neg = [];
-            brain_data.cluster_stats_all = randn(num_networks, n_repetitions);
-            brain_data.cluster_stats_all_neg = randn(num_networks, n_repetitions);
-            
-            % Initialize arrays with non-significant values (>0.5)
-            brain_data.pvals_all = 0.6 * ones(num_networks, n_repetitions);
-            brain_data.pvals_all_neg = 0.6 * ones(num_networks, n_repetitions);
-
-            % Ensure 25% power: In 25% of repetitions, p-value is set to zero (significant)
-            for rep = 1:n_repetitions
-                if mod(rep, 4) == 0 % Every 4th repetition should have significant results
-                    brain_data.pvals_all(1:split_25_networks, rep) = 0;  
-                    brain_data.pvals_all_neg(split_25_networks+1:2*split_25_networks, rep) = 0;
+                
+                % For negative effects, second set of elements are significant
+                for idx = (significant_count+1):(2*significant_count)
+                    sig_prob_neg_data(idx, rep) = 1.0;  % p-value of 0, so 1-p = 1.0
+                end
+            else
+                % For non-significant repetitions, set a few non-zero values for sparsity pattern
+                % but still non-significant (e.g., p = 0.6 means 1-p = 0.4)
+                if rand() > 0.5  % Randomly set some values for variety
+                    random_indices = randperm(num_elements, floor(num_elements/3));
+                    for idx = random_indices
+                        sig_prob_data(idx, rep) = 0.4;  % p-value of 0.6, so 1-p = 0.4
+                    end
+                    
+                    random_indices = randperm(num_elements, floor(num_elements/3));
+                    for idx = random_indices
+                        sig_prob_neg_data(idx, rep) = 0.4;  % p-value of 0.6, so 1-p = 0.4
+                    end
                 end
             end
         end
-
-        % Ensure mutual exclusivity: no index should be zero in both p-values
-        invalid_indices = (brain_data.pvals_all == 0 & brain_data.pvals_all_neg == 0);
-        brain_data.pvals_all(invalid_indices) = rand(sum(invalid_indices, 'all'), 1);
         
-        % Generate mock meta_data
-        meta_data = struct();
-        meta_data.dataset = 'syn';
-        meta_data.map = 'power';
-        meta_data.test = 'synthetic';  % Placeholder test type
-        meta_data.test_components = {'REST', 'TASK'};
-        meta_data.statistic_level = get_statistic_level_from_test_type(tt, edge_level_tests, network_level_tests);
-        meta_data.subject_number = 40; % Single fixed subject number
-        meta_data.testing_code = 1; % Indicator for test mode
-        meta_data.significance_method = tt;  % Critical test type distinction
-        meta_data.run_time = rand() * 10; % Fake runtime
+        % Create meta_data structure for this method
+        method_meta_data = struct();
+        method_meta_data.level = level;
+        method_meta_data.parent_method = parent_method;
+        method_meta_data.is_permutation_based = is_permutation_based;
         
-        % Add critical power calculation parameters
-        meta_data.rep_parameters.pthresh_second_level = 0.05;  % FWER/FDR threshold
-        meta_data.rep_parameters.n_repetitions = n_repetitions; % Number of repetitions
-
-        % Generate filename
-        filename = name_file_from_meta_data(meta_data);
-        full_file = ['./power_calculator_results/syn_power/', filename];
-
-        % Save synthetic data
-        save(full_file, 'brain_data', 'meta_data');
-
+        % Create a temporary variable with the method name
+        sig_prob = sig_prob_data;
+        sig_prob_neg = sig_prob_neg_data;
+        
+        % Use eval to save each method to the file
+        save(full_file, 'method_meta_data', '-append');
+        
+        % Need to handle variable creation and saving differently to not overwrite
+        eval([method_name ' = struct();']);
+        eval([method_name '.sig_prob = sig_prob;']);
+        eval([method_name '.sig_prob_neg = sig_prob_neg;']);
+        eval([method_name '.meta_data = method_meta_data;']);
+        
+        % Save the method to the file
+        eval(['save(full_file, ''' method_name ''', ''-append'');']);
     end
 
+    fprintf('Synthetic power data file created: %s\n', full_file);
 end

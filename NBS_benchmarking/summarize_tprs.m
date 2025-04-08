@@ -1,4 +1,4 @@
-function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, varargin)
+function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, Params)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script summarizes results data to ultimately compare true positive
 % rates across levels of inference.
@@ -43,34 +43,6 @@ function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, varargin)
 % doesn't rely on the ground truth
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-%% PARSE PARAMETERS
-
-% parse user input
-% something is up with the validator when I added this required arg, so I removed (i.e.,   ,
-% @(x)validateattributes(x,{'char','cell'},{'nonempty'})   )
-
-p = inputParser;
-% addOptional(p,'summary_type',summary_type_default);
-addRequired(p,'summary_type');
-addOptional(p,'tpr_dthresh', 0);
-addOptional(p,'save_directory', NaN)
-parse(p, summary_type, varargin{:});
-
-% summary_type=p.Results.summary_type;
-tpr_dthresh = p.Results.tpr_dthresh;
-save_directory = p.Results.save_directory;
-
-if isnan(save_directory)
-    error('Save directory not specified')
-end
-
-% Make save directory if it does not exist
-
-if ~isfolder(save_directory)
-    mkdir(save_directory)
-end
-
 %% MAIN
 
 switch summary_type
@@ -102,38 +74,27 @@ switch summary_type
 % i.e., combine effect size and positives above
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-case 'calculate_tpr'
-
-    %% Check if already calculated and get file_name
-    data_set_name = strcat(rep_data.meta_data.dataset, '_', rep_data.meta_data.map);
-    test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
-    [~, file_name] = create_and_check_rep_file(save_directory, data_set_name, test_components, ...
-                                               rep_data.meta_data.test, rep_data.meta_data.significance_method, ...
-                                               rep_data.meta_data.subject_number, ...
-                                               rep_data.meta_data.testing_code);
+    case 'calculate_tpr'
     
-    [f_location, f_name, f_ext] = fileparts(file_name);
-    f_name = strcat('pr-', f_name);
-    file_name = fullfile(f_location, [f_name, f_ext]);
+        %% Check if already calculated and get file_name
+        %data_set_name = strcat(file_meta_data.dataset, '_', file_meta_data.map);
+        %test_components = get_test_components_from_meta_data(file_meta_data.test_components);
+        %[~, file_name] = create_and_check_rep_file('', data_set_name, test_components, ...
+        %                                           file_meta_data.test, file_meta_data.subject_number, ...
+        %                                           file_meta_data.testing_code, false);
+        
+        if isstring(Params.pthresh_second_level)
+            alpha = str2double(Params.pthresh_second_level);
+        else
+            alpha = Params.pthresh_second_level;
+        end
     
-    %% Do we repeat the calculations at each time?
-    %if isfile(file_name)
-    %    PowerRes = nan;
-    %    return;
-    %end    
     
-
-    %% Calculate positives here
-    PowerRes = summary_tools.calculate_positives(rep_data);
-
-    %% Calculate true positives
-    PowerRes = summary_tools.calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes);
-
-    power_data = PowerRes;
-    meta_data = rep_data.meta_data;
-
-    save(file_name, "power_data", "meta_data");
-    fprintf('Saved file %s\n', file_name);
+        %% Calculate positives here
+        PowerRes = summary_tools.calculate_positives(rep_data, alpha);
+    
+        %% Calculate true positives
+        PowerRes = summary_tools.calculate_tpr(rep_data, gt_data, Params.tpr_dthresh, PowerRes);
            
 end
 

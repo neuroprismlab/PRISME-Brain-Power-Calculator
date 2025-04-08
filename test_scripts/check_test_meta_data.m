@@ -1,4 +1,4 @@
-function check_test_meta_data(meta_data, method)
+function check_test_meta_data(meta_data)
 %% check_test_meta_data
 % Validates the metadata produced by the power calculator test pipeline.
 %
@@ -21,7 +21,6 @@ function check_test_meta_data(meta_data, method)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset_c2)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
-    assert(strcmp(meta_data.significance_method, method))
 
     switch meta_data.rep_parameters.test_type
 

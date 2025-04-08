@@ -48,12 +48,12 @@ function edge_based_tests(data_set_name)
         method = full_method_name_cell{i};
 
         % The query is based on how the dataset is created
-        query = {'testing', data_set_name, task_name, method, 'subs_40', 'brain_data'};
+        query = {'testing', data_set_name, task_name, method, 'subs_40'};
         
         %% Test regression results
         brain_data = getfield(ResData, query{:});
     
-        pvals = brain_data.pvals_all;
+        sig_vals = brain_data.sig_prob;
 
         % I think I need to add the power calculator scripts too - just to
         % make sure 
@@ -66,12 +66,12 @@ function edge_based_tests(data_set_name)
 
         % Check for significant p-values where an effect is expected (rows 1 to 6)
         for row = 1:6
-            assert(all(pvals(row, :) <= 0.05), error_effect);
+            assert(all(sig_vals(row, :) > 0.95), error_effect);
         end
 
         % Check for non-significant p-values where no effect is expected (rows 7 to 10)
         for row = 7:10
-            assert(all(pvals(row, :) >= 0.5), error_non_effect);
+            assert(all(sig_vals(row, :) <= 0.5), error_non_effect);
         end
 
         %% Test meta-data results 
@@ -79,7 +79,7 @@ function edge_based_tests(data_set_name)
 
         meta_data = getfield(ResData, query{:});
 
-        check_test_meta_data(meta_data, method)
+        check_test_meta_data(meta_data)
     
     end
 

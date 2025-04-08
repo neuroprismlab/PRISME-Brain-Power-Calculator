@@ -36,20 +36,20 @@ function network_based_tests(data_set_name)
         method = full_method_name_cell{i};
 
         % The query is based on how the dataset is created
-        query = {'testing', data_set_name, task_name, method, 'subs_40', 'brain_data'};
+        query = {'testing', data_set_name, task_name, method, 'subs_40'};
     
         brain_data = getfield(ResData, query{:});
     
-        pvals = brain_data.pvals_all;
+        sig_vals = brain_data.sig_prob;
 
         % I think I need to add the power calculator scripts too - just to
         % make sure 
 
         % Ensure first row is all zeros
-        assert(all(pvals(1, :) <= 0.05), 'Network-Level Test Failed: Effect not detected in first row');
+        assert(all(sig_vals(1, :) > 0.95), 'Network-Level Test Failed: Effect not detected in first row');
 
         % Ensure second row is all ones
-        assert(all(pvals(2, :) >= 0.5), 'Network-Level Test Failed: Effect detected in second row');
+        assert(all(sig_vals(2, :) <= 0.5), 'Network-Level Test Failed: Effect detected in second row');
 
 
         %% Test meta-data results 
@@ -57,7 +57,7 @@ function network_based_tests(data_set_name)
 
         meta_data = getfield(ResData, query{:});
 
-        check_test_meta_data(meta_data, method)
+        check_test_meta_data(meta_data)
         
     end
 

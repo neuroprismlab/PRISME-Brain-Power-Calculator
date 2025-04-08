@@ -73,27 +73,44 @@ for i = 1:length(rep_files)
     rep_file_path = fullfile(rep_files(i).folder, rep_files(i).name);
     rep_data = load(rep_file_path);
     
-    % Extract metadata to find corresponding GT file
-    if isfield(rep_data, 'meta_data') && isfield(rep_data.meta_data, 'test_components')
-        gt_filename = construct_gt_filename(rep_data.meta_data);
-        gt_file_path = [Params.gt_data_dir, Params.data_set, '/', gt_filename];
+    % Meta-data from the file encompassing everything
+    method_list = rep_data.meta_data.method_list;
 
-        if exist(gt_file_path, 'file')
-            gt_data = load(gt_file_path);
+    data_set_name = strcat(rep_data.meta_data.dataset, '_', rep_data.meta_data.map);
+    test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
+    [~, file_name] = create_and_check_rep_file(Params.save_directory, data_set_name, test_components, ...
+                                               rep_data.meta_data.test, ...
+                                               rep_data.meta_data.subject_number, ...
+                                               rep_data.meta_data.testing_code, false);
+
+    meta_data = rep_data.meta_data;
+    save(file_name, 'meta_data');
+
+
+    for j = 1:numel(method_list)
+        method = method_list{j};
+        method_data = rep_data.(method);
+
+        gt_filename = construct_gt_filename(rep_data.meta_data);
+
+        if exist(gt_filename, 'file')
+            gt_data = load(gt_filename);
         else
             fprintf('GT file %s not found. Skipping...\n', gt_filename);
             continue;
         end
         
-        stat_level = rep_data.meta_data.statistic_level;
-        gt_data.brain_data = extract_gt_brain_data(gt_data, stat_level);
+        stat_level = method_data.meta_data.level;
+        
+        gt_brain_data = extract_gt_brain_data(gt_data, stat_level);
 
-        % Compute power using the extracted repetition and GT data
-        summarize_tprs('calculate_tpr', rep_data, gt_data, 'save_directory', Params.save_directory);
-    else
-        warning('Metadata missing in %s, skipping...', rep_files(i).name);
+        PowerRes = summarize_tprs('calculate_tpr', method_data, gt_brain_data, Params);
+        eval([method ' = PowerRes;']);  % creates a variable named after the method
+        eval([method '.meta_data = method_data.meta_data']); % add method meta_data to power calculations
+        
+        save(file_name, method, '-append');
+
+
     end
-    
-    % Free memory before next iteration
-    clear rep_data gt_data;
+
 end

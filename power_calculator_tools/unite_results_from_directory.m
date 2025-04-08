@@ -29,17 +29,32 @@ function RepetitionResults = unite_results_from_directory(varargin)
         task_name = get_test_components_from_meta_data(meta_data.test_components);
 
         subject_number = sprintf('subs_%d', meta_data.subject_number);
+        methods = meta_data.method_list;
 
-        significance_method = meta_data.significance_method;
-     
-        struct_query = {data_set_name, task_name, significance_method, subject_number};
+        for j = 1:numel(methods)
+            significance_method = methods{j};
+         
+            struct_query = {data_set_name, task_name, significance_method, subject_number};
+    
+            if meta_data.testing_code
+                struct_query = [{'testing'}, struct_query];
+            end
+    
+            %% Perform the assigment 
+            RepetitionResults = setfield(RepetitionResults, struct_query{:}, ...
+                rep_data.(significance_method));  
 
-        if meta_data.testing_code
-            struct_query = [{'testing'}, struct_query];
+            struct_query = {data_set_name, task_name, significance_method, subject_number, 'meta_data'};
+
+            if meta_data.testing_code
+                struct_query = [{'testing'}, struct_query];
+            end
+
+            RepetitionResults = setfield(RepetitionResults, struct_query{:}, ...
+                rep_data.meta_data);
+            
         end
 
-        %% Perform the assigment 
-        RepetitionResults = setfield(RepetitionResults, struct_query{:}, load(file_path));    
 
     end
     
