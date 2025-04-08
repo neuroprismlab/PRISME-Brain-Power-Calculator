@@ -128,7 +128,7 @@ end
     
 %% -------------------------------------------------------------------------%
 % ******** Calculate positives (not *true* positives) **********
-function PowerRes = calculate_positives(rep_data)
+function PowerRes = calculate_positives(rep_data, alpha)
 %% calculate_positives
 % Computes positive detection indicators and summary statistics from repetition data.
 % The function thresholds the p-value matrices to create binary indicators of positive
@@ -141,36 +141,13 @@ function PowerRes = calculate_positives(rep_data)
 %   - PowerRes: Struct aggregating positive detection metrics and summary statistics.
 %
 
-      PowerRes = struct;
-      
-      %% Get Params and Variables
-      edge_stats_all = rep_data.brain_data.edge_stats_all;
-      edge_stats_all_neg = -rep_data.brain_data.edge_stats_all;
-      cluster_stats_all = rep_data.brain_data.cluster_stats_all;
-      cluster_stats_all_neg = -rep_data.brain_data.cluster_stats_all;
+      PowerRes = struct();
 
-      % get alpha - a little diferent
-      if isstring(rep_data.meta_data.rep_parameters.pthresh_second_level)
-          alpha = str2double(rep_data.meta_data.rep_parameters.pthresh_second_level);
-      else
-          alpha = rep_data.meta_data.rep_parameters.pthresh_second_level;
-      end
+      positives=+(rep_data.sig_prob > 1 - alpha);
+      positives_neg=+(rep_data.sig_prob_neg > 1 - alpha);
 
-      PowerRes.positives=+(rep_data.brain_data.pvals_all<alpha);
-      PowerRes.positives_neg=+(rep_data.brain_data.pvals_all_neg<alpha);
-      PowerRes.positives_total=sum(PowerRes.positives,length(size(PowerRes.positives)));
-      PowerRes.positives_total_neg=sum(PowerRes.positives_neg,length(size(PowerRes.positives)));
-
-      % summarize edge and cluster stats (saved but not currently used in visualization/log)
-      PowerRes.edge_stats_summary.mean = mean(edge_stats_all,length(size(edge_stats_all)));
-      PowerRes.edge_stats_summary.std = std(edge_stats_all,0,length(size(edge_stats_all)));
-      PowerRes.edge_stats_summary_neg.mean = mean(edge_stats_all_neg,length(size(edge_stats_all_neg)));
-      PowerRes.edge_stats_summary_neg.std = std(edge_stats_all_neg,0,length(size(edge_stats_all_neg)));
-
-      PowerRes.cluster_stats_summary.mean=mean(cluster_stats_all,length(size(cluster_stats_all)));
-      PowerRes.cluster_stats_summary.std=std(cluster_stats_all,0,length(size(cluster_stats_all)));
-      PowerRes.cluster_stats_summary_neg.mean=mean(cluster_stats_all_neg,length(size(cluster_stats_all_neg)));
-      PowerRes.cluster_stats_summary_neg.std=std(cluster_stats_all_neg,0,length(size(cluster_stats_all_neg)));
+      PowerRes.positives_total=full(sum(positives, length(size(positives))));
+      PowerRes.positives_total_neg=full(sum(positives_neg, length(size(positives_neg))));
 
       
 end
@@ -211,12 +188,12 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     
     
     %% Get stat level - edge, network, or brain
-    stat_gt_level_str = rep_data.meta_data.statistic_level;
+    stat_gt_level_str = rep_data.meta_data.level;
     
 
     % get indices of positive and negative ground truth dcoefficients
-    ids_pos_vec=gt_data.brain_data>tpr_dthresh;
-    ids_neg_vec=gt_data.brain_data<(-1*tpr_dthresh);
+    ids_pos_vec=gt_data>tpr_dthresh;
+    ids_neg_vec=gt_data<(-1*tpr_dthresh);
     ids_zero_vec= ~ids_pos_vec & ~ids_neg_vec;
     
 
@@ -235,14 +212,14 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
         case 'whole_brain'
             % the Cohen's d-coefficient threshold doesn't directly translate to this multivariate effect size - 
             % treating all nonzero as non-null
-            pos_effect = any(gt_data.brain_data > 0);
-            neg_effect = any(gt_data.brain_data < 0);
+            pos_effect = any(gt_data > 0);
+            neg_effect = any(gt_data < 0);
             
             
     end
 
     % calculate TPR
-    true_positives=zeros(size(gt_data.brain_data));
+    true_positives=zeros(size(gt_data));
     if contains(stat_gt_level_str,'edge')
 
         true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
@@ -266,7 +243,9 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
         true_positives = floor(true_positives/2);
 
     end
-    PowerRes.tpr=true_positives*100/rep_data.meta_data.rep_parameters.n_repetitions;
+
+    n_reps = size(rep_data.sig_prob, 2);
+    PowerRes.tpr=true_positives*100/n_reps;
     
 end
 
