@@ -1,4 +1,4 @@
-function plot_power_results(dataset_or_directory)
+    function plot_power_results(dataset_or_directory)
     
     files = data_set_or_directory_mat_file_loading(dataset_or_directory, 'sub_directory', '/power_calculation/');
 
@@ -10,11 +10,9 @@ function plot_power_results(dataset_or_directory)
     for i = 1:numel(files)
         file_path = fullfile(files(i).folder, files(i).name);
         data = load(file_path);
-    
-        % Ensure meta-data and TPR exist
-        if ~isfield(data, 'power_data') || ~isfield(data.meta_data, 'subject_number') || ...
-           ~isfield(data, 'meta_data') || ~isfield(data.power_data, 'tpr')
-            warning('Skipping file (missing meta_data or brain_data.tpr): %s', files(i).name);
+
+        if ~isfield(data, 'meta_data') || ~isfield(data.meta_data, 'subject_number')
+            warning('Skipping file (missing meta_data): %s', files(i).name);
             continue;
         end
 
@@ -26,22 +24,45 @@ function plot_power_results(dataset_or_directory)
             unique_subject_numbers = [unique_subject_numbers, n_subjects]; %#ok<AGROW>
         end
 
-        % Extract power values (vector across tasks)
-        tpr_values = data.power_data.tpr(:);
-    
-        % Extract method name from meta_data
-        if isfield(data.meta_data, 'significance_method')
-            method_name = data.meta_data.significance_method;
-        else
-            method_name = data.meta_data.test_type;
-        end
-        test_components = get_test_components_from_meta_data(data.meta_data.test_components);
-      
-        % Define field path
-        field_path = {method_name, sprintf('n_%d', n_subjects), test_components};
+        % Extract subject number
+        n_subjects = data.meta_data.subject_number;
 
-        % Assign value safely using `setfield`
-        power_results = setfield(power_results, field_path{:}, mean(tpr_values));
+        % Track unique subject numbers
+        if ~ismember(n_subjects, unique_subject_numbers)
+            unique_subject_numbers = [unique_subject_numbers, n_subjects];
+        end
+
+        % Use method list from metadata
+        method_list = data.meta_data.method_list;
+
+        for m = 1:length(method_list)
+            method_name = method_list{m};
+
+            % Check if method exists in file
+            if ~isfield(data, method_name)
+                warning('Method "%s" missing in file %s. Skipping...', method_name, files(i).name);
+                continue;
+            end
+
+            method_data = data.(method_name);
+
+            % Skip if TPR field is missing
+            if ~isfield(method_data, 'tpr')
+                continue;
+            end
+
+            % Extract and flatten TPR values
+            tpr_values = method_data.tpr(:);
+
+            % Derive task component info
+            test_components = get_test_components_from_meta_data(data.meta_data.test_components);
+
+            % Define path: power_results.method.n_<subjects>.task_type = mean(tpr)
+            field_path = {method_name, sprintf('n_%d', n_subjects), test_components};
+
+            % Store result
+            power_results = setfield(power_results, field_path{:}, mean(tpr_values));
+        end
     
     end
     

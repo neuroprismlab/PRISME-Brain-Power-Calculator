@@ -54,6 +54,8 @@ function tfced = apply_tfce(img)
     end
     active_edges = false(num_nodes, num_nodes);
 
+    cluster_size_per_node = zeros(num_thresh, num_nodes);
+
     %% **Iterate Over Thresholds and Incrementally Merge Clusters**
     for h = num_thresh:-1:1  % Iterate from highest to lowest threshold
         th = h * dh;  % Compute current threshold
@@ -100,6 +102,11 @@ function tfced = apply_tfce(img)
                 cluster_labels(clusters(absorbed_cluster).nodes) = target_cluster;
             end
 
+        end
+        
+
+        for j = 1:clusters 
+           
         end
 
         % **Compute TFCE Contribution Efficiently**

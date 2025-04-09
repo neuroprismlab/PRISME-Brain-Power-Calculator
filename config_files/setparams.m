@@ -39,7 +39,7 @@ Params.gt_origin = 'power_calculator';
 Params.atlas_file = NaN;
 
 % If recalculate is equal to 1 - recalculate
-Params.recalculate = 0;
+Params.recalculate = true;
 
 % Directories
 Params.nbs_dir = './NBS1.2';
@@ -61,10 +61,10 @@ Params.n_frames.REST = 1200;
 Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 50;
+Params.batch_size = 100;
 
 %% Skip some tests - change ranges or the function
 ranges = {[1000, 1001]};
@@ -100,7 +100,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = 10;
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 2;

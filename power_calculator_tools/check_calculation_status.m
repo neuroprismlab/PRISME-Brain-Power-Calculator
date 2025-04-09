@@ -124,5 +124,11 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
         save(file_path, 'meta_data', '-v7.3');
         fprintf('Initialized results file with repetition IDs: %s\n', file_path);
     end
+
+    % If we need to recalculate - set everything to zero again
+    for i = 1:length(RP.all_full_stat_type_names)
+        method_name = RP.all_full_stat_type_names{i};
+        existing_repetitions.(method_name) = 0;
+    end
     
 end
