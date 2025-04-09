@@ -35,13 +35,12 @@ classdef Parametric
 
             % FDR (Benjamini-Hochberg)
             if STATS.submethods.FDR
-                [~, sort_idx] = sort(p_uncorr);
-                m = numel(p_uncorr);
-                p_fdr = zeros(size(p_uncorr));
-                for i = 1:m
-                    p_fdr(sort_idx(i)) = p_uncorr(sort_idx(i)) * m / i;
+                try
+                    pvals.FDR = mafdr(p_uncorr);
+                    assert(sum(pvals.FDR) > 1e-15)
+                catch
+                    pvals.FDR = mafdr(p_uncorr, 'BHFDR', true);
                 end
-                pvals.FDR = min(p_fdr, 1);
             end
 
             % Optional: unwrap single submethod into vector directly
