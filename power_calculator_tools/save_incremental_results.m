@@ -1,5 +1,5 @@
 function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
-    edge_stats_all, cluster_stats_all, current_batch)
+    edge_stats_all, cluster_stats_all, method_timing_all, current_batch)
 %% save_incremental_results
 % Updates and saves incremental results for each statistical method in the NBS
 % benchmarking pipeline, with optimized memory usage through sparse matrices.
@@ -149,6 +149,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
             else
                 % Initialize new method struct
                 method_struct = struct();
+                method_struct.total_time = 0;
                 method_struct.sig_prob = sparse([], [], [], required_size(1), required_size(2));
                 method_struct.sig_prob_neg = sparse([], [], [], required_size(1), required_size(2));
                 method_struct.meta_data = struct();
@@ -156,6 +157,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         else
             % Initialize new method struct
             method_struct = struct();
+            method_struct.total_time = 0;
             method_struct.sig_prob = sparse([], [], [], required_size(1), required_size(2));
             method_struct.sig_prob_neg = sparse([], [], [], required_size(1), required_size(2));
             method_struct.meta_data = struct();
@@ -183,6 +185,11 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         method_struct.meta_data.level = method_instance.level;
         method_struct.meta_data.parent_method = method_class_name;
         method_struct.meta_data.is_permutation_based = method_instance.permutation_based;
+        
+        % Sum timing data from this batch using cellfun with anonymous function
+        total_batch_time = sum(cellfun(@(timing_struct) timing_struct.(method_name), method_timing_all));
+
+        method_struct.total_time = method_struct.total_time + total_batch_time;
         
         % Use eval to save method struct with dynamic name (unavoidable)
         eval([method_var_name ' = method_struct;']);

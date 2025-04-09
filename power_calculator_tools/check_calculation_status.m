@@ -70,7 +70,35 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
     
                 % Optionally: you can attach repetition_ids to RP here
                 if isfield(meta_data, 'repetition_ids')
+
                     ids_sampled = meta_data.repetition_ids;
+                    required_reps = RP.n_repetitions;
+                 
+                    
+                    % Check if we have enough repetition IDs
+                    if length(ids_sampled) < required_reps
+                        fprintf('Need to expand repetition IDs from %d to %d\n', ...
+                            length(ids_sampled), required_reps);
+                        
+                        % Calculate how many new repetitions we need
+                        n_additional_reps = required_reps - length(ids_sampled);
+                        
+                        % Draw only the additional repetitions needed
+                        new_ids = draw_repetition_ids(RP, 'n_reps', n_additional_reps);
+                        
+                        % Append the new IDs to the existing ones
+                        ids_sampled = [ids_sampled, new_ids];
+                        
+                        % Update meta_data
+                        meta_data.repetition_ids = ids_sampled;
+                        
+                        % Save updated meta_data
+                        save(file_path, 'meta_data', '-v7.3');
+                        fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
+                            n_additional_reps, file_path);
+                        
+                    end
+                 
                 end
             else
                 warning('meta_data missing in file: %s', file_path);

@@ -52,11 +52,13 @@ function process_repetition_batches(X, Y, RP, UI)
         all_pvals = initialize_global_pvals(RP, batch_size);
         all_pvals_neg = initialize_global_pvals(RP, batch_size);
 
+        method_timing_all = initialize_method_timming(RP, batch_size);
+
         edge_stats_all = cell(1, batch_size);
         cluster_stats_all = cell(1, batch_size);
         
         % Prepare sub samples for this batch
-        for j = 1:batch_size
+       for j = 1:batch_size
             rep_id = batch{j};
 
             rep_sub_ids = RP.ids_sampled(:, rep_id);
@@ -77,7 +79,7 @@ function process_repetition_batches(X, Y, RP, UI)
             for j = 1:batch_size
             rep_id = batch{j};
             
-            [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}] = ....
+            [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}, method_timing_all{j}] = ...
                 pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, RPc, UI);
           
             end
@@ -87,7 +89,7 @@ function process_repetition_batches(X, Y, RP, UI)
             parfor j = 1:batch_size
             rep_id = batch{j};
             
-            [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}] = ....
+            [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}, method_timing_all{j}] = ...
                 pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, RPc, UI);
           
             end
@@ -99,7 +101,7 @@ function process_repetition_batches(X, Y, RP, UI)
         
         % Save
         save_incremental_results(RP, all_pvals, all_pvals_neg, ...
-                                 edge_stats_all, cluster_stats_all, batch)
+                                 edge_stats_all, cluster_stats_all, method_timing_all, batch)
         
         fprintf('Repetition %d completed \n', batch{end});
         

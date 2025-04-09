@@ -1,4 +1,4 @@
-function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
+function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timing] = ...
     pf_repetition_loop(rep_id, X_subs, Y_subs, RPc, UI)
 %% pf_repetition_loop
 % Description:
@@ -49,6 +49,8 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
     % Store computed edge and cluster statistics
     pvals_method = struct();
     pvals_method_neg = struct();
+
+    method_timing = struct();
     
     % Compute p-values for each statistical method
     for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
@@ -94,7 +96,11 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
             STATS.submethods = struct();  % Just for consistency
         end
         
+        method_start_time = tic;
+
         [pvals, pvals_neg] = p_value_from_method(STATS, GLM_stats);
+
+        method_elapsed_time = toc(method_start_time);
         
         %% Assign pvals to results
         if isstruct(pvals) && isstruct(pvals_neg)
@@ -103,11 +109,19 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg] = ...
                 name = [STATS.statistic_type '_' submethods{i}];
                 pvals_method.(name) = pvals.(submethods{i});
                 pvals_method_neg.(name) = pvals_neg.(submethods{i});
+
+                % Assign the same timing to each submethod that actually ran
+                if submethods_struct.(submethods{i})
+                    method_timing.(name) = method_elapsed_time;
+                end
             end
         elseif ~isstruct(pvals) && ~isstruct(pvals_neg)
             % Simple vector case
             pvals_method.(STATS.statistic_type) = pvals;
             pvals_method_neg.(STATS.statistic_type) = pvals_neg;
+
+            % Store timing for the method
+            method_timing.(STATS.statistic_type) = method_elapsed_time;
         else
             error("Mismatch between pvals and pvals_neg: one is a struct and the other is not.");
         end

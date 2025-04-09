@@ -62,9 +62,9 @@ Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
 Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
+Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 10;
+Params.batch_size = 50;
 
 %% Skip some tests - change ranges or the function
 ranges = {[1000, 1001]};

@@ -1,4 +1,4 @@
-function ids_sampled = draw_repetition_ids(RP)
+function ids_sampled = draw_repetition_ids(RP, varargin)
 %% draw_repetition_ids
 % **Description**
 % Generates random subject indices for each repetition of the experiment. 
@@ -32,12 +32,22 @@ function ids_sampled = draw_repetition_ids(RP)
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
 
+    p = inputParser;
+    p.addParameter('n_reps', 0);
+    p.parse(varargin{:});
+    n_reps = p.Results.n_reps;
+
+
     if RP.ground_truth
        ids_sampled(:, 1)= 1:RP.n_subs;
        return;
     end
+
+    if n_reps == 0
+        n_reps = RP.n_repetitions;
+    end
     
-    for r=1:RP.n_repetitions
+    for r=1:n_reps
         
         switch RP.test_type
             
