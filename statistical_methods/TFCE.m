@@ -29,7 +29,7 @@ classdef TFCE
         
             % Convert the edge statistics back into a matrix
             test_stat_mat = unflatten_matrix(edge_stats, STATS.mask);
-        
+
             % Apply TFCE transformation to the observed test statistics
             cluster_stats_target = matlab_tfce_transform(test_stat_mat, 'matrix');
             cluster_stats_target = flat_matrix(cluster_stats_target, STATS.mask);

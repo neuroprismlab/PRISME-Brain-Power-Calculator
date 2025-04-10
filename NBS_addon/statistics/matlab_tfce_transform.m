@@ -59,10 +59,14 @@ img(img > 1000) = 100;
 
 % Small perturbation introduced to help the test case (things not being all
 % equal)
-img = img + (rand(size(img)) * 1e-10);
+perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
+img = img + (rand(size(img)) * 1e-15);
+img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
+img(logical(eye(size(img)))) = 0; % Set diagonal to zero (for graphs)
 threshs = 0:dh:max(img(:));
 threshs = threshs(2:end);
 ndh = length(threshs);
+
 
 % find positive elements (voxels/edges greater than first threshold)
 n_elements = length(img(:));
@@ -92,9 +96,10 @@ for h = 1:ndh
     curvals = (clustsize.^E).*(threshs(h)^H);
     vals = vals + curvals;
 end
+
 tfced = NaN(size(img));
 tfced(:) = vals.*dh;
-
+tfced = triu(tfced) + triu(tfced, 1)';
 
 if isempty(comps)
     comps = zeros(1, size(img, 1)); % Neutral output (no clusters)
