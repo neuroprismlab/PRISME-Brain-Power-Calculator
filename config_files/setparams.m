@@ -39,7 +39,7 @@ Params.gt_origin = 'power_calculator';
 Params.atlas_file = NaN;
 
 % If recalculate is equal to 1 - recalculate
-Params.recalculate = true;
+Params.recalculate = false;
 
 % Directories
 Params.nbs_dir = './NBS1.2';
@@ -62,9 +62,9 @@ Params.n_frames.REST2 = 1200;
 
 %%% Resampling parameters %%%
 Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
+Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 100;
+Params.batch_size = 50;
 
 %% Skip some tests - change ranges or the function
 ranges = {[1000, 1001]};
@@ -89,6 +89,9 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'TFCE', 'Constrained', 'Omnibus'};
+Params.all_cluster_stat_types = {'Fast_TFCE'};
+Params.all_cluster_stat_types = {'Fast_TFCE_per500', 'Fast_TFCE_per800', 'Fast_TFCE_per1000', ...
+    'Fast_TFCE_per2000'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
@@ -100,8 +103,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
-Params.test_n_perms = 10;
+Params.testing = false;
+Params.test_n_perms = 2000;
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 2;
 

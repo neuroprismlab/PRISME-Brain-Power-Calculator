@@ -15,7 +15,7 @@ function check_stat_method_class_validity(Params)
 % Author: Fabricio Cravo
 % Date: March 2025
 
-    allowed_properties = {'level', 'permutation_based', 'submethod'};
+    allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params'};
 
     for i = 1:numel(Params.all_cluster_stat_types)
         method_name = Params.all_cluster_stat_types{i};
@@ -27,7 +27,7 @@ function check_stat_method_class_validity(Params)
         end
 
         meta = metaclass(method_obj);
-        const_props = meta.PropertyList([meta.PropertyList.Constant]);
+        const_props = meta.PropertyList;
 
         % Required: level
         if ~any(strcmp({const_props.Name}, 'level'))
@@ -49,5 +49,13 @@ function check_stat_method_class_validity(Params)
                       method_name, p.Name);
             end
         end
+        
+        disp(method_name)
+        if any(strcmp({const_props.Name}, 'permutations')) && method_obj.permutations ~= Params.n_perms
+            warning('Method %s has permutations defined and it will override setparams permutations', method_name)
+        elseif any(strcmp({const_props.Name}, 'permutations')) && method_obj.permutations > Params.n_perms
+            error('Method %s has more local permutations defined than can be prepared by setparams', method_name)
+        end
     end
+    
 end

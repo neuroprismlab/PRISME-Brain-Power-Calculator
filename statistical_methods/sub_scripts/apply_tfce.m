@@ -12,15 +12,15 @@ function tfced = apply_tfce(img)
     dh = 0.1; % Threshold step size
     H = 3.0;
     E = 0.4;
-       
+
     %% **Preprocessing**
     img(img > 1000) = 100; % Thresholding to avoid extreme values
-    perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
-    img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
+    % perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
+    % img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
     img(logical(eye(size(img)))) = 0; % Set diagonal to zero (for graphs)
 
     %% **Precompute Edge Introduction Rounds**
-    threshs = 0:dh:max(img(:));
+    threshs = 0:dh:(max(img(:)) + dh); % Add dh/2 to guarantee the correct number of bins
     num_thresh = numel(threshs); % Number of threshold rounds
     edges_by_thresh = cell(num_thresh, 1); % Store edges by threshold round
 
@@ -32,7 +32,9 @@ function tfced = apply_tfce(img)
         if edge_weights(i) <= 0  % Skip edges with zero or negative weight
             continue;
         end
-        round_idx = min(num_thresh, floor(edge_weights(i) / dh) + 1); % Ensure index is valid
+        % Add small perturbation so edges are always correctly placed
+        round_idx = floor(edge_weights(i) / dh + 1e-10) + 1;
+
         edges_by_thresh{round_idx, 1} = [edges_by_thresh{round_idx}; row(i), col(i)];
     end
 
@@ -49,7 +51,7 @@ function tfced = apply_tfce(img)
         clusters(n).nodes = false(num_nodes, 1);
         clusters(n).nodes(n) = true;
         clusters(n).node_size = 1;
-        clusters(n).size = 0;  % Each node starts counting an edge from itself 
+        clusters(n).size = 0;  
         clusters(n).active = true;
         clusters(n).has_edges = false;
     end
@@ -62,6 +64,7 @@ function tfced = apply_tfce(img)
         % Get edges introduced at this threshold
         new_edges = edges_by_thresh{h};  
 
+        %
         % **Merge clusters based on new edges**
         for k = 1:size(new_edges, 1)
             i = new_edges(k, 1);
@@ -86,6 +89,7 @@ function tfced = apply_tfce(img)
                 clusters(target_cluster).nodes(clusters(absorbed_cluster).nodes) = true;
                 clusters(target_cluster).node_size = clusters(target_cluster).node_size + ...
                                                         clusters(absorbed_cluster).node_size;
+
                 clusters(target_cluster).size = clusters(target_cluster).size + 1;
  
                 % Update cluster size
@@ -93,7 +97,7 @@ function tfced = apply_tfce(img)
 
                 % Mark absorbed cluster as merged
                 clusters(absorbed_cluster).active = false;
-                cluster_labels(clusters(absorbed_cluster).nodes) = target_cluster;
+                cluster_labels(clusters(absorbed_cluster).nodes) = target_cluster; % O(log N) - O(1)
             else
             
                   clusters(cluster_i).size = clusters(cluster_i).size + 1;
@@ -107,11 +111,14 @@ function tfced = apply_tfce(img)
         for j = 1:numel(clusters)
             cc = clusters(j);
             if cc.active
-                cluster_size_per_node(h - 1, cc.nodes) = cc.size;
+                cluster_size_per_node(h, cc.nodes) = cc.size;
             end 
         end
         
     end
+
+    %O(th*N^2 + N^2)
+    %O(th*N + N^2)
     
     % Calculate and accumulate TFCE contributions directly
     % For the first threshold, just calculate the values

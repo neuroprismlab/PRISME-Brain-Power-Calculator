@@ -1,14 +1,14 @@
-classdef Fast_TFCE
+classdef Fast_TFCE_per1000
     
-    properties 
+    properties
         level = "edge";
         permutation_based = true;
-        permutations = 100; % Override permutation number, not implemented yet
+        permutations = 1000; % Override permutation number, not implemented yet
     end
 
     methods
 
-        function pval = run_method(~,varargin)
+        function pval = run_method(obj, varargin)
 
             % Applies Threshold-Free Cluster Enhancement (TFCE) and computes p-values
             % using a permutation-based approach.
@@ -41,7 +41,11 @@ classdef Fast_TFCE
             end
         
             % Number of permutations
-            K = size(permuted_edge_stats, 2);
+            if size(permuted_edge_stats, 2) < obj.permutations
+                K = size(permuted_edge_stats, 2);
+            else
+                K = obj.permutations;
+            end
             null_dist = zeros(K, 1);
         
             % Apply TFCE transformation to each permutation

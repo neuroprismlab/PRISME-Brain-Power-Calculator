@@ -59,10 +59,10 @@ img(img > 1000) = 100;
 
 % Small perturbation introduced to help the test case (things not being all
 % equal)
-perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
-img = img + (rand(size(img)) * 1e-15);
-img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
-img(logical(eye(size(img)))) = 0; % Set diagonal to zero (for graphs)
+%perturbation = rand(size(img)) * 1e-15; % Small perturbation for numerical stability
+%img = img + (rand(size(img)) * 1e-15);
+%img = img + tril(perturbation, -1) + tril(perturbation, -1)'; % Ensure symmetry
+%img(logical(eye(size(img)))) = 0; % Set diagonal to zero (for graphs)
 threshs = 0:dh:max(img(:));
 threshs = threshs(2:end);
 ndh = length(threshs);
@@ -84,6 +84,8 @@ else
 end
 
 % calculate TFCE statistic
+store_cell = cell(ndh, 1);
+
 vals = zeros(n_elements,1);
 for h = 1:ndh
     clustsize = zeros(n_elements,1);
@@ -95,6 +97,8 @@ for h = 1:ndh
     % calculate transform
     curvals = (clustsize.^E).*(threshs(h)^H);
     vals = vals + curvals;
+
+    store_cell{h} = clustsize;
 end
 
 tfced = NaN(size(img));

@@ -1,6 +1,6 @@
 classdef Fast_TFCE
     
-    properties 
+    properties (Constant)
         level = "edge";
         permutation_based = true;
         permutations = 100; % Override permutation number, not implemented yet
