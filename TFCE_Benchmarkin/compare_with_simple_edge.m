@@ -28,7 +28,7 @@ img = img + img';
 tfced1 = apply_tfce(img); % Explicitly set dh=0.10
 
 % Run the second implementation
-[tfced2, comps, comp_sizes] = matlab_tfce_transform(img, 'matrix'); % Explicitly set dh=0.10
+[tfced2, comps, comp_sizes] = matlab_tfce_transform(img); % Explicitly set dh=0.10
 
 % Compare results
 disp('Comparison of results:');

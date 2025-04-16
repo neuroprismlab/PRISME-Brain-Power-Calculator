@@ -15,41 +15,19 @@ function [tfced,comps,comp_sizes] = matlab_tfce_transform(img,varargin)
 %   -- dh size of steps for cluster formation
 %   -- tfced output tfce statistic (upper triangular)
 
-ndim=length(size(img));
-dh = 0.1;
-if nargin > 1
-    if strcmp(varargin{1},'image')
-        is_graph=0;
-        if ndim==3 % defaults only tested for fMRI data?
-            % defaults parameters for 3D from matlab_fce (Smith et al.) - TODO: move to user-defined section
-            % TODO: these param are for 3D - add check for 2D (C=8) (default to full neighborhood)
-            H = 2;
-            E = 0.5;
-            C = 26; % Smith et al. also tested these parameters for C=6
-        elseif ndim==2 && ~any(size(img)==1) % defaults only tested for surface/TBSS?
-            H = 2;
-            E = 1;
-            C = 8;
-        else
-            error('only default params for 2d and 3d')
-        end
-    elseif strcmp(varargin{1},'matrix')
-        is_graph=1;
-        if ndim==2
-            % default parameters from Mrtrix2 connectomestats.cpp function (see TFCE_*_DEFAULT)- cited Vinokur et al., 
-            % 2015 in the code and Baggio et al., 2018 in the docs - values differ from the references - close to the 
-            % values from Baggio et al.: "We therefore recommend E parameter values of 0.5 
-            % (combined with H parameter values between 2.25 and 3) or 0.75 (combined with H parameters between 3 and 3.5)"
-            H = 3.0;
-            E = 0.4;
-        else
-            error('only default params for 2D matrices currently supported')
-        end
-    end
-else
-    error('Must provide input type (image or matrix)')
-end
-    
+%% **Set Parameters**
+% Create input parser
+p = inputParser;
+% Add parameters with default values
+addOptional(p, 'dh', 0.1);
+addOptional(p, 'H', 3.0);
+addOptional(p, 'E', 0.4);
+% Parse the input arguments
+parse(p, varargin{:});
+% Get the parameters
+dh = p.Results.dh; % Threshold step size
+H = p.Results.H;
+E = p.Results.E;
 
 % set cluster thresholds
 % The max_thresh is set at 5000 for test script scenarios where the effect size is
@@ -74,14 +52,9 @@ n_elements = length(img(:));
 % get connected components
 %   cc.PixeldxList = IDs of all edges for each cluster in a cell (for each dh)
 %   cc.NumObjects = number of components (for each dh)
-if is_graph
-    % network components - ONLY works for upper triangular input
-    [comps,comp_sizes] = arrayfun(@(x) get_components2(bsxfun(@ge,img,x),1), threshs);
-    cc = arrayfun(@(x) get_component_IDs(bsxfun(@ge,img,threshs(x)),comps{x},comp_sizes{x}), [1:ndh]);
-else
-    % image components
-    cc = arrayfun(@(x) bwconncomp(bsxfun(@ge,img,x),C), threshs);
-end
+[comps,comp_sizes] = arrayfun(@(x) get_components2(bsxfun(@ge,img,x),1), threshs);
+cc = arrayfun(@(x) get_component_IDs(bsxfun(@ge,img,threshs(x)),comps{x},comp_sizes{x}), [1:ndh]);
+
 
 % calculate TFCE statistic
 store_cell = cell(ndh, 1);

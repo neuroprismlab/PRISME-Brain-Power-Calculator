@@ -1,4 +1,4 @@
-function tfced = apply_tfce(img)
+function tfced = apply_tfce(img, varargin)
 % Optimized TFCE function for connectivity-based analysis (Edge-Based).
 %
 % - Precomputes when each edge is introduced.
@@ -6,12 +6,23 @@ function tfced = apply_tfce(img)
 % - Avoids redundant operations for better efficiency.
 %
 % Usage:
+%   tfced = apply_tfce(img, 'H', 2.0, 'dh', 0.2, 'E', 0.5)
 %   tfced = apply_tfce(img)
 
     %% **Set Parameters**
-    dh = 0.1; % Threshold step size
-    H = 3.0;
-    E = 0.4;
+    % Create input parser
+    p = inputParser;
+    % Add parameters with default values
+    addOptional(p, 'dh', 0.1);
+    addOptional(p, 'H', 3.0);
+    addOptional(p, 'E', 0.4);
+    % Parse the input arguments
+    parse(p, varargin{:});
+    % Get the parameters
+    dh = p.Results.dh; % Threshold step size
+    H = p.Results.H;
+    E = p.Results.E;
+ 
 
     %% **Preprocessing**
     img(img > 1000) = 100; % Thresholding to avoid extreme values

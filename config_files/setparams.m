@@ -88,10 +88,7 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-Params.all_cluster_stat_types = {'Parametric', 'Size', 'TFCE', 'Constrained', 'Omnibus'};
-Params.all_cluster_stat_types = {'Fast_TFCE'};
-Params.all_cluster_stat_types = {'Fast_TFCE_per500', 'Fast_TFCE_per800', 'Fast_TFCE_per1000', ...
-    'Fast_TFCE_per2000'};
+Params.all_cluster_stat_types = {'Parametric', 'Size', 'Fast_TFCE', 'Constrained', 'Omnibus'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
