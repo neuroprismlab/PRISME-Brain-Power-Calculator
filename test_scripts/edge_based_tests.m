@@ -28,9 +28,9 @@ function edge_based_tests(data_set_name)
     Params = common_test_setup(data_set_name);
     
     % Might have to improve this in the future
-    stat_method_cell = {'Parametric', 'Size', 'TFCE'};
+    stat_method_cell = {'Parametric', 'Size', 'Fast_TFCE_cpp'};
     submethod_cell = {'FWER', 'FDR'};
-    full_method_name_cell = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'TFCE'};
+    full_method_name_cell = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'Fast_TFCE_cpp'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     Params.all_submethods = submethod_cell;

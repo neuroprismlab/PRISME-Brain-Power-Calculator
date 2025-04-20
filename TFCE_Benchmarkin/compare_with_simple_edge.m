@@ -25,34 +25,17 @@ img = img + img';
 %disp('Input Matrix:');
 %disp(img);
 
-tfced1 = apply_tfce(img); % Explicitly set dh=0.10
+[tfced1, cc_size] = apply_tfce(img); % Explicitly set dh=0.10
 
 % Run the second implementation
-[tfced2, comps, comp_sizes] = matlab_tfce_transform(img); % Explicitly set dh=0.10
+% [tfced2, comps, comp_sizes] = matlab_tfce_transform(img); % Explicitly set dh=0.10
+tfced2 = apply_tfce_cpp(img, 0.1, 3, 0.4);
 
 % Compare results
 disp('Comparison of results:');
 disp(['Mean absolute difference: ', num2str(mean(abs(tfced1(:) - tfced2(:))))]);
 disp(['Maximum absolute difference: ', num2str(max(abs(tfced1(:) - tfced2(:))))]);
 disp(['Correlation between outputs: ', num2str(corr(tfced1(:), tfced2(:)))]);
-
-% Test thresholds to verify which edges exist at each threshold
-disp('Verifying threshold behavior:');
-test_thresholds = [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95];
-for i = 1:length(test_thresholds)
-    th = test_thresholds(i);
-    edges_above = (img > th) & ~eye(n);
-    num_edges = sum(sum(edges_above))/2; % Divide by 2 due to symmetry
-    
-    % Show which edges are above the threshold
-    [row, col] = find(triu(edges_above)); % Only upper triangle to avoid duplicates
-    edge_list = '';
-    for e = 1:length(row)
-        edge_list = [edge_list, sprintf('(%d,%d)=%.1f ', row(e), col(e), img(row(e),col(e)))];
-    end
-    
-    disp(['Threshold ', num2str(th), ': ', num2str(num_edges), ' edges: ', edge_list]);
-end
 
 % Visualize differences
 figure;

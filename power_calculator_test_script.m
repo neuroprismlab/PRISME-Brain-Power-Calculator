@@ -27,6 +27,8 @@ scriptDir = fileparts(mfilename('fullpath'));
 addpath(genpath(scriptDir));
 cd(scriptDir);
 
+compile_mex()
+
 create_test_fc_data_set()
 create_test_fc_atlas()
 

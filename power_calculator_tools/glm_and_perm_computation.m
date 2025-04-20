@@ -59,7 +59,7 @@ function [GLM_stats, GLM, STATS] = ...
     
     % Find GLM and edge_stats
     GLM = NBSglm_setup_smn(nbs.GLM);
-    edge_stats = GLM_fit(GLM, RP.use_cpp);
+    edge_stats = GLM_fit(GLM);
     
     % Compute network-based statistics
     edge_stat_square = unflatten_matrix(edge_stats, RP.mask);

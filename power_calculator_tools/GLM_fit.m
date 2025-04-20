@@ -1,9 +1,5 @@
-function edge_stats = GLM_fit(GLM, use_cpp)
+function edge_stats = GLM_fit(GLM)
     
-    if ~use_cpp
-        edge_stats = NBSglm_smn(GLM);
-    else
-        edge_stats = NBSglm_cpp(GLM);
-    end
+    edge_stats = NBSglm_smn(GLM);
 
 end

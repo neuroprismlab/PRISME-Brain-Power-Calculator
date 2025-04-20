@@ -50,7 +50,7 @@ Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 20;
-Params.use_cpp = true;
+ 
 
 %% Skip some tests - change ranges or the function
 ranges = {[2, 1001]};
@@ -70,7 +70,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'Fast_TFCE', 'Constrained', 'Omnibus'};
-Params.all_cluster_stat_types = {'Constrained'};
+Params.all_cluster_stat_types = {'Fast_TFCE_cpp'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
@@ -83,8 +83,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 1000;
-Params.test_n_repetitions = 10;
+Params.test_n_perms = 10;
+Params.test_n_repetitions = 20;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 

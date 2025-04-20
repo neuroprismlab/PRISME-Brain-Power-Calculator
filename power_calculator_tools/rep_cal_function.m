@@ -39,6 +39,9 @@ function rep_cal_function(Params)
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
 %
+    
+    %% Check cpp part of code
+    Params = check_mex_binaries(Params);
 
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);

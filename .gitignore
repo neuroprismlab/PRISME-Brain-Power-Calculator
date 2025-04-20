@@ -3,5 +3,5 @@ power_calculator_results/*
 *.asv
 /test_power_calculator/*
 GLM_permutations/*
-
+*.mex*
 
