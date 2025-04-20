@@ -69,7 +69,7 @@ function process_repetition_batches(X, Y, RP, UI)
             else
                 X_subs{j} = RP.X_rep;
             end
-   
+            
         end
         
         % **Loop through missing repetitions**
@@ -81,7 +81,7 @@ function process_repetition_batches(X, Y, RP, UI)
             
             [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}, method_timing_all{j}] = ...
                 pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, RPc, UI);
-          
+    
             end
     
         else
@@ -100,8 +100,8 @@ function process_repetition_batches(X, Y, RP, UI)
         check_pval_output_data(RP, all_pvals, all_pvals_neg);
         
         % Save
-        save_incremental_results(RP, all_pvals, all_pvals_neg, ...
-                                 edge_stats_all, cluster_stats_all, method_timing_all, batch)
+        % save_incremental_results(RP, all_pvals, all_pvals_neg, ...
+        %                          edge_stats_all, cluster_stats_all, method_timing_all, batch)
         
         fprintf('Repetition %d completed \n', batch{end});
         

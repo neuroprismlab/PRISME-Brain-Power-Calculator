@@ -45,26 +45,11 @@ Params.recalculate = false;
 Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
-%%% Trimmed Scans %%%
-% Specify whether to use resting runs for task2 which have been trimmed to match each task's scan duration
-% (in no. frames for single encoding direction; cf. https://protocols.humanconnectome.org/HCP/3T/imaging-protocols.html)
-% Note: all scans were acquired with the same TR
-Params.use_trimmed_rest = 0; % default = 0
-Params.n_frames.EMOTION = 176;
-Params.n_frames.GAMBLING = 253;
-Params.n_frames.LANGUAGE = 316;
-Params.n_frames.MOTOR = 284;
-Params.n_frames.RELATIONAL = 232;
-Params.n_frames.SOCIAL = 274;
-Params.n_frames.WM = 405;
-Params.n_frames.REST = 1200;
-Params.n_frames.REST2 = 1200;
-
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 50;
+Params.batch_size = 20;
 
 %% Skip some tests - change ranges or the function
 ranges = {[1000, 1001]};
@@ -75,11 +60,6 @@ Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges)
 Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
-% NBS parameters
-Params.nbs_method = 'Run NBS';       % 'Run NBS' (all procedures except edge-level) | 
-% 'Run Parametric Edge-Level Correction' | 'Run FDR' (nonparametric edge-level FDR correction)
-% not needed anymore
-% Params.nbs_test_stat = 't-test';     % 't-test' | 'one-sample' | 'F-test'
                             % Current model (see above design matrix) only designed for t-test
 Params.force_permute = false;               
 Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
@@ -89,6 +69,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'Fast_TFCE', 'Constrained', 'Omnibus'};
+Params.all_cluster_stat_types = {'Constrained'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
@@ -100,9 +81,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
-Params.test_n_perms = 2000;
+Params.testing = true;
+Params.test_n_perms = 10;
 Params.test_n_repetitions = 20;
-Params.test_n_workers = 2;
+Params.test_n_workers = 1;
 
 end
