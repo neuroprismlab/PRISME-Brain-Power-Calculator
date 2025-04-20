@@ -50,9 +50,10 @@ Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 20;
+Params.use_cpp = true;
 
 %% Skip some tests - change ranges or the function
-ranges = {[1000, 1001]};
+ranges = {[2, 1001]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
@@ -82,8 +83,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 20;
+Params.test_n_perms = 1000;
+Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
+Params.test_disable_save = false;
 
 end

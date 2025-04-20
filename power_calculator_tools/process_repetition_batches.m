@@ -100,9 +100,10 @@ function process_repetition_batches(X, Y, RP, UI)
         check_pval_output_data(RP, all_pvals, all_pvals_neg);
         
         % Save
-        save_incremental_results(RP, all_pvals, all_pvals_neg, ...
-                                  edge_stats_all, cluster_stats_all, method_timing_all, batch)
-        
+        if ~RP.test_disable_save
+            save_incremental_results(RP, all_pvals, all_pvals_neg, ...
+                                    edge_stats_all, cluster_stats_all, method_timing_all, batch)
+        end
         fprintf('Repetition %d completed \n', batch{end});
         
     end 

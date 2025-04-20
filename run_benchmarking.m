@@ -40,9 +40,6 @@ function run_benchmarking(RP, Y, X)
 
 
     for id_nsub_list = 1:length(RP.list_of_nsubset)
-        tic 
-        disp('Started counting')
-        
         RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
         RP = set_n_subs_subset(RP);
 

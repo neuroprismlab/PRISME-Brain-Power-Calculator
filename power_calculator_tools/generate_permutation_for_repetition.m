@@ -24,7 +24,7 @@ function perm_data = generate_permutation_for_repetition(GLM, RP)
         % Generate permuted data
         permuted_GL = GLM;
         permuted_GL.y = permute_signal(GLM);  % Apply permutation
-        permutation_edge_stats = NBSglm_smn(permuted_GL);
+        permutation_edge_stats = GLM_fit(permuted_GL, RP.use_cpp);
         
         % Store permutation
         permuted_data(:, i) = permutation_edge_stats;

@@ -93,9 +93,12 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
                         meta_data.repetition_ids = ids_sampled;
                         
                         % Save updated meta_data
-                        save(file_path, 'meta_data', '-v7.3');
-                        fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
-                            n_additional_reps, file_path);
+                        
+                        if ~RP.test_disable_save
+                            save(file_path, 'meta_data', '-v7.3');
+                            fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
+                                n_additional_reps, file_path);
+                        end
                         
                     end
                  
@@ -121,8 +124,10 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
         end
     
         % Save initialized file
-        save(file_path, 'meta_data', '-v7.3');
-        fprintf('Initialized results file with repetition IDs: %s\n', file_path);
+        if ~RP.test_disable_save
+            save(file_path, 'meta_data', '-v7.3');
+            fprintf('Initialized results file with repetition IDs: %s\n', file_path);
+        end
     end
 
     % If we need to recalculate - set everything to zero again
