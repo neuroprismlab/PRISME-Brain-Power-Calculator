@@ -49,9 +49,6 @@ function tfced = apply_tfce(img, varargin)
         edges_by_thresh{round_idx, 1} = [edges_by_thresh{round_idx}; row(i), col(i)];
     end
 
-    %% **Initialize Variables**
-    tfce_vals = zeros(size(img)); % TFCE accumulation matrix
-
     %% **Initialize Clusters**
     num_nodes = size(img, 1);
     cluster_labels = (1:num_nodes)';  % Start with each node as its own cluster
@@ -111,8 +108,8 @@ function tfced = apply_tfce(img, varargin)
                 cluster_labels(clusters(absorbed_cluster).nodes) = target_cluster; % O(log N) - O(1)
             else
             
-                  clusters(cluster_i).size = clusters(cluster_i).size + 1;
-                  clusters(cluster_i).has_edges = true;
+                clusters(cluster_i).size = clusters(cluster_i).size + 1;
+                clusters(cluster_i).has_edges = true;
 
             end
 
@@ -127,9 +124,6 @@ function tfced = apply_tfce(img, varargin)
         end
         
     end
-
-    %O(th*N^2 + N^2)
-    %O(th*N + N^2)
     
     % Calculate and accumulate TFCE contributions directly
     % For the first threshold, just calculate the values
@@ -145,7 +139,7 @@ function tfced = apply_tfce(img, varargin)
     end
     
     tfced = zeros(num_nodes, num_nodes);
-    for h = 1:num_thresh
+    for h = 2:num_thresh
         edges = edges_by_thresh{h}; 
 
         for i = 1:size(edges, 1)

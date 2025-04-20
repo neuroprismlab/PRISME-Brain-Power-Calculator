@@ -3,7 +3,7 @@ classdef Fast_TFCE
     properties 
         level = "edge";
         permutation_based = true;
-        permutations = 800; % Override permutation number, not implemented yet
+        permutations = 800; % Override permutation number
         
         method_params = Fast_TFCE.get_fast_tfce_params()
     end

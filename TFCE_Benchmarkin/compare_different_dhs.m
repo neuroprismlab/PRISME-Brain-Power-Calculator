@@ -25,13 +25,13 @@ parent_dir = fileparts(current_script_dir);
 cd(parent_dir);
 
 % Create the full path for the results directory - using a different folder
-speed_results_dir = './power_calculator_results/tfce_speed_comparison_results/';
+speed_results_dir = './power_calculator_results/tfce_speed_dh_test/';
 if ~exist(speed_results_dir, 'dir')
     mkdir(speed_results_dir);
 end
 
 % Define path for speed comparison results file
-speed_comparison_filepath = fullfile(speed_results_dir, 'tfce_speed_comparison_results.mat');
+speed_comparison_filepath = fullfile(speed_results_dir, 'tfce_speed_test_.mat');
 
 % Check if results already exist
 if exist(speed_comparison_filepath, 'file')

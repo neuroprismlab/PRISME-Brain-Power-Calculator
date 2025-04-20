@@ -106,7 +106,6 @@ RepParams.is_permutation_based = check_if_permutation_method(RepParams);
 %if use_both_tasks; rep_params.task2=task2; end
 
 % assign NBS parameters to UI (see NBS.m)
-UI.method.ui = RepParams.nbs_method;
 % UI.design.ui = dmat;
 UI.contrast.ui = RepParams.nbs_contrast;
 UI.test.ui = RepParams.nbs_test_stat; % alternatives are one-sample and F-test
