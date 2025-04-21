@@ -20,7 +20,9 @@ end
 
 % Define source files with relative paths from project root
 source_files = {
-    'statistical_methods/mex_scripts/apply_tfce_cpp.cpp'
+    'statistical_methods/mex_scripts/apply_tfce_cpp.cpp', ...
+    'statistical_methods/mex_scripts/constrained_pval_cpp.cpp', ...
+    'statistical_methods/mex_scripts/size_pval_cpp.cpp'
 };
 
 % Print header

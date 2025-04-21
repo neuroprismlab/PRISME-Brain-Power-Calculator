@@ -20,9 +20,9 @@ function network_based_tests(data_set_name)
 
     Params = common_test_setup(data_set_name);
 
-    stat_method_cell = {'Constrained'};
+    stat_method_cell = {'Constrained_cpp'};
     submethod_cell = {'FWER', 'FDR'};
-    full_method_name_cell = {'Constrained_FWER', 'Constrained_FDR'};
+    full_method_name_cell = {'Constrained_cpp_FWER', 'Constrained_cpp_FDR'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     Params.all_submethods = submethod_cell;

@@ -29,8 +29,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -70,7 +70,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size', 'Fast_TFCE', 'Constrained', 'Omnibus'};
-Params.all_cluster_stat_types = {'Fast_TFCE_cpp'};
+Params.all_cluster_stat_types = {'Size_cpp', 'Size'};
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
@@ -83,7 +83,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 10;
+Params.test_n_perms = 100;
 Params.test_n_repetitions = 20;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
