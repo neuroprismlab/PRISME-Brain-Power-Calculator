@@ -48,11 +48,8 @@ addpath(genpath(current_path));
 Params = setparams();
 Params.ground_truth = false;
 
-tic
 rep_cal_function(Params);
-b = toc;
-disp('Finished calculations')
-disp(b)
+
 
 
 
