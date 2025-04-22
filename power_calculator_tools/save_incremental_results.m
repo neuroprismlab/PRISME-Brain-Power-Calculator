@@ -38,6 +38,21 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
     % Define the significance threshold for sparse storage
     sig_threshold = RP.save_significance_thresh;
+
+    % Always create fresh meta_data
+    meta_data = struct();
+    meta_data.dataset = RP.data_set_base;
+    meta_data.map = RP.data_set_map;
+    meta_data.test = RP.test_type;
+    meta_data.test_components = strsplit(RP.test_name, '_');
+    meta_data.subject_number = RP.n_subs_subset;
+    meta_data.testing_code = RP.testing;
+    meta_data.repetition_ids = RP.ids_sampled;
+    RP = rmfield(RP, 'ids_sampled');
+    meta_data.rep_parameters = RP;
+    meta_data.date = datetime("today");
+    meta_data.method_list = {};
+    meta_data.method_current_rep = struct();
     
     % Initialize or load edge_level_stats and network_level_stats
     if existence
@@ -53,26 +68,45 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
             edge_level_stats = nan(RP.n_var, RP.n_repetitions);
             network_level_stats = nan(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
         end
+
+        if ismember('meta_data', file_vars) 
+            temp_data = load(output_dir, 'meta_data');
+            
+            % Update meta_data with existing data
+            temp_meta_data = temp_data.meta_data;
+            if isfield(temp_meta_data, 'method_list') && ~isempty(temp_meta_data.method_list)
+                % Concatenate method_list without duplicates
+                meta_data.method_list = unique([meta_data.method_list, temp_meta_data.method_list]);
+            else
+                meta_data.method_list = {};
+            end
+            
+            % Merge method_current_rep fields
+            if isfield(temp_meta_data, 'method_current_rep') && isstruct(temp_meta_data.method_current_rep)
+                % Get field names from both structures
+                existing_methods = fieldnames(temp_meta_data.method_current_rep);
+                
+                % Initialize method_current_rep if empty
+                if ~isfield(meta_data, 'method_current_rep') || ~isstruct(meta_data.method_current_rep)
+                    meta_data.method_current_rep = struct();
+                end
+                
+                % Copy fields from existing structure
+                for i = 1:length(existing_methods)
+                    method_name = existing_methods{i};
+                    meta_data.method_current_rep.(method_name) = temp_meta_data.method_current_rep.(method_name);
+                end
+            else
+                meta_data.method_current_rep = struct();
+            end
+
+        end
+   
     else
         % Initialize new storage
         edge_level_stats = nan(RP.n_var, RP.n_repetitions);
         network_level_stats = nan(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
     end
-    
-    % Always create fresh meta_data
-    meta_data = struct();
-    meta_data.dataset = RP.data_set_base;
-    meta_data.map = RP.data_set_map;
-    meta_data.test = RP.test_type;
-    meta_data.test_components = strsplit(RP.test_name, '_');
-    meta_data.subject_number = RP.n_subs_subset;
-    meta_data.testing_code = RP.testing;
-    meta_data.repetition_ids = RP.ids_sampled;
-    RP = rmfield(RP, 'ids_sampled');
-    meta_data.rep_parameters = RP;
-    meta_data.date = datetime("today");
-    meta_data.method_list = {};
-    meta_data.method_current_rep = struct();
     
     % Get min existing repetition across all methods for edge/network stats
     min_existing_rep = inf;
