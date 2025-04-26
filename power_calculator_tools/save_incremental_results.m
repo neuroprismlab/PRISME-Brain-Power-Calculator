@@ -51,7 +51,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     RP = rmfield(RP, 'ids_sampled');
     meta_data.rep_parameters = RP;
     meta_data.date = datetime("today");
-    meta_data.method_list = {};
+    meta_data.method_list = RP.all_full_stat_type_names;
     meta_data.method_current_rep = struct();
     
     % Initialize or load edge_level_stats and network_level_stats
@@ -77,8 +77,6 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
             if isfield(temp_meta_data, 'method_list') && ~isempty(temp_meta_data.method_list)
                 % Concatenate method_list without duplicates
                 meta_data.method_list = unique([meta_data.method_list, temp_meta_data.method_list]);
-            else
-                meta_data.method_list = {};
             end
             
             % Merge method_current_rep fields
@@ -136,9 +134,6 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     % Process each method
     for stat_id = 1:length(RP.all_full_stat_type_names)
         method_name = RP.all_full_stat_type_names{stat_id};
-        
-        % Add method to meta_data.method_list
-        meta_data.method_list{end+1} = method_name;
         
         % Calculate which repetitions need to be saved for this method
         existing_reps = RP.existing_repetitions.(method_name);
