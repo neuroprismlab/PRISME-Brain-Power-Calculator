@@ -53,7 +53,7 @@ Params.batch_size = 20;
  
 
 %% Skip some tests - change ranges or the function
-ranges = {[2, 1001]};
+ranges = {[1000, 1001]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 

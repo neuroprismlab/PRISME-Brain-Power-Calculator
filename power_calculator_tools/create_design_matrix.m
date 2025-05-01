@@ -62,10 +62,10 @@ function X = create_design_matrix(varargin)
             X = zeros(n_subs_1 + n_subs_2, 2);
         
             % Intercept column (ones for all subjects)
-            X(:, 1) = 1;
+            X(1:n_subs_1, 1) = 1;
         
-            % Group membership column (1 for Group 1, 0 for Group 2)
-            X(1:n_subs_1, 2) = 1;  % Group 1
+            % Group membership column (1 for Group 1, 0 for Group 2)  
+            X(n_subs_1 + 1:end, 2) = 1;
 
         case 'pt'
 

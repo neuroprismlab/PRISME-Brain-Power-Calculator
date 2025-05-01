@@ -82,9 +82,24 @@ for i = 1:length(rep_files)
                                                rep_data.meta_data.test, ...
                                                rep_data.meta_data.subject_number, ...
                                                rep_data.meta_data.testing_code, false);
-
+    % Split the path and filename
+    [file_path, file_name_only, file_ext] = fileparts(file_name);
+    % Add the prefix to just the filename
+    file_name = fullfile(file_path, ['pr-', file_name_only, file_ext]);
+    
+    % Save metadata regardless
     meta_data = rep_data.meta_data;
-    save(file_name, 'meta_data');
+    
+    % Check if both stats fields exist
+    if isfield(rep_data, 'edge_level_stats') && isfield(rep_data, 'network_level_stats')
+        % Calculate means and save everything
+        edge_level_stats_mean = mean(rep_data.edge_level_stats, 2);
+        network_level_stats_mean = mean(rep_data.network_level_stats, 2);
+        save(file_name, 'meta_data', 'edge_level_stats_mean', 'network_level_stats_mean');
+    else
+        % Just save metadata
+        save(file_name, 'meta_data');
+    end
 
 
     for j = 1:numel(method_list)
