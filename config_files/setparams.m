@@ -29,8 +29,8 @@ function Params = setparams()
 
 % NBS toolbox
 Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
 Params.gt_origin = 'power_calculator';
@@ -83,8 +83,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 20;
+Params.test_n_perms = 1000;
+Params.test_n_repetitions = 500;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 

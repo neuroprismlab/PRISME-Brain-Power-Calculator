@@ -38,13 +38,15 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
 % Author: Fabricio Cravo  
 % Date: March 2025
 
-    % Compute GLM and permutations
+    % Compute GLM and permutation
     [GLM_stats, ~, STATS] = glm_and_perm_computation( ...
         X_subs, Y_subs, RPc.Value, UI, RPc.Value.is_permutation_based);
-    
+
      % Assign computed statistics
     edge_stats = GLM_stats.edge_stats;
     cluster_stats = GLM_stats.cluster_stats;
+
+    keyboard;
 
     % Store computed edge and cluster statistics
     pvals_method = struct();

@@ -190,36 +190,11 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     %% Get stat level - edge, network, or brain
     stat_gt_level_str = rep_data.meta_data.level;
     
-
-    % get indices of positive and negative ground truth dcoefficients
-    ids_pos_vec=gt_data>tpr_dthresh;
-    ids_neg_vec=gt_data<(-1*tpr_dthresh);
-    ids_zero_vec= ~ids_pos_vec & ~ids_neg_vec;
-    
-
-    switch  stat_gt_level_str
-
-        case 'edge'
-            ids_pos = ids_pos_vec;
-            ids_neg = ids_neg_vec;
-            ids_zero= ids_zero_vec;
-
-        case 'network'
-            ids_pos = ids_pos_vec;
-            ids_neg = ids_neg_vec;
-            ids_zero = ids_zero_vec;
-
-        case 'whole_brain'
-            % the Cohen's d-coefficient threshold doesn't directly translate to this multivariate effect size - 
-            % treating all nonzero as non-null
-            pos_effect = any(gt_data > 0);
-            neg_effect = any(gt_data < 0);
-            
-            
-    end
+    [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
+        extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
 
     % calculate TPR
-    true_positives=zeros(size(gt_data));
+    true_positives = nan(size(gt_data));
     if contains(stat_gt_level_str,'edge')
 
         true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
@@ -227,10 +202,10 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 
     elseif contains(stat_gt_level_str,'network')
 
-        true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos);
-        true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg);
+        true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
+        true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg_vec);
 
-    else contains(stat_gt_level_str,'whole_brain')
+    elseif contains(stat_gt_level_str,'whole_brain')
 
         true_positives = 0;
         if pos_effect
@@ -239,8 +214,11 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
         if neg_effect
             true_positives = true_positives + PowerRes.positives_total_neg;
         end
-        %% Divide by two since repetitions are "doubled" here
-        true_positives = floor(true_positives/2);
+        
+        %% Divide by two only if both positive and negative effects are present
+        if pos_effect && neg_effect
+           true_positives = floor(true_positives/2);
+        end
 
     end
 
@@ -248,6 +226,54 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     PowerRes.tpr=true_positives*100/n_reps;
     
 end
+
+function PowerRes = calculate_fpr(rep_data, gt_data, tpr_dthresh, PowerRes)
+%   Calculates the true negative rate to conclude the confusion table with
+%   the tpr. It's quite similar to the funciton where it first find the
+%   gt position and then the repetition data to estimate errors.
+%
+
+     %% Get stat level - edge, network, or brain
+    stat_gt_level_str = rep_data.meta_data.level;
+    
+    [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
+        extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
+
+
+    % calculate TPR
+    false_positives = nan(size(gt_data));
+    if contains(stat_gt_level_str,'edge')
+
+        false_positives(~ids_pos_vec)=PowerRes.positives_total(~ids_pos_vec);
+        false_positives(~ids_neg_vec)=PowerRes.positives_total_neg(~ids_neg_vec);
+
+    elseif contains(stat_gt_level_str,'network')
+
+        false_positives(~ids_pos_vec)=PowerRes.positives_total(~ids_pos_vec);
+        false_positives(~ids_neg_vec)=PowerRes.positives_total_neg(~ids_neg_vec);
+
+    elseif contains(stat_gt_level_str,'whole_brain')
+
+        false_positives = 0;
+        if ~pos_effect
+            false_positives = false_positives + PowerRes.positives_total;
+        end
+        if ~neg_effect
+            false_positives = false_positives + PowerRes.positives_total_neg;
+        end
+        
+        %% Divide by two only if both positive and negative effects are present
+        if ~pos_effect && ~neg_effect
+           false_positives = floor(false_positives/2);
+        end
+
+    end
+
+    n_reps = size(rep_data.sig_prob, 2);
+    PowerRes.fpr=false_positives*100/n_reps;
+
+end
+
 
 %% -------------------------------------------------------------------------%
 % ******** Visualize ground truth effect sizes ******** 
