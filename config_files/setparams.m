@@ -33,6 +33,9 @@ Params.save_directory = './power_calculator_results/';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
+% Name the dataset - controls output folder and gt matching 
+Params.data_set = 'new_data_set';
+
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
