@@ -28,6 +28,7 @@ addpath(genpath(scriptDir));
 cd(scriptDir);
 
 compile_mex()
+clean_test_directories()
 
 create_test_fc_data_set()
 create_test_fc_atlas()

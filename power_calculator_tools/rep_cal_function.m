@@ -45,12 +45,13 @@ function rep_cal_function(Params)
 
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);
+        Dataset.file_name = Params.data_dir;
     end
     
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
     Params.ground_truth = false;
     Params = setup_experiment_data(Params, Dataset);
-    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
+    [Params.output, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset, Params);
     Params.atlas_file = atlas_data_set_map(Params);
     [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
     
@@ -104,7 +105,6 @@ function rep_cal_function(Params)
 
         run_benchmarking(RP, Y, X)
         
-    
     end
 
 end

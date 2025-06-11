@@ -40,17 +40,17 @@ function atlas_file = atlas_data_set_map(Params)
         atlas_file = Params.atlas_file;
     else
         switch true
-            case strcmp(Params.data_set, 'hcp_fc')
+            case strcmp(Params.data_set_base, 'hcp')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
-            case strcmp(Params.data_set, 'abcd_fc')
+            case strcmp(Params.data_set_base, 'abcd')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
-            case startsWith(Params.data_set, 'test_')
+            case startsWith(Params.data_set_base, 'test')
                 atlas_file = './atlas_storage/test_hcp_fc_atlas.mat';
 
             otherwise
-                error('No atlas file found for dataset: %s', Params.data_set);
+                error('No atlas file found for dataset: %s', Params.data_set_base);
         end
     end
 end

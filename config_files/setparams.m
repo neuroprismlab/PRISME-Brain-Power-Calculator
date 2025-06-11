@@ -33,9 +33,10 @@ Params.save_directory = './power_calculator_results/';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
-% Name the dataset - controls output folder and gt matching 
-Params.data_set = 'new_data_set';
+% Name the output folder and files
+Params.output = 'hcp_fc';
 
+% Gt origin is currently deprecated
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
@@ -85,9 +86,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
-Params.test_n_perms = 1000;
-Params.test_n_repetitions = 500;
+Params.testing = false;
+Params.test_n_perms = 100;
+Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 

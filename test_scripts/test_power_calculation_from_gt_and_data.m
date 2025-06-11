@@ -50,7 +50,9 @@ function test_power_calculation_from_gt_and_data()
 
     % Call function to load repetition and GT data
     assignin('base', 'Study_Info', Study_Info);
-    calculate_power;
+    Params = setparams();
+    Params.output = 'syn_power';
+    calculate_power(Params);
 
     clear Study_Info
     

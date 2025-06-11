@@ -28,7 +28,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 % Modified: April 2025 - Memory optimization with sparse matrices
 
     % Create a consolidated output filename
-    [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
+    [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.output, RP.test_name, ...
                                                         RP.test_type, RP.n_subs_subset, RP.testing, RP.ground_truth);
 
     output_dir_path = fileparts(output_dir);
@@ -41,6 +41,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
     % Always create fresh meta_data
     meta_data = struct();
+    meta_data.output = RP.output;
     meta_data.dataset = RP.data_set_base;
     meta_data.map = RP.data_set_map;
     meta_data.test = RP.test_type;

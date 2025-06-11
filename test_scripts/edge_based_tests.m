@@ -23,9 +23,10 @@ function edge_based_tests(data_set_name)
 %   - Validates metadata fields for consistency and correctness.
 
     data_set = load(['./data/', data_set_name]);
-    data_set_name = get_data_set_name(data_set);
 
     Params = common_test_setup(data_set_name);
+
+    data_set_name = get_data_set_name(data_set, Params);
     
     % Might have to improve this in the future
     stat_method_cell = {'Parametric', 'Size', 'Fast_TFCE_cpp'};

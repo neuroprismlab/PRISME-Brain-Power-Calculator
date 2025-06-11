@@ -55,6 +55,7 @@ function generate_synthetic_power_data()
     meta_data.subject_number = 40;
     meta_data.testing_code = 1;
     meta_data.method_list = method_names;
+    meta_data.rep_parameters.data_dir = './syn_data.mat';
     meta_data.run_time = rand() * 10;
     
     % Add critical power calculation parameters

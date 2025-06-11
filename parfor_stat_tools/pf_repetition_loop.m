@@ -46,8 +46,6 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
     edge_stats = GLM_stats.edge_stats;
     cluster_stats = GLM_stats.cluster_stats;
 
-    keyboard;
-
     % Store computed edge and cluster statistics
     pvals_method = struct();
     pvals_method_neg = struct();

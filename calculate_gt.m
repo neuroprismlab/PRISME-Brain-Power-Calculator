@@ -55,13 +55,14 @@ Params.parallel = false;
 %% Load data
 if ~exist('Dataset', 'var')
     Dataset = load(Params.data_dir);
+    Dataset.file_name = Params.data_dir;
 end
 
 %% Set n_nodes, n_var, n_repetitions 
 Params = setup_experiment_data(Params, Dataset);
 
 %% Create directory and get dataset name - get atlas
-[Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
+[Params.output, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset, Params);
 Params.atlas_file = atlas_data_set_map(Params);
 
 %% Create gt output directory
