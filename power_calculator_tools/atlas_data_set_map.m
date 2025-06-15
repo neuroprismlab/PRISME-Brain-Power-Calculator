@@ -35,22 +35,27 @@ function atlas_file = atlas_data_set_map(Params)
     atlas_ok = ~isnan(Params.atlas_file);
     atlas_file = NaN;  
 
+    data_set_choice = strcat(Params.data_set_base, '_', Params.data_set_map);
+
     if atlas_ok
         % Use provided atlas file if available
         atlas_file = Params.atlas_file;
     else
         switch true
-            case strcmp(Params.data_set_base, 'hcp')
+            case strcmp(data_set_choice, 'hcp_fc')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
-            case strcmp(Params.data_set_base, 'abcd')
+            case strcmp(data_set_choice, 'abcd_fc')
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
-            case startsWith(Params.data_set_base, 'test')
+            case strcmp(data_set_choice, 'hcp_act')
+                atlas_file = NaN;
+
+            case startsWith(data_set_choice, 'test')
                 atlas_file = './atlas_storage/test_hcp_fc_atlas.mat';
 
             otherwise
-                error('No atlas file found for dataset: %s', Params.data_set_base);
+                error('No atlas file found for dataset: %s', data_set_choice);
         end
     end
 end

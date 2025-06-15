@@ -81,7 +81,7 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
             
             if length(TestData.contrast) == 1
                 % single condition in contrast -> t
-       
+                test_type_origin = 'contrast';
                 test_type = 't';
 
             elseif length(TestData.contrast) == 2

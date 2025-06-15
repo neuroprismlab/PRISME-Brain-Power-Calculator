@@ -15,8 +15,10 @@ function check_stat_method_class_validity(Params)
 % Author: Fabricio Cravo
 % Date: March 2025
 
-    allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params'};
-
+    allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params',
+        'variable_type'};
+    
+    %% Check types
     for i = 1:numel(Params.all_cluster_stat_types)
         method_name = Params.all_cluster_stat_types{i};
 
@@ -57,5 +59,7 @@ function check_stat_method_class_validity(Params)
             error('Method %s has more local permutations defined than can be prepared by setparams', method_name)
         end
     end
+
+
     
 end
