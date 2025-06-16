@@ -120,7 +120,7 @@ function calculate_power(Params)
     
             matching_datasets_check(rep_data.meta_data, gt_data.meta_data)
      
-            stat_level = method_data.meta_data.level;
+            stat_level = extract_stat_level(method_data.meta_data.level);
             
             gt_brain_data = extract_gt_brain_data(gt_data, stat_level);
     

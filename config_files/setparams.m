@@ -75,7 +75,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
-Params.all_cluster_stat_types = {'Parametric'};
+Params.all_cluster_stat_types = {'Parametric', 'Size_cpp'};
 
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};

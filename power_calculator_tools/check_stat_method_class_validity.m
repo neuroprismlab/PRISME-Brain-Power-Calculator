@@ -15,9 +15,44 @@ function check_stat_method_class_validity(Params)
 % Author: Fabricio Cravo
 % Date: March 2025
 
-    allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params',
-        'variable_type'};
+    allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params'};
     
+    %% Check if methods match variable type and replace if needed
+    new_cluster_stat_type = cell(1, numel(Params.all_cluster_stat_types));
+    for i = 1:numel(Params.all_cluster_stat_types)
+        method_name = Params.all_cluster_stat_types{i};
+
+        try
+            method_obj = feval(method_name);
+        catch
+            error('Could not instantiate method class "%s". Check if it exists and is on the path.', ...
+                method_name);
+        end
+
+        meta = metaclass(method_obj);
+        const_props = meta.PropertyList;
+
+        try
+            method_variable_type = method_obj.level;
+        catch
+            error('Unable to find statistical inference method %s level property', method_name)
+        end
+
+        if ~(strcmp(method_variable_type, 'edge') || strcmp(method_variable_type, 'node'))
+            replaced_method =  method_name;
+        else
+            replaced_method = replace_edge_per_node_methods(method_name, ...
+                                method_obj.variable_type, Params.variable_type);
+            warning('The method %s was replaced by %s for an appropriate variable type', ...
+                    method_name, replaced_method)
+        end
+
+        new_cluster_stat_type{i} = replaced_method;
+
+    end
+    
+    Params.all_cluster_stat_types = replaced_method;
+
     %% Check types
     for i = 1:numel(Params.all_cluster_stat_types)
         method_name = Params.all_cluster_stat_types{i};
@@ -25,7 +60,8 @@ function check_stat_method_class_validity(Params)
         try
             method_obj = feval(method_name);
         catch
-            error('Could not instantiate method class "%s". Check if it exists and is on the path.', method_name);
+            error('Could not instantiate method class "%s". Check if it exists and is on the path.', ...
+                method_name);
         end
 
         meta = metaclass(method_obj);
@@ -51,7 +87,8 @@ function check_stat_method_class_validity(Params)
                       method_name, p.Name);
             end
         end
-        
+
+        % Check if variable type matches
         disp(method_name)
         if any(strcmp({const_props.Name}, 'permutations')) && method_obj.permutations ~= Params.n_perms
             warning('Method %s has permutations defined and it will override setparams permutations', method_name)

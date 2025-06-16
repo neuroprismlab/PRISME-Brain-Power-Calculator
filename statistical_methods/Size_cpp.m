@@ -2,6 +2,7 @@ classdef Size_cpp
     properties (Constant)
         level = "edge";
         permutation_based = true;
+        variable_type = 'edge';
     end
 
     methods

@@ -68,7 +68,18 @@ function l_test_output_size(RP, test_struct)
                 assert(isequal(sz, [expected, 1]) || isequal(sz, [1, expected]), ...
                     'Size mismatch for method "%s" (network)', full_method_name);
             
+            % Edge, node and variable are the same for these conditions!
             case "edge"
+                sz = size(test_struct.(full_method_name));
+                assert(isequal(sz, [RP.n_var, 1]) || isequal(sz, [1, RP.n_var]), ...
+                    'Size mismatch for method "%s" (edge)', full_method_name);
+
+            case "node"
+                sz = size(test_struct.(full_method_name));
+                assert(isequal(sz, [RP.n_var, 1]) || isequal(sz, [1, RP.n_var]), ...
+                    'Size mismatch for method "%s" (edge)', full_method_name);
+
+            case "variable"
                 sz = size(test_struct.(full_method_name));
                 assert(isequal(sz, [RP.n_var, 1]) || isequal(sz, [1, RP.n_var]), ...
                     'Size mismatch for method "%s" (edge)', full_method_name);

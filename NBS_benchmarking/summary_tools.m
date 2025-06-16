@@ -188,14 +188,14 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     
     
     %% Get stat level - edge, network, or brain
-    stat_gt_level_str = rep_data.meta_data.level;
+    stat_gt_level_str = extract_stat_level(rep_data.meta_data.level);
     
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
 
     % calculate TPR
     true_positives = nan(size(gt_data));
-    if contains(stat_gt_level_str,'edge')
+    if contains(stat_gt_level_str, 'variable')
 
         true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
         true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg_vec);
@@ -234,7 +234,7 @@ function PowerRes = calculate_fpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 %
 
      %% Get stat level - edge, network, or brain
-    stat_gt_level_str = rep_data.meta_data.level;
+    stat_gt_level_str = extract_stat_level(rep_data.meta_data.level);
     
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
@@ -242,7 +242,7 @@ function PowerRes = calculate_fpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 
     % calculate TPR
     false_positives = nan(size(gt_data));
-    if contains(stat_gt_level_str,'edge')
+    if contains(stat_gt_level_str,'variable')
 
         false_positives(~ids_pos_vec)=PowerRes.positives_total(~ids_pos_vec);
         false_positives(~ids_neg_vec)=PowerRes.positives_total_neg(~ids_neg_vec);
