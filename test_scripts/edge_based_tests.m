@@ -1,4 +1,4 @@
-function edge_based_tests(data_set_name)
+function edge_based_tests(data_set_name, varargin)
 %% edge_based_tests
 % Runs automated tests for edge-level statistical methods on a given dataset.
 %
@@ -21,17 +21,26 @@ function edge_based_tests(data_set_name)
 %   - Designed for synthetic test datasets generated during testing workflows.
 %   - Verifies that methods correctly detect simulated effects (rows 1-6) and ignore non-effects (rows 7-10).
 %   - Validates metadata fields for consistency and correctness.
+    
+    % Default parameters are for legacy script reasons
+    p = inputParser;
+    addRequired(p, 'data_set_name');
+    addParameter(p, 'stat_method_cell', {'Parametric', 'Size', 'Fast_TFCE_cpp'}, @iscell);
+    addParameter(p, 'submethod_cell', {'FWER', 'FDR'}, @iscell);  % No validation
+    addParameter(p, 'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size', 'Fast_TFCE_cpp'}, ...
+        @iscell);  % No validation
+
+    parse(p, data_set_name, varargin{:});
+    
+    stat_method_cell = p.Results.stat_method_cell;
+    submethod_cell = p.Results.submethod_cell;
+    full_method_name_cell = p.Results.full_method_name_cell;
 
     data_set = load(['./data/', data_set_name]);
 
     Params = common_test_setup(data_set_name);
 
     data_set_name = get_data_set_name(data_set, Params);
-    
-    % Might have to improve this in the future
-    stat_method_cell = {'Parametric', 'Size', 'Fast_TFCE_cpp'};
-    submethod_cell = {'FWER', 'FDR'};
-    full_method_name_cell = {'Parametric_FWER', 'Parametric_FDR', 'Size', 'Fast_TFCE_cpp'};
 
     Params.all_cluster_stat_types = stat_method_cell;
     Params.all_submethods = submethod_cell;

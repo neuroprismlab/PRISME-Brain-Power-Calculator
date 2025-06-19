@@ -39,7 +39,7 @@ classdef Fast_TFCE_cpp
             permuted_edge_stats = params.permuted_edge_data; % Explicitly using the new argument
         
             % Convert the edge statistics back into a matrix
-            test_stat_mat = unflatten_matrix(edge_stats, STATS.mask);
+            test_stat_mat = STATS.unflatten_matrix(edge_stats);
         
             % Apply TFCE transformation to the observed test statistics
             cluster_stats_target = apply_tfce_cpp(test_stat_mat, obj.method_params.dh, ...
@@ -61,7 +61,7 @@ classdef Fast_TFCE_cpp
         
             % Apply TFCE transformation to each permutation
             for i = 1:K
-                perm_stat_mat = unflatten_matrix(permuted_edge_stats(:, i), STATS.mask);
+                perm_stat_mat = STATS.unflatten_matrix(permuted_edge_stats(:, i));
                 tfce_null = apply_tfce_cpp(perm_stat_mat, obj.method_params.dh, ...
                     obj.method_params.H, obj.method_params.E);
                 null_dist(i) = max(tfce_null(:)); % Store max TFCE value for permutation

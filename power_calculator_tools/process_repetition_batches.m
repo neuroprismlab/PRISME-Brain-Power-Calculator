@@ -89,6 +89,7 @@ function process_repetition_batches(X, Y, RP, UI)
         STATS.all_submethods = RP.all_submethods;
         STATS.all_cluster_stat_types = RP.all_cluster_stat_types;
         STATS.is_permutation_based = RP.is_permutation_based; 
+        STATS.thresh = RP.tthresh_first_level;
 
         % **Loop through missing repetitions**
         STATSc = parallel.pool.Constant(STATS);
@@ -123,7 +124,7 @@ function process_repetition_batches(X, Y, RP, UI)
                                     edge_stats_all, cluster_stats_all, method_timing_all, batch)
         end
         fprintf('Repetition %d completed \n', batch{end});
-        
+
     end 
 
     

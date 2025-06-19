@@ -24,6 +24,8 @@ classdef Constrained_cpp
             edge_stats = params.edge_stats;
             permuted_edge_stats = params.permuted_edge_data;
             
+            keyboard;
+
             flat_edge_groups = flatten_edge_groups(STATS.edge_groups.groups, STATS.mask);
             
             pvals = struct();

@@ -44,5 +44,6 @@ function Params = common_test_setup(data_set_name)
 
     % Avoid future developer confusion 
     Params.testing = true;
+    Params.test_disable_save = false;
 
 end

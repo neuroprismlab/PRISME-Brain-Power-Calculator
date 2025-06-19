@@ -23,20 +23,19 @@ classdef Size
             edge_stats_target = params.edge_stats;
             GLM = params.glm_parameters;
             permuted_edge_stats = params.permuted_edge_data;
-        
-            % Get number of nodes and edges
-            N = STATS.N;
-            J = N * (N - 1) / 2;  % Number of edges in an upper-triangular matrix
-        
+            
             % Identify significant edges based on primary threshold
             significant_edges = edge_stats_target > STATS.thresh;
         
             % Convert significant edges into an adjacency matrix
-            adj = double(unflatten_matrix(significant_edges, STATS.mask));
+            adj = double(STATS.unflatten_matrix(significant_edges));
+
+            % Get number of nodes and edges
+            N = size(adj, 1);
         
             % Compute network components (clusters) from the adjacency matrix
             [cluster_stats_target, max_stat_target] = ...
-                get_edge_components(adj, STATS.size, edge_stats_target, ...
+                get_edge_components(adj, false, edge_stats_target, ...
                                     STATS.thresh, N, find(triu(STATS.mask)), exist('components', 'file'));
         
             % Get number of permutations
@@ -45,8 +44,8 @@ classdef Size
             null_dist = zeros(K, 1);
             for i = 1:K
                 edge_stats_perm = permuted_edge_stats(:, i);
-                [~, max_stat] = get_edge_components(unflatten_matrix(edge_stats_perm > STATS.thresh, STATS.mask), ...
-                    STATS.size, edge_stats_perm, STATS.thresh, N, find(triu(STATS.mask)), exist('components', 'file'));
+                [~, max_stat] = get_edge_components(STATS.unflatten_matrix(edge_stats_perm > STATS.thresh), ...
+                    false, edge_stats_perm, STATS.thresh, N, find(triu(STATS.mask)), exist('components', 'file'));
                 null_dist(i) = max_stat;
             end
         

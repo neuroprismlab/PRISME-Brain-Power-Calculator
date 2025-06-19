@@ -149,12 +149,12 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         method_instance = feval(method_class_name);
         
         % Determine size based on method level
-        switch method_instance.level
+        switch extract_stat_level(method_instance.level)
             case "whole_brain"
                 required_size = [1, RP.n_repetitions];
             case "network"
                 required_size = [length(unique(RP.edge_groups)) - 1, RP.n_repetitions];
-            case "edge"
+            case "variable"
                 required_size = [RP.n_var, RP.n_repetitions];
             otherwise
                 error("Unknown statistic level: %s", method_instance.level);

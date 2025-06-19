@@ -52,12 +52,12 @@ function all_pvals = initialize_global_pvals(RP, max_rep_pending)
                     full_method_name = method_name;
                 end
             
-                switch method_instance.level
+                switch extract_stat_level(method_instance.level)
                     case "whole_brain"
                         method_struct.(full_method_name) = zeros(1, RP.n_repetitions);
                     case "network"
                         method_struct.(full_method_name) = zeros(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
-                    case "edge"
+                    case "variable"
                         method_struct.(full_method_name) = zeros(RP.n_var, RP.n_repetitions);
                     otherwise
                         error("Unknown statistic level: %s", method_instance.level);

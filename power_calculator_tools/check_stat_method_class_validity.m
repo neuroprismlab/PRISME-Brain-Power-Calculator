@@ -1,4 +1,4 @@
-function check_stat_method_class_validity(Params)
+function Params = check_stat_method_class_validity(Params)
 % check_stat_method_class_validity - Validates properties of statistical method classes.
 %
 % Checks that method classes in Params.all_cluster_stat_types:
@@ -18,7 +18,7 @@ function check_stat_method_class_validity(Params)
     allowed_properties = {'level', 'permutation_based', 'submethod', 'permutations', 'method_params'};
     
     %% Check if methods match variable type and replace if needed
-    new_cluster_stat_type = cell(1, numel(Params.all_cluster_stat_types));
+    new_cluster_stat_types = cell(1, numel(Params.all_cluster_stat_types));
     for i = 1:numel(Params.all_cluster_stat_types)
         method_name = Params.all_cluster_stat_types{i};
 
@@ -28,9 +28,6 @@ function check_stat_method_class_validity(Params)
             error('Could not instantiate method class "%s". Check if it exists and is on the path.', ...
                 method_name);
         end
-
-        meta = metaclass(method_obj);
-        const_props = meta.PropertyList;
 
         try
             method_variable_type = method_obj.level;
@@ -42,16 +39,16 @@ function check_stat_method_class_validity(Params)
             replaced_method =  method_name;
         else
             replaced_method = replace_edge_per_node_methods(method_name, ...
-                                method_obj.variable_type, Params.variable_type);
+                                method_obj.level, Params.variable_type);
             warning('The method %s was replaced by %s for an appropriate variable type', ...
                     method_name, replaced_method)
         end
 
-        new_cluster_stat_type{i} = replaced_method;
+        new_cluster_stat_types{i} = replaced_method;
 
     end
     
-    Params.all_cluster_stat_types = replaced_method;
+    Params.all_cluster_stat_types = new_cluster_stat_types;
 
     %% Check types
     for i = 1:numel(Params.all_cluster_stat_types)
