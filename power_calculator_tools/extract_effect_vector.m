@@ -7,10 +7,10 @@ function [ids_pos_vec, ids_neg_vec, ids_zero_vec, pos_effect, neg_effect] ...
     ids_zero_vec= ~ids_pos_vec & ~ids_neg_vec;
     pos_effect = NaN;
     neg_effect = NaN;
-    
+
     switch  stat_gt_level_str
 
-        case 'edge'
+        case 'variable'
             
 
         case 'network'

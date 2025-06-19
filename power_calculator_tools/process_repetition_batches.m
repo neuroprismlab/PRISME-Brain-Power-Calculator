@@ -90,6 +90,7 @@ function process_repetition_batches(X, Y, RP, UI)
         STATS.all_cluster_stat_types = RP.all_cluster_stat_types;
         STATS.is_permutation_based = RP.is_permutation_based; 
         STATS.thresh = RP.tthresh_first_level;
+        STATS.alpha = RP.pthresh_second_level;
 
         % **Loop through missing repetitions**
         STATSc = parallel.pool.Constant(STATS);

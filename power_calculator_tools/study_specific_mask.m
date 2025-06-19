@@ -4,7 +4,8 @@ function [mask, n_var, n_nodes] = study_specific_mask(Dataset, Params, study)
 
     % For now, only activation studies with one contrast have specific
     % study masks
-    if isfield(Dataset.outcome.(study), 'contrast') && numel(Dataset.outcome.(study).contrast) == 1
+    if isfield(Dataset.outcome.(study), 'contrast') && numel(Dataset.outcome.(study).contrast) == 1 ...
+        && ~isnan(Dataset.outcome.(study).contrast)
         contrast = Dataset.outcome.(study).contrast{1};
         
         if isfield(Dataset.brain_data.(contrast), 'mask')
