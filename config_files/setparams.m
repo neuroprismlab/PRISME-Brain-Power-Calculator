@@ -27,12 +27,17 @@ function Params = setparams()
 %
 % Author: Fabricio Cravo | Date: March 2025
 
-% NBS toolbox
-Params.save_directory = './power_calculator_results/';
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Datasets - Commented for easy use
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 % Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-Params.gt_data_dir = './power_calculator_results/ground_truth/';
+Params.data_dir = './data/s_hcp_act_noble_1.mat';
 
+% Save specifications - if NaN output becomes dataset file name
+Params.save_directory = './power_calculator_results/';
+Params.gt_data_dir = './power_calculator_results/ground_truth/';
+Params.output = 'testing_act_data';
+
+% Gt origin is currently deprecated
 Params.gt_origin = 'power_calculator';
 
 % If not NaN, it will use the atlas file found in this directory
@@ -49,7 +54,7 @@ Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 20;
+Params.batch_size = 1;
  
 
 %% Skip some tests - change ranges or the function
@@ -70,6 +75,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
+Params.all_cluster_stat_types = {'IC_TFCE_Node_cpp'};
 
 
 Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
@@ -83,9 +89,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 20;
+Params.test_n_perms = 100;
+Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
-Params.test_disable_save = false;
+Params.test_disable_save = true;
 
 end

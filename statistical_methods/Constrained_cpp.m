@@ -23,8 +23,8 @@ classdef Constrained_cpp
             STATS = params.statistical_parameters;
             edge_stats = params.edge_stats;
             permuted_edge_stats = params.permuted_edge_data;
-            
-            flat_edge_groups = flatten_edge_groups(STATS.edge_groups.groups, STATS.mask);
+
+            flat_edge_groups = flatten_edge_groups(STATS.edge_groups, STATS.mask);
             
             pvals = struct();
             [p_FWER, p_FDR] = constrained_pval_cpp(edge_stats, permuted_edge_stats, ...

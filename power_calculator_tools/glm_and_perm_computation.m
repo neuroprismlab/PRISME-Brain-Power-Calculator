@@ -1,5 +1,5 @@
 function [GLM_stats, GLM, STATS] = ...
-    glm_and_perm_computation(X_rep, Y_rep, RP, UI, is_permutation_based)
+    glm_and_perm_computation(X_rep, Y_rep, STATS, UI, is_permutation_based)
 %% glm_and_perm_computation
 % Description:
 % Fits a general linear model (GLM) to the data and computes permutation‐based
@@ -49,21 +49,18 @@ function [GLM_stats, GLM, STATS] = ...
     UI_new = UI;
     UI_new.design.ui = X_rep;
     UI_new.matrices.ui = Y_rep;
-    UI_new.contrast.ui = RP.nbs_contrast;
+    UI_new.contrast.ui = STATS.nbs_contrast;
     
     % Fit GLM and compute edge statistics (positive contrast)
     nbs = set_up_nbs_parameters(UI_new);
     
-    % Get STASTS from nbs
-    STATS = nbs.STATS;
-    
     % Find GLM and edge_stats
     GLM = NBSglm_setup_smn(nbs.GLM);
     edge_stats = GLM_fit(GLM);
-    
+
     % Compute network-based statistics
-    edge_stat_square = unflatten_matrix(edge_stats, RP.mask);
-    cluster_stat = get_network_average(edge_stat_square, RP.edge_groups);
+    flat_edge_groups = flat_matrix(STATS.edge_groups, STATS.mask);
+    cluster_stat = get_network_average(edge_stats, flat_edge_groups);
     
     % Transpose 
     edge_stats = edge_stats';
@@ -83,7 +80,7 @@ function [GLM_stats, GLM, STATS] = ...
     
     % Generate precomputed permutations if required
     if is_permutation_based
-        GLM_stats.perm_data = generate_permutation_for_repetition(GLM, RP);
+        GLM_stats.perm_data = generate_permutation_for_repetition(GLM, STATS);
     end
 
 end

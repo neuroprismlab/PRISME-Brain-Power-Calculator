@@ -58,9 +58,9 @@ function process_repetition_batches(X, Y, RP, UI)
         cluster_stats_all = cell(1, batch_size);
         
         % Prepare sub samples for this batch
-       for j = 1:batch_size
+        for j = 1:batch_size
             rep_id = batch{j};
-
+        
             rep_sub_ids = RP.ids_sampled(:, rep_id);
             Y_subs{j} = Y(:, rep_sub_ids);
         
@@ -71,16 +71,36 @@ function process_repetition_batches(X, Y, RP, UI)
             end
             
         end
-        
+
+        % Create empty STATS structure
+        STATS = struct();
+
+        % Fill with only what workers need
+        STATS.n_var = RP.n_var;
+        STATS.n_perms = RP.n_perms;
+        STATS.variable_type = RP.variable_type;
+        STATS.nbs_contrast = RP.nbs_contrast;
+        STATS.mask = RP.mask;
+        STATS.edge_groups = RP.edge_groups;
+        STATS.test_type = RP.test_type;
+        STATS.unflatten_matrix = RP.unflat_matrix_fun;
+        STATS.mask = RP.mask;
+        STATS.existing_repetitions = RP.existing_repetitions;
+        STATS.all_submethods = RP.all_submethods;
+        STATS.all_cluster_stat_types = RP.all_cluster_stat_types;
+        STATS.is_permutation_based = RP.is_permutation_based; 
+        STATS.thresh = RP.tthresh_first_level;
+        STATS.alpha = RP.pthresh_second_level;
+
         % **Loop through missing repetitions**
-        RPc = parallel.pool.Constant(RP);
+        STATSc = parallel.pool.Constant(STATS);
         if ~RP.parallel
 
             for j = 1:batch_size
             rep_id = batch{j};
             
             [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}, method_timing_all{j}] = ...
-                pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, RPc, UI);
+                pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, STATSc.Value, UI);
     
             end
     
@@ -90,12 +110,12 @@ function process_repetition_batches(X, Y, RP, UI)
             rep_id = batch{j};
             
             [edge_stats_all{j}, cluster_stats_all{j}, all_pvals{j}, all_pvals_neg{j}, method_timing_all{j}] = ...
-                pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, RPc, UI);
+                pf_repetition_loop(rep_id, X_subs{j}, Y_subs{j}, STATSc.Value, UI);
           
             end
 
         end
-        
+
         % Check output format before saving
         check_pval_output_data(RP, all_pvals, all_pvals_neg);
         
@@ -105,7 +125,7 @@ function process_repetition_batches(X, Y, RP, UI)
                                     edge_stats_all, cluster_stats_all, method_timing_all, batch)
         end
         fprintf('Repetition %d completed \n', batch{end});
-        
+
     end 
 
     

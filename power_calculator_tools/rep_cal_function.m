@@ -45,17 +45,23 @@ function rep_cal_function(Params)
 
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);
+        Dataset.file_name = Params.data_dir;
     end
     
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
     Params.ground_truth = false;
-    Params = setup_experiment_data(Params, Dataset);
-    [Params.data_set, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset);
+    [Params.mask, Params.n_var, Params.n_nodes] = setup_experiment_data(Dataset);
+    [Params.output, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset, Params);
     Params.atlas_file = atlas_data_set_map(Params);
-    [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
-    
+
+    %% Variables are nodes or edges (voxel - activation, or fc edges)
+    Params.variable_type = get_variable_type(Dataset);
+
     %% Check method validity
-    check_stat_method_class_validity(Params);
+    Params = check_stat_method_class_validity(Params);
+    
+    %% Finish method naming
+    [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
     
     %% Create output directory - setup save directory
     Params = create_output_directory(Params);
@@ -67,10 +73,10 @@ function rep_cal_function(Params)
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;
         
-    tests = fieldnames(OutcomeData);
+    studies = fieldnames(OutcomeData);
     
-    for ti = 1:length(tests)
-        t = tests{ti};
+    for ti = 1:length(studies)
+        t = studies{ti};
         
         test_number = str2double(erase(string(ti), 'test'));
         if ~isempty(Params.tests_to_skip) && Params.tests_to_skip(test_number)
@@ -81,9 +87,19 @@ function rep_cal_function(Params)
         % RP - stands for Repetition Parameter
        
         RP = Params;
-        
+
+        % Specific study mask data (some datasets have masks for each study)
+        % The specific mask overrides the generic
+        [RP.mask, RP.n_var, RP.n_nodes] = study_specific_mask(Dataset, Params, t);
+        [RP.flat_to_spatial, RP.spatial_to_flat] = create_spatial_flat_map(RP);
+        [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
+
+        % Create graph converter (flat to graph)
+        RP.unflat_matrix_fun = unflatten_matrix(RP.mask, 'variable_type', ...
+            RP.variable_type, 'flat_to_spatial', RP.flat_to_spatial, 'spatial_to_flat', RP.spatial_to_flat);
+
         [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
-        
+
         % Important, X is calculated here for all test_types
         % However, only the r test type will use this test
         switch test_type_origin
@@ -99,12 +115,9 @@ function rep_cal_function(Params)
                 error('Test type origin not found')
 
         end  
-
-        [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
-
+       
         run_benchmarking(RP, Y, X)
         
-    
     end
 
 end

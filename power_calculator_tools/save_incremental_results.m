@@ -28,7 +28,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 % Modified: April 2025 - Memory optimization with sparse matrices
 
     % Create a consolidated output filename
-    [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.data_set, RP.test_name, ...
+    [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.output, RP.test_name, ...
                                                         RP.test_type, RP.n_subs_subset, RP.testing, RP.ground_truth);
 
     output_dir_path = fileparts(output_dir);
@@ -41,6 +41,7 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
 
     % Always create fresh meta_data
     meta_data = struct();
+    meta_data.output = RP.output;
     meta_data.dataset = RP.data_set_base;
     meta_data.map = RP.data_set_map;
     meta_data.test = RP.test_type;
@@ -148,12 +149,12 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
         method_instance = feval(method_class_name);
         
         % Determine size based on method level
-        switch method_instance.level
+        switch extract_stat_level(method_instance.level)
             case "whole_brain"
                 required_size = [1, RP.n_repetitions];
             case "network"
                 required_size = [length(unique(RP.edge_groups)) - 1, RP.n_repetitions];
-            case "edge"
+            case "variable"
                 required_size = [RP.n_var, RP.n_repetitions];
             otherwise
                 error("Unknown statistic level: %s", method_instance.level);

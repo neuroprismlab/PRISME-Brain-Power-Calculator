@@ -18,6 +18,7 @@ classdef Size_cpp
             %   - pval: FWER-corrected p-values for each network component.
         
             % Parse input arguments
+
             params = struct(varargin{:});
             STATS = params.statistical_parameters;
             edge_stats_target = params.edge_stats;
@@ -28,14 +29,14 @@ classdef Size_cpp
             %N = STATS.N;
             %J = N * (N - 1) / 2;  % Number of edges in an upper-triangular matrix
 
-            edge_stats_mask = unflatten_matrix(edge_stats_target, STATS.mask) > STATS.thresh;
+            edge_stats_mask = STATS.unflatten_matrix(edge_stats_target) > STATS.thresh;
             
             % Pre-allocate the output array
             N = size(STATS.mask, 1);
             permuted_edge_stats_mask = false(N, N, size(permuted_edge_stats, 2));
 
             for p = 1:size(permuted_edge_stats, 2)
-                permuted_edge_stats_mask(:, :, p) = unflatten_matrix(permuted_edge_stats(:, p), STATS.mask) ...
+                permuted_edge_stats_mask(:, :, p) = STATS.unflatten_matrix(permuted_edge_stats(:, p)) ...
                     > STATS.thresh;
             end
             

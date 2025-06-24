@@ -1,10 +1,11 @@
+
 classdef Template_Method
 
     properties (Constant)
         level = "whole_brain";
         permutation_based = true;
-        permutations = 800; % Override permutation number
-        method_params = struct('f1',10,'f2',20);
+        permutations = 800; % Optional
+        submethod = {'FWER', 'FDR'}; % Optional 
     end
     
     methods
@@ -16,3 +17,8 @@ classdef Template_Method
     end
 
 end
+
+
+
+
+

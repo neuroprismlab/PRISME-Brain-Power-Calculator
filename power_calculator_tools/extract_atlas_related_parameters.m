@@ -41,7 +41,7 @@ function [n_node_nets, trilmask_net, edge_groups] = extract_atlas_related_parame
     % 'Constrained_FWER'cases
     n_node_nets = NaN;
     trilmask_net = NaN;
-    edge_groups = NaN;
+    edge_groups = [];
 
     % Only apply atlas to the network-based stats
     if ~isnan(RP.atlas_file)

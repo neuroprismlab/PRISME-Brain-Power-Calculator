@@ -28,6 +28,7 @@ addpath(genpath(scriptDir));
 cd(scriptDir);
 
 compile_mex()
+clean_test_directories()
 
 create_test_fc_data_set()
 create_test_fc_atlas()
@@ -55,7 +56,16 @@ edge_based_tests('test_r_fc.mat')
 
 network_based_tests('test_r_fc.mat')
 
-%% TODO - write Omnibus test scripts
+
+create_act_test_dataset()
+
+edge_based_tests('test_act_act', 'stat_method_cell', {'Parametric', 'Size_Node_cpp', 'IC_TFCE_Node_cpp'}, ...
+    'submethod_cell', {'FWER', 'FDR'}', ...
+    'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size_Node_cpp', 'IC_TFCE_Node_cpp'})
+
+
+fprintf('Finished test routine correctly\n')
+
 
 
 

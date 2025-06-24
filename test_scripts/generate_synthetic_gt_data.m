@@ -49,6 +49,7 @@ function generate_synthetic_gt_data()
     meta_data.run_time = rand() * 10; % Fake runtime
     meta_data.date = '1990-04-27';
     meta_data.method_list = {'Ground_Truth'}; % Only one method
+    meta_data.rep_parameters.data_dir = './syn_data.mat';
 
     % Generate filename
     filename = name_file_from_meta_data(meta_data, true);

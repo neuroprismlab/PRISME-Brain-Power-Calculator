@@ -95,6 +95,7 @@ switch summary_type
     
         %% Calculate true positives
         PowerRes = summary_tools.calculate_tpr(rep_data, gt_data, Params.tpr_dthresh, PowerRes);
+        PowerRes = summary_tools.calculate_fpr(rep_data, gt_data, Params.tpr_dthresh, PowerRes);
            
 end
 

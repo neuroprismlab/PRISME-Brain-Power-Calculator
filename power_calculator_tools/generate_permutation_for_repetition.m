@@ -1,4 +1,4 @@
-function perm_data = generate_permutation_for_repetition(GLM, RP)
+function perm_data = generate_permutation_for_repetition(GLM, STATS)
 %% generate_permutation_for_repetition
 % Generates permutation data for one repetition.
 %
@@ -18,9 +18,12 @@ function perm_data = generate_permutation_for_repetition(GLM, RP)
 %
 % Author: Fabricio Cravo | Date: March 2025
 
-    permuted_data = zeros(RP.n_var, RP.n_perms); % Prelocate double
-    permuted_network_data = zeros(numel(unique(RP.edge_groups)) - 1, RP.n_perms);
-    for i = 1:RP.n_perms
+    permuted_data = zeros(STATS.n_var, STATS.n_perms); % Prelocate double
+    permuted_network_data = zeros(numel(unique(STATS.edge_groups)) - 1, STATS.n_perms);
+    
+    flat_edge_stats = flat_matrix(STATS.edge_groups, STATS.mask);
+
+    for i = 1:STATS.n_perms
         % Generate permuted data
         permuted_GL = GLM;
         permuted_GL.y = permute_signal(GLM);  % Apply permutation
@@ -30,8 +33,7 @@ function perm_data = generate_permutation_for_repetition(GLM, RP)
         permuted_data(:, i) = permutation_edge_stats;
 
         % Compute and store network-level statistics
-        edge_stat_square = unflatten_matrix(permutation_edge_stats, RP.mask);
-        network_stat = get_network_average(edge_stat_square, RP.edge_groups);
+        network_stat = get_network_average(permutation_edge_stats, flat_edge_stats);
         permuted_network_data(:, i) = network_stat;
     end
     

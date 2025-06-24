@@ -1,5 +1,5 @@
 function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timing] = ...
-    pf_repetition_loop(rep_id, X_subs, Y_subs, RPc, UI)
+    pf_repetition_loop(rep_id, X_subs, Y_subs, STATS, UI)
 %% pf_repetition_loop
 % Description:
 % Executes a single repetition of the benchmarking loop by computing GLM
@@ -38,10 +38,10 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
 % Author: Fabricio Cravo  
 % Date: March 2025
 
-    % Compute GLM and permutations
-    [GLM_stats, ~, STATS] = glm_and_perm_computation( ...
-        X_subs, Y_subs, RPc.Value, UI, RPc.Value.is_permutation_based);
-    
+    % Compute GLM and permutation
+    [GLM_stats, ~, ~] = glm_and_perm_computation( ...
+        X_subs, Y_subs, STATS, UI, STATS.is_permutation_based);
+
      % Assign computed statistics
     edge_stats = GLM_stats.edge_stats;
     cluster_stats = GLM_stats.cluster_stats;
@@ -53,8 +53,8 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
     method_timing = struct();
     
     % Compute p-values for each statistical method
-    for stat_id = 1:length(RPc.Value.all_cluster_stat_types)
-        STATS.statistic_type = RPc.Value.all_cluster_stat_types{stat_id};
+    for stat_id = 1:length(STATS.all_cluster_stat_types)
+        STATS.statistic_type = STATS.all_cluster_stat_types{stat_id};
         method_instance = feval(STATS.statistic_type);
         
         % Check if the method has sub_methods
@@ -71,8 +71,8 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
                 % Compute only if:
                 % - this submethod is selected, AND
                 % - this repetition has not been completed yet
-                if ismember(sub, RPc.Value.all_submethods) && ...
-                   rep_id > RPc.Value.existing_repetitions.(full_name)
+                if ismember(sub, STATS.all_submethods) && ...
+                   rep_id > STATS.existing_repetitions.(full_name)
                     submethods_struct.(sub) = true;
                 else
                     submethods_struct.(sub) = false;
@@ -88,8 +88,8 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
         
         else
             % No submethods — check if this method should run
-            if ~ismember(STATS.statistic_type, RPc.Value.all_cluster_stat_types) || ...
-               rep_id <= RPc.Value.existing_repetitions.(STATS.statistic_type)
+            if ~ismember(STATS.statistic_type, STATS.all_cluster_stat_types) || ...
+               rep_id <= STATS.existing_repetitions.(STATS.statistic_type)
                 continue;
             end
         

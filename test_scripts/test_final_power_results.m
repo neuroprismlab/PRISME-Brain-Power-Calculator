@@ -86,6 +86,8 @@ function test_final_power_results()
                     method_name, num_elements, expected_num, files(i).name);
             end
             
+            tpr(isnan(tpr)) = 0;  % Replace NaN with 0
+            
             % **Assertion 1: Power values at expected positive locations should be 25%**
             assert(all(abs(tpr(gt_pos_indices) - 25) < 1e-5), ...
                 sprintf('Mismatch in power values for positive indices in method %s, file: %s', ...

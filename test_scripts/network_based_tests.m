@@ -16,9 +16,10 @@ function network_based_tests(data_set_name)
 %   - Also verifies metadata consistency using check_test_meta_data.
     
     data_set = load(['./data/', data_set_name]);
-    data_set_name = get_data_set_name(data_set);
 
     Params = common_test_setup(data_set_name);
+    
+    data_set_name = get_data_set_name(data_set, Params);
 
     stat_method_cell = {'Constrained_cpp'};
     submethod_cell = {'FWER', 'FDR'};

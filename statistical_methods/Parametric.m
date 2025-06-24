@@ -1,6 +1,6 @@
 classdef Parametric
     properties (Constant)
-        level = "edge";
+        level = 'variable';
         permutation_based = false;
         submethod = {'FWER', 'FDR'};
     end

@@ -1,131 +1,137 @@
-%% Workflow for Power Calculation
-% This script performs the complete power calculation workflow by processing 
-% repetition files one-by-one and computing power metrics against ground-truth data.
-%
-% The workflow proceeds as follows:
-%   1. Initial Setup:
-%      - Sets the working directory to the script location.
-%      - Adds all subdirectories to the MATLAB path.
-%      - Clears variables (except Study_Info) and clears the Command Window.
-%
-%   2. Parameter and Data Loading:
-%      - Loads experiment parameters via setparams.
-%      - Loads dataset information (Study_Info) from Params.data_dir if not already in the workspace.
-%      - Determines the dataset name using get_data_set_name.
-%
-%   3. Repetition File Processing:
-%      - Searches for repetition files in the designated output directory.
-%      - Throws an error if no repetition files are found.
-%
-%   4. Output Directory Creation:
-%      - Ensures that the power output directory exists by calling create_power_output_directory.
-%
-%   5. Iterative Processing:
-%      - For each repetition file:
-%          a. Loads the repetition data.
-%          b. Extracts metadata and constructs the corresponding ground-truth (GT) filename.
-%          c. Loads GT data (skips file if not found).
-%          d. Extracts relevant brain data from the GT file using extract_gt_brain_data.
-%          e. Computes power using summarize_tprs.
-%          f. Clears repetition and GT data from memory.
-%
-% Dependencies:
-%   - setparams
-%   - get_data_set_name
-%   - create_power_output_directory
-%   - construct_gt_filename
-%   - extract_gt_brain_data
-%   - summarize_tprs
-%
-% Notes:
-%   - This script is designed to minimize memory usage by processing repetition files sequentially.
-%   - It requires that repetition and GT data files exist in the expected directories.
-
-%% Initial setup
-scriptDir = fileparts(mfilename('fullpath'));
-addpath(genpath(scriptDir));
-cd(scriptDir);
-clearvars -except Study_Info;
-clc;
-
-%% Directory to save and find rep data
-Params = setparams();
-
-% Load dataset information
-if ~exist('Study_Info', 'var')
-    Study_Info = load(Params.data_dir, 'study_info');
-end
-[Params.data_set, ~, ~] = get_data_set_name(Study_Info);
-
-%% Process each repetition file one by one to reduce memory usage
-rep_files = dir(fullfile(Params.save_directory, Params.data_set, '*.mat'));
-
-% If no files were found output an error
-if isempty(rep_files)
-    error('No files found.')
-end
-
-%% Create output directory (only if it doesn't exist)
-Params = create_power_output_directory(Params);
-
-for i = 1:length(rep_files)
-    % Load a single repetition data file
-    rep_file_path = fullfile(rep_files(i).folder, rep_files(i).name);
-    rep_data = load(rep_file_path);
-    
-    % Meta-data from the file encompassing everything
-    method_list = rep_data.meta_data.method_list;
-
-    data_set_name = strcat(rep_data.meta_data.dataset, '_', rep_data.meta_data.map);
-    test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
-    [~, file_name] = create_and_check_rep_file(Params.save_directory, data_set_name, test_components, ...
-                                               rep_data.meta_data.test, ...
-                                               rep_data.meta_data.subject_number, ...
-                                               rep_data.meta_data.testing_code, false);
-    % Split the path and filename
-    [file_path, file_name_only, file_ext] = fileparts(file_name);
-    % Add the prefix to just the filename
-    file_name = fullfile(file_path, ['pr-', file_name_only, file_ext]);
-    
-    % Save metadata regardless
-    meta_data = rep_data.meta_data;
-    
-    % Check if both stats fields exist
-    if isfield(rep_data, 'edge_level_stats') && isfield(rep_data, 'network_level_stats')
-        % Calculate means and save everything
-        edge_level_stats_mean = mean(rep_data.edge_level_stats, 2);
-        network_level_stats_mean = mean(rep_data.network_level_stats, 2);
-        save(file_name, 'meta_data', 'edge_level_stats_mean', 'network_level_stats_mean');
-    else
-        % Just save metadata
-        save(file_name, 'meta_data');
+function calculate_power(Params)
+    %% Workflow for Power Calculation
+    % This script performs the complete power calculation workflow by processing 
+    % repetition files one-by-one and computing power metrics against ground-truth data.
+    %
+    % The workflow proceeds as follows:
+    %   1. Initial Setup:
+    %      - Sets the working directory to the script location.
+    %      - Adds all subdirectories to the MATLAB path.
+    %      - Clears variables (except Study_Info) and clears the Command Window.
+    %
+    %   2. Parameter and Data Loading:
+    %      - Loads experiment parameters via setparams.
+    %      - Loads dataset information (Study_Info) from Params.data_dir if not already in the workspace.
+    %      - Determines the dataset name using get_data_set_name.
+    %
+    %   3. Repetition File Processing:
+    %      - Searches for repetition files in the designated output directory.
+    %      - Throws an error if no repetition files are found.
+    %
+    %   4. Output Directory Creation:
+    %      - Ensures that the power output directory exists by calling create_power_output_directory.
+    %
+    %   5. Iterative Processing:
+    %      - For each repetition file:
+    %          a. Loads the repetition data.
+    %          b. Extracts metadata and constructs the corresponding ground-truth (GT) filename.
+    %          c. Loads GT data (skips file if not found).
+    %          d. Extracts relevant brain data from the GT file using extract_gt_brain_data.
+    %          e. Computes power using summarize_tprs.
+    %          f. Clears repetition and GT data from memory.
+    %
+    % Dependencies:
+    %   - setparams
+    %   - get_data_set_name
+    %   - create_power_output_directory
+    %   - construct_gt_filename
+    %   - extract_gt_brain_data
+    %   - summarize_tprs
+    %
+    % Notes:
+    %   - This script is designed to minimize memory usage by processing repetition files sequentially.
+    %   - It requires that repetition and GT data files exist in the expected directories.
+        %% Handle input parameters
+    if nargin < 1 || isempty(Params)
+        Params = setparams();
     end
+    
+    %% Initial setup
+    scriptDir = fileparts(mfilename('fullpath'));
+    addpath(genpath(scriptDir));
+    cd(scriptDir);
+    clearvars -except Study_Info Params;
+    clc;
 
-
-    for j = 1:numel(method_list)
-        method = method_list{j};
-        method_data = rep_data.(method);
-
-        gt_filename = construct_gt_filename(rep_data.meta_data);
-
-        if exist(gt_filename, 'file')
-            gt_data = load(gt_filename);
+    % Load dataset information
+    if ~exist('Study_Info', 'var')
+        Study_Info = load(Params.data_dir, 'study_info');
+    end
+    [Params.output, ~, ~] = get_data_set_name(Study_Info, Params);
+    
+    %% Process each repetition file one by one to reduce memory usage
+    rep_files = dir(fullfile(Params.save_directory, Params.output, '*.mat'));
+    
+    % If no files were found output an error
+    if isempty(rep_files)
+        error('No files found.')
+    end
+    
+    %% Create output directory (only if it doesn't exist)
+    Params = create_power_output_directory(Params);
+    
+    for i = 1:length(rep_files)
+        % Load a single repetition data file
+        rep_file_path = fullfile(rep_files(i).folder, rep_files(i).name);
+        rep_data = load(rep_file_path);
+        
+        % Meta-data from the file encompassing everything
+        method_list = rep_data.meta_data.method_list;
+    
+        test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
+        [~, file_name] = create_and_check_rep_file(Params.save_directory, Params.output, test_components, ...
+                                                   rep_data.meta_data.test, ...
+                                                   rep_data.meta_data.subject_number, ...
+                                                   rep_data.meta_data.testing_code, false);
+    
+        % Split the path and filename
+        [file_path, file_name_only, file_ext] = fileparts(file_name);
+        % Add the prefix to just the filename
+        file_name = fullfile(file_path, ['pr-', file_name_only, file_ext]);
+        
+        % Save metadata regardless
+        meta_data = rep_data.meta_data;
+    
+        % Check if both stats fields exist
+        if isfield(rep_data, 'edge_level_stats') && isfield(rep_data, 'network_level_stats')
+            % Calculate means and save everything
+            edge_level_stats_mean = mean(rep_data.edge_level_stats, 2);
+            network_level_stats_mean = mean(rep_data.network_level_stats, 2);
+            save(file_name, 'meta_data', 'edge_level_stats_mean', 'network_level_stats_mean');
         else
-            fprintf('GT file %s not found. Skipping...\n', gt_filename);
-            continue;
+            % Just save metadata
+            save(file_name, 'meta_data');
         end
-        
-        stat_level = method_data.meta_data.level;
-        
-        gt_brain_data = extract_gt_brain_data(gt_data, stat_level);
-
-        PowerRes = summarize_tprs('calculate_tpr', method_data, gt_brain_data, Params);
-        eval([method ' = PowerRes;']);  % creates a variable named after the method
-        eval([method '.meta_data = method_data.meta_data']); % add method meta_data to power calculations
-        
-        save(file_name, method, '-append');
-
-
+    
+    
+        for j = 1:numel(method_list)
+            method = method_list{j};
+            method_data = rep_data.(method);
+    
+            gt_filename = construct_gt_filename(rep_data.meta_data, Params.output);
+            gt_fullpath = fullfile(Params.gt_data_dir, Params.output, gt_filename);
+    
+            if exist(gt_filename, 'file')
+                gt_data = load(gt_fullpath);
+            else
+                error(['GT file %s not found. Please either set the correct name with Params.output or check if the ' ...
+                    'file is missing\n'], gt_filename);
+            end
+    
+            matching_datasets_check(rep_data.meta_data, gt_data.meta_data)
+     
+            stat_level = extract_stat_level(method_data.meta_data.level);
+            
+            gt_brain_data = extract_gt_brain_data(gt_data, stat_level);
+    
+            PowerRes = summarize_tprs('calculate_tpr', method_data, gt_brain_data, Params);
+            eval([method ' = PowerRes;']);  % creates a variable named after the method
+            eval([method '.meta_data = method_data.meta_data']); % add method meta_data to power calculations
+            
+            save(file_name, method, '-append');
+    
+    
+        end
+    
     end
-
 end

@@ -38,7 +38,6 @@ function run_benchmarking(RP, Y, X)
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
 
-
     for id_nsub_list = 1:length(RP.list_of_nsubset)
         RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
         RP = set_n_subs_subset(RP);

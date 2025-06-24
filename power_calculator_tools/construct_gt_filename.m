@@ -1,4 +1,4 @@
-function gt_filename = construct_gt_filename(meta_data)
+function gt_filename = construct_gt_filename(meta_data, output_name)
 %% construct_gt_filename
 % Constructs a ground-truth filename from metadata. 
 % The function concatenates meta_data.dataset and meta_data.map with an underscore,
@@ -18,7 +18,7 @@ function gt_filename = construct_gt_filename(meta_data)
 %
 
     % Extract information from metadata
-    data_set_name = strcat(meta_data.dataset, '_', meta_data.map);
+    data_set_name = output_name;
     test_components = strjoin(meta_data.test_components, '_');
     test_type = meta_data.test;   
 

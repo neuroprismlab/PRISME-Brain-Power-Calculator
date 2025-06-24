@@ -2,6 +2,9 @@ function plot_power_proportion(directory_path)
     % Plot proportion of effects having power above a threshold vs power threshold
     % Input: directory_path - path to the directory containing power calculation files
     
+    % Change this to remove some of the subjects
+    undesired_subject_numbers = {20, 200};
+
     % Load files from the specified directory
     files = dir(fullfile(directory_path, '*.mat'));
     
@@ -74,6 +77,10 @@ function plot_power_proportion(directory_path)
 
         end
     end
+
+    % Remove undesired subject number
+    unique_subject_numbers = sort(unique_subject_numbers(~ismember(unique_subject_numbers, ...
+        [undesired_subject_numbers{:}])));
 
     % After your accumulation loop, add this normalization step
     for subject_index = 1:numel(unique_subject_numbers)
@@ -227,15 +234,15 @@ function plot_power_proportion(directory_path)
         xlim([0, 100]);
         ylim([0, 1]);
         if i == 1 % Only first subplot needs y-axis label
-            ylabel('Proportion effects with >λ% power', 'FontSize', 14, 'FontWeight', 'bold');
+            ylabel('Proportion effects with >λ% power', 'FontSize', 18, 'FontWeight', 'bold');
         else
             set(ax, 'YTickLabel', []);
         end
-        xlabel('Power threshold (%)', 'FontSize', 14, 'FontWeight', 'bold');
-        title(['n = ', num2str(n_subjects)], 'FontSize', 16, 'FontWeight', 'bold');
+        xlabel('Power threshold (%)', 'FontSize', 18, 'FontWeight', 'bold');
+        title(['n = ', num2str(n_subjects)], 'FontSize', 30, 'FontWeight', 'bold');
         
         % Enhance grid and appearance
-        grid on;
+        grid off;
         set(ax, 'FontSize', 12, 'LineWidth', 1.5, 'Box', 'on');
         set(ax, 'GridAlpha', 0.15);
         
