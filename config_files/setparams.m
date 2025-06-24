@@ -51,10 +51,10 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 50; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 5;
+Params.batch_size = 50;
  
 
 %% Skip some tests - change ranges or the function
@@ -91,7 +91,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 
 Params.testing = false;
 Params.test_n_perms = 10;
-Params.test_n_repetitions = 3;
+Params.test_n_repetitions = 5;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 
