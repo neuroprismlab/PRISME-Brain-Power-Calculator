@@ -74,11 +74,12 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
-Params.all_cluster_stat_types = {'IC_TFCE_Node_cpp'};
+%Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
+Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp'};
 
 
-Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
+%Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
+Params.all_submethods = {'FWER', 'FDR'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
@@ -89,9 +90,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 100;
-Params.test_n_repetitions = 10;
+Params.test_n_perms = 5;
+Params.test_n_repetitions = 2;
 Params.test_n_workers = 1;
-Params.test_disable_save = true;
+Params.test_disable_save = false;
 
 end

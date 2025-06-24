@@ -1,4 +1,4 @@
-function calculate_power(Params)
+function calculate_power(varargin)
     %% Workflow for Power Calculation
     % This script performs the complete power calculation workflow by processing 
     % repetition files one-by-one and computing power metrics against ground-truth data.
@@ -41,11 +41,15 @@ function calculate_power(Params)
     % Notes:
     %   - This script is designed to minimize memory usage by processing repetition files sequentially.
     %   - It requires that repetition and GT data files exist in the expected directories.
-        %% Handle input parameters
-    if nargin < 1 || isempty(Params)
-        Params = setparams();
-    end
+    %% Handle input parameters
+    p = inputParser;
+    addParameter(p, 'parameters', setparams(), @(x) isstruct(x));
+    addParameter(p, 'study_info', [], @(x) isstruct(x) || isempty(x));
+    parse(p, varargin{:});
     
+    Params = p.Results.parameters;
+    Study_Info = p.Results.study_info;
+
     %% Initial setup
     scriptDir = fileparts(mfilename('fullpath'));
     addpath(genpath(scriptDir));
