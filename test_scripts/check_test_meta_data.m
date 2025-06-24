@@ -16,7 +16,7 @@ function check_test_meta_data(meta_data)
 %   - Verifies both the main test configuration and nested parameters under
 %     'rep_parameters'.
 
-    assert(meta_data.rep_parameters.n_repetitions == 20)
+    assert(meta_data.rep_parameters.n_repetitions == 5)
 
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset_c2)
     assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset)

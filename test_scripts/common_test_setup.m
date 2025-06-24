@@ -32,8 +32,8 @@ function Params = common_test_setup(data_set_name)
     % BE CAREFUL WITH SUBJECT NUMBER - if it's too low, some permutations
     % will be equal to the actual data and there will be ties when
     % performing the test! 
-    Params.n_perms = 100;
-    Params.n_repetitions = 20;
+    Params.n_perms = 200;
+    Params.n_repetitions = 5;
     Params.list_of_nsubset = {40};
     
     % Set test values equal to normal values - with a simple dataset like

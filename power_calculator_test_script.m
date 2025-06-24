@@ -59,9 +59,13 @@ network_based_tests('test_r_fc.mat')
 
 create_act_test_dataset()
 
-edge_based_tests('test_r_fc.mat')
+edge_based_tests('test_act_act', 'stat_method_cell', {'Parametric', 'Size_Node_cpp', 'IC_TFCE_Node_cpp'}, ...
+    'submethod_cell', {'FWER', 'FDR'}', ...
+    'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size_Node_cpp', 'IC_TFCE_Node_cpp'})
 
-%% TODO - write Omnibus test scripts
+
+fprintf('Finished test routine correctly\n')
+
 
 
 

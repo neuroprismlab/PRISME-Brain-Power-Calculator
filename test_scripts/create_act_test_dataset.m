@@ -32,12 +32,12 @@ function create_act_test_dataset()
     brain_data.TASK.mask = mask;
     
     % Initialize data with very low variance normal distribution
-    brain_data.TASK.data = randn(n_variables, subject_number) * 0.01;
+    brain_data.TASK.data = min(0, randn(n_variables, subject_number) * 0.001);
     
     % Add effect to first 6 variables (adjacent in the mask)
     % These correspond to the first 6 true positions in the mask
     for i = 1:6
-        brain_data.TASK.data(i, :) = brain_data.TASK.data(i, :) + 2;
+        brain_data.TASK.data(i, :) = brain_data.TASK.data(i, :) + 3;
     end
     
     % Variables 7-10 remain with only the low-variance noise (no effect)

@@ -51,8 +51,11 @@ function atlas_file = atlas_data_set_map(Params)
             case strcmp(data_set_choice, 'hcp_act')
                 atlas_file = NaN;
 
-            case startsWith(data_set_choice, 'test')
+            case startsWith(data_set_choice, 'test') && endsWith(data_set_choice, 'fc')
                 atlas_file = './atlas_storage/test_hcp_fc_atlas.mat';
+
+            case startsWith(data_set_choice, 'test') && endsWith(data_set_choice, 'act')
+                atlas_file = NaN;
 
             otherwise
                 error('No atlas file found for dataset: %s', data_set_choice);

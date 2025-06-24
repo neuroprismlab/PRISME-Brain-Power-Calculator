@@ -57,7 +57,7 @@ function [GLM_stats, GLM, STATS] = ...
     % Find GLM and edge_stats
     GLM = NBSglm_setup_smn(nbs.GLM);
     edge_stats = GLM_fit(GLM);
-    
+
     % Compute network-based statistics
     flat_edge_groups = flat_matrix(STATS.edge_groups, STATS.mask);
     cluster_stat = get_network_average(edge_stats, flat_edge_groups);

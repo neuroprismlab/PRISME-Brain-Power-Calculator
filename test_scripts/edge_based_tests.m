@@ -25,9 +25,9 @@ function edge_based_tests(data_set_name, varargin)
     % Default parameters are for legacy script reasons
     p = inputParser;
     addRequired(p, 'data_set_name');
-    addParameter(p, 'stat_method_cell', {'Parametric', 'Size', 'Fast_TFCE_cpp'}, @iscell);
+    addParameter(p, 'stat_method_cell', {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp'}, @iscell);
     addParameter(p, 'submethod_cell', {'FWER', 'FDR'}, @iscell);  % No validation
-    addParameter(p, 'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size', 'Fast_TFCE_cpp'}, ...
+    addParameter(p, 'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size_cpp', 'Fast_TFCE_cpp'}, ...
         @iscell);  % No validation
 
     parse(p, data_set_name, varargin{:});
@@ -69,9 +69,9 @@ function edge_based_tests(data_set_name, varargin)
         % make sure 
 
         % Ensure first row is all zeros
-        error_effect = sprintf('Network-Level Test Failed in Dataset %s, Method %s: Effect not detected', ...
+        error_effect = sprintf('Edge-level Test Failed in Dataset %s, Method %s: Effect not detected', ...
             data_set_name, method);
-        error_non_effect = sprintf('Network-Level Test Failed in Dataset %s, Method %s: Effect detected', ...
+        error_non_effect = sprintf('Edge-Level Test Failed in Dataset %s, Method %s: Effect detected', ...
             data_set_name, method);
 
         % Check for significant p-values where an effect is expected (rows 1 to 6)
