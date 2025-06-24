@@ -32,6 +32,9 @@
 %
 % Author: Fabricio Cravo | Date: March 2025
 
+%% This needs to be optimized - Some could easily be moved to rep 
+%% There is a lot of unnecesary redundancy added with the activation
+
 addpath('/Users/f.cravogomes/Desktop/Cloned Repos/NBS_Calculator')
 
 % Set working directory to the directory of this script
@@ -59,7 +62,10 @@ if ~exist('Dataset', 'var')
 end
 
 %% Set n_nodes, n_var, n_repetitions 
-Params = setup_experiment_data(Params, Dataset);
+[Params.mask, Params.n_var, Params.n_nodes] = setup_experiment_data(Dataset);
+
+%% Variables are nodes or edges (voxel - activation, or fc edges)
+Params.variable_type = get_variable_type(Dataset);
 
 %% Create directory and get dataset name - get atlas
 [Params.output, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset, Params);
@@ -82,6 +88,17 @@ for ti = 1:length(tests)
     % RP - stands for Repetition Parameters
     RP = Params;
     RP.test_name = t;
+
+     % Specific study mask data (some datasets have masks for each study)
+        % The specific mask overrides the generic
+    [RP.mask, RP.n_var, RP.n_nodes] = study_specific_mask(Dataset, Params, t);
+    [RP.flat_to_spatial, RP.spatial_to_flat] = create_spatial_flat_map(RP);
+    [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
+
+    % Create graph converter (flat to graph)
+    RP.unflat_matrix_fun = unflatten_matrix(RP.mask, 'variable_type', ...
+        RP.variable_type, 'flat_to_spatial', RP.flat_to_spatial, 'spatial_to_flat', RP.spatial_to_flat);
+
 
     [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
         
