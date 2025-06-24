@@ -47,14 +47,12 @@ function test_power_calculation_from_gt_and_data()
      
     Study_Info.study_info.dataset = 'syn';
     Study_Info.study_info.map = 'power';
-
+    
     % Call function to load repetition and GT data
-    assignin('base', 'Study_Info', Study_Info);
     Params = setparams();
     Params.output = 'syn_power';
-    calculate_power(Params);
+    calculate_power('parameters', Params, 'study_info', Study_Info);
 
-    clear Study_Info
     
     test_final_power_results()
 
