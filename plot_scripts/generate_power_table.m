@@ -9,6 +9,9 @@ function power_table = generate_power_table(directory, varargin)
 %
 % Outputs:
 %   power_table - MATLAB table with power values and curve parameters
+%
+% Shortcut usage paste:
+%   abcd_fc - 
 
 %% Check if input is a directory
 if ~isfolder(directory)
@@ -21,29 +24,54 @@ addParameter(p, 'undesired_subject_numbers', {}, @iscell);
 addParameter(p, 'excluded_methods', {'Size', 'Constrained_FDR', 'Constrained_FWER', 'TFCE'}, @iscell);
 parse(p, varargin{:});
 
-undesired_subject_numbers = p.Results.undesired_subject_numbers;
 excluded_methods = p.Results.excluded_methods;
 
 %% Get power data (without averaging across studies)
 multi_variable_data = multi_experiment_average(directory); 
 data_agregator = struct();
 
+sub_numbers = {};
+test_names = {};
+
 % First loop: prepare empty structs for all subjects
+% Extract number of subjects and test names
+% Be mindful test_numbers and sub_numbers do not appears in the numerical
+% order
 for ri = 1:numel(multi_variable_data)
     res = multi_variable_data{ri};
+    
+    test = res.meta_data.rep_parameters.test_name;
+
     n_subs = res.meta_data.subject_number;
     n_subs = ['subs_' num2str(n_subs)];
     
+    if ~ismember(test, test_names)
+        test_names{end + 1} = test; %#ok
+    end
+    
+    if ~ismember(n_subs, sub_numbers)
+        sub_numbers{end + 1} = n_subs; %#ok
+    end
+   
+    % Check and create test field if it doesn't exist
+    if ~isfield(data_agregator, test)
+        data_agregator.(test) = struct();
+    end
+
     if ~isfield(data_agregator, n_subs)
-        data_agregator.(n_subs) = struct();
+        data_agregator.(test).(n_subs) = struct();
     end
 end
+
 
 % Collect individual study data (no averaging)
 for ri = 1:numel(multi_variable_data)
     res = multi_variable_data{ri};
+
     n_subs = res.meta_data.subject_number;
     n_subs = ['subs_' num2str(n_subs)];
+
+    test = res.meta_data.rep_parameters.test_name;
     
     for mi = 1:numel(res.meta_data.method_list)
         method = res.meta_data.method_list{mi};
@@ -53,105 +81,68 @@ for ri = 1:numel(multi_variable_data)
             continue;
         end
         
-        if ~isfield(data_agregator.(n_subs), method)
-            data_agregator.(n_subs).(method) = {res.individual.(method)}; % Individual studies, not mean
-        else
-            data_agregator.(n_subs).(method){end+1} = res.individual.(method);
-        end
+        data_agregator.(test).(n_subs).(method) = res.mean.(method);
     end
+
 end
 
-%% Prepare table data
-sub_numbers = fieldnames(data_agregator);
-results_x = str2double(extractAfter(sub_numbers, 'subs_'))'; % Subject numbers
+sub_numbers_numeric = str2double(extractAfter(sub_numbers, 'subs_'));
+[sorted_nums, sort_idx] = sort(sub_numbers_numeric);
+sorted_sub_numbers = sub_numbers(sort_idx);
 
 % Get all unique methods (excluding those filtered out)
 first_subject = sub_numbers{1};
-methods = fieldnames(data_agregator.(first_subject));
-
-% Initialize table variables
-study_ids = {};
-study_types = {};
-method_names = {};
-param1_values = []; % Scale parameter (λ)
-param2_values = []; % Shape parameter (k)
-r_squared_values = [];
-
-% Power values at different sample sizes
-power_20 = [];
-power_40 = [];
-power_80 = [];
-power_120 = [];
-power_200 = [];
+first_test = test_names{1};
+methods = fieldnames(data_agregator.(first_test).(first_subject));
 
 %% Process each method and study combination
-row_count = 0;
+sorted_tests = natural_sort(test_names);
 
-for mi = 1:numel(methods)
-    method = methods{mi};
-    
-    % Get all individual studies for this method across all subject numbers
-    all_studies = [];
-    for fi = 1:numel(sub_numbers)
-        subn = sub_numbers{fi};
-        all_studies = [all_studies, data_agregator.(subn).(method)];
-    end
-    
-    % Process each individual study
-    for study_idx = 1:numel(all_studies)
-        row_count = row_count + 1;
+n_table_elements = numel(sorted_tests) * numel(methods);
+
+% Initialize table data arrays
+table_test = cell(n_table_elements, 1);
+table_method = cell(n_table_elements, 1);
+table_subs_power = cell(n_table_elements, numel(sorted_sub_numbers));
+table_parameters = cell(n_table_elements, 2);
+table_r_squared = cell(n_table_elements, 1);
+
+% Counter for table rows
+row_idx = 0;
+
+for ti = 1:numel(sorted_tests)
+    test = sorted_tests{ti};
         
-        % Collect power values for this study across subject numbers
-        results_y = zeros(1, numel(sub_numbers));
-        for fi = 1:numel(sub_numbers)
-            subn = sub_numbers{fi};
-            if study_idx <= numel(data_agregator.(subn).(method))
-                results_y(fi) = data_agregator.(subn).(method){study_idx};
-            else
-                results_y(fi) = NaN; % Missing data
-            end
+    for mi = 1:numel(methods)
+        method = methods{mi};
+        row_idx = row_idx + 1;
+        
+        % Use cellfun to extract power values for this method across all subject numbers
+        power_values = cellfun(@(sub_num) data_agregator.(test).(sub_num).(method), ...
+                                sorted_sub_numbers, 'UniformOutput', false); 
+        x = sorted_nums;
+        y = cell2mat(power_values);
+
+        [~, ~, r_sqr, fit_p] = fit_power_curve(x, y);
+
+        % Populate table data
+        table_test{row_idx} = test;
+        table_method{row_idx} = method;
+        table_r_squared{row_idx} = r_sqr;
+        table_parameters{row_idx, 1} = fit_p(1);  % Scale parameter
+        table_parameters{row_idx, 2} = fit_p(2);  % Shape parameter
+        
+        % Store power values for each subject number (in natural order)
+        for si = 1:numel(sorted_sub_numbers)
+            table_subs_power{row_idx, si} = y(si);
         end
-        
-        % Skip if too much missing data
-        if sum(~isnan(results_y)) < 3
-            continue;
-        end
-        
-        % Fit power curve using your default function
-        [curve_params, r_squared] = fit_power_curve_params(results_x, results_y);
-        
-        % Store study information
-        study_ids{row_count} = sprintf('Study_%03d', study_idx);
-        study_types{row_count} = determine_study_type(study_idx); % You'll need to implement this
-        method_names{row_count} = method_name_assigment(method);
-        
-        % Store curve parameters
-        param1_values(row_count) = curve_params(1); % Scale parameter
-        param2_values(row_count) = curve_params(2); % Shape parameter
-        r_squared_values(row_count) = r_squared;
-        
-        % Calculate power at specific sample sizes using fitted curve
-        default_func = @(params, x) 100*(1 - exp(-(x./params(1)).^params(2)));
-        
-        power_20(row_count) = default_func(curve_params, 20);
-        power_40(row_count) = default_func(curve_params, 40);
-        power_80(row_count) = default_func(curve_params, 80);
-        power_120(row_count) = default_func(curve_params, 120);
-        power_200(row_count) = default_func(curve_params, 200);
     end
 end
+ 
+table_method = plot_method_name_map(table_method);
+table_method = table_method';
 
-%% Create MATLAB table
-power_table = table(study_ids', study_types', method_names', ...
-                   param1_values', param2_values', r_squared_values', ...
-                   power_20', power_40', power_80', power_120', power_200', ...
-                   'VariableNames', {'Study_ID', 'Study_Type', 'Method', ...
-                   'Scale_Param', 'Shape_Param', 'R_Squared', ...
-                   'Power_n20', 'Power_n40', 'Power_n80', 'Power_n120', 'Power_n200'});
-
-%% Display summary
-fprintf('Generated power table with %d rows\n', height(power_table));
-fprintf('Methods included: %s\n', strjoin(unique(method_names), ', '));
-fprintf('Studies per method: %d\n', numel(unique(study_ids)));
+% Aggregate all data into one matrix
+power_table = [table_test, table_method, table_subs_power, table_parameters, table_r_squared];
 
 end

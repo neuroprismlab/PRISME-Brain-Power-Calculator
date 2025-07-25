@@ -11,8 +11,8 @@ classdef IC_TFCE_Node_cpp < handle
         function method_params = get_fast_tfce_params()
             method_params = struct();
             method_params.dh = 0.1;
-            method_params.H = 3.0;
-            method_params.E = 0.4;
+            method_params.H = 2.0;
+            method_params.E = 0.5;
         end
     end
     
@@ -40,8 +40,7 @@ classdef IC_TFCE_Node_cpp < handle
             % Convert the node statistics back into a matrix
             sparse_mat = STATS.unflatten_matrix(node_stats);
             
-            % Apply TFCE transformation to the observed test statistics
-            a = tic;
+            % Apply TFCE transformation to the observed test statistics 
             cluster_stats_target = apply_tfce_sparse_node(sparse_mat, ...
                 obj.method_params.dh, obj.method_params.H, obj.method_params.E);
             

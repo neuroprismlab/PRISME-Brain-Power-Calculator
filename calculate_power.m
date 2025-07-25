@@ -58,8 +58,10 @@ function calculate_power(varargin)
     clc;
 
     % Load dataset information
-    if ~exist('Study_Info', 'var')
+    if ~isempty('Study_Info')
         Study_Info = load(Params.data_dir, 'study_info');
+        [~, filename, ~] = fileparts(Params.data_dir);
+        Study_Info.file_name = filename;
     end
     [Params.output, ~, ~] = get_data_set_name(Study_Info, Params);
     

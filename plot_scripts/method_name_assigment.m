@@ -5,6 +5,8 @@ function name = method_name_assigment(method)
             name = 'edge';
         case 'Parametric_FDR'
             name = 'edge (FDR)';
+        case 'Size_Node_cpp'
+            name = 'size';
         case 'Size_cpp'
             name = 'size';
         case 'Size'

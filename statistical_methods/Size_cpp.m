@@ -22,7 +22,6 @@ classdef Size_cpp
             params = struct(varargin{:});
             STATS = params.statistical_parameters;
             edge_stats_target = params.edge_stats;
-            GLM = params.glm_parameters;
             permuted_edge_stats = params.permuted_edge_data;
         
             % Get number of nodes and edges

@@ -68,12 +68,21 @@ function plot_aggregated_power_curve(directory, varargin)
     
     % Create figure with larger size for publication
     figure('Position', [100, 100, 1000, 700]);
+    set(gcf, 'Color', 'white');        % Figure background
+    set(gca, 'Color', 'white');        % Axes background
     hold on;  
     
     for mi = 1:numel(methods)
         method = methods{mi};
         results_y = zeros(1, numel(sub_numbers));
-        
+
+        % Skip method if cpp version exists
+        disp(method)
+        disp(plot_has_cpp_version(method, methods))
+        if plot_has_cpp_version(method, methods)
+            continue;
+        end
+            
         % Collect mean for this method from all subjects
         for fi = 1:numel(sub_numbers)
             subn = sub_numbers{fi};
@@ -81,7 +90,7 @@ function plot_aggregated_power_curve(directory, varargin)
             results_y(fi) = mean([data_agregator.(subn).(method){:}]);
         end
         
-        [x_fit, y_fit, r_squared] = fit_power_curve(results_x, results_y);
+        [x_fit, y_fit, r_squared, ~] = fit_power_curve(results_x, results_y);
         
         color = method_color_assingment(method);
         method_name = method_name_assigment(method);

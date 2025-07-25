@@ -1,15 +1,16 @@
-function [x, y, r_squared] = fit_power_curve(results_x, results_y, varargin)
+function [x, y, r_squared, fitted_params] = fit_power_curve(results_x, results_y, varargin)
 
 
     % Parse optional parameters
     p = inputParser;
     
     % Default Weibull function
-    default_func = @(params, x) 100*(1 - exp(-(x./params(1)).^params(2)));
+    % default_func = @(params, x) 100*(1 - exp(-(x./params(1)).^params(2)));
+    default_func = @(params, x) 100 ./ (1 + (params(1) ./ x).^params(2));
     
     addParameter(p, 'fit_function', default_func, @(x) isa(x, 'function_handle'));
     addParameter(p, 'lower_bounds', [1, 0.1], @isnumeric);  % Allow custom initial params
-    addParameter(p, 'upper_bounds', [1000, 5], @isnumeric);  % Allow custom initial params
+    addParameter(p, 'upper_bounds', [10000, 5], @isnumeric);  % Allow custom initial params
     
     parse(p, varargin{:});
 

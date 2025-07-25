@@ -79,7 +79,9 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
             % Remove nan values and extract Y
             valid_idx = ~isnan(TestData.score);
             
-            X = TestData.score(valid_idx);
+            % Convert to design matrix with intercept
+            n_subjects = numel(TestData.score(valid_idx));
+            X = [TestData.score(valid_idx), ones(n_subjects, 1)];
             
             % Retrieve X values from BrainData
             sub_ids = TestData.sub_ids(valid_idx);

@@ -28,14 +28,14 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 % Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-Params.data_dir = './data/s_hcp_act_noble_1.mat';
+% Params.data_dir = './data/s_hcp_act_noble_1.mat';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
-% Params.output = 'testing_act_data';
+Params.output = 'abcd_with_intercept';
 
 % Gt origin is currently deprecated
 Params.gt_origin = 'power_calculator';
@@ -52,13 +52,13 @@ Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
 Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 50; % num parallel workers for parfor, best if # workers = # cores
+Params.n_workers = 25; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 50;
  
 
 %% Skip some tests - change ranges or the function
-ranges = {[1000, 1001]};
+ranges = {[0, 1]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
@@ -74,12 +74,9 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-%Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
-Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp'};
+Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
 
-
-%Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
-Params.all_submethods = {'FWER', 'FDR'};
+Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
@@ -90,8 +87,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = false;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 5;
+Params.test_n_perms = 2;
+Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 
