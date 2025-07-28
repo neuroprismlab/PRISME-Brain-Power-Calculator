@@ -22,14 +22,32 @@ function Params = create_output_directory(Params)
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
 
-    if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-        mkdir(Params.save_directory);       % Create the directory
-    end
+    if ~Params.ground_truth
+    
+        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
+            mkdir(Params.save_directory);       % Create the directory
+        end
+    
+        Params.save_directory = [Params.save_directory, Params.output, '/'];
+    
+        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
+            mkdir(Params.save_directory);       % Create the directory
+        end
 
-    Params.save_directory = [Params.save_directory, Params.output, '/'];
+    else
 
-    if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-        mkdir(Params.save_directory);       % Create the directory
+        Params.save_directory = [Params.save_directory, 'ground_truth/'];
+
+        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
+            mkdir(Params.save_directory);       % Create the directory
+        end
+    
+        Params.save_directory = [Params.save_directory, Params.output, '/'];
+    
+        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
+            mkdir(Params.save_directory);       % Create the directory
+        end
+        
     end
 
 end
