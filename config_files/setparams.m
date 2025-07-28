@@ -52,9 +52,9 @@ Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
 Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 25; % num parallel workers for parfor, best if # workers = # cores
+Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 50;
+Params.batch_size = 10;
  
 
 %% Skip some tests - change ranges or the function

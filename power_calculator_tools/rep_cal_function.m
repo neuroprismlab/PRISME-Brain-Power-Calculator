@@ -40,8 +40,10 @@ function rep_cal_function(Params)
 % **Date**: March 2025
 %
     
-    %% Check cpp part of code
-    Params = check_mex_binaries(Params);
+    %% Check cpp part of code - not necessary for gt
+    if ~Params.ground_truth
+        Params = check_mex_binaries(Params);
+    end
 
     if ~exist('Dataset', 'var')
         Dataset = load(Params.data_dir);
@@ -49,7 +51,6 @@ function rep_cal_function(Params)
     end
     
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
-    Params.ground_truth = false;
     [Params.mask, Params.n_var, Params.n_nodes] = setup_experiment_data(Dataset);
     [Params.output, Params.data_set_base, Params.data_set_map] = get_data_set_name(Dataset, Params);
     Params.atlas_file = atlas_data_set_map(Params);
@@ -68,7 +69,7 @@ function rep_cal_function(Params)
 
     %% Parallel Workers 
     % Uncoment the disp line if setup is commented out - as reminder 
-    Params.parallel = setup_parallel_workers(Params.parallel, Params.n_workers);
+    Params.parallel = setup_parallel_workers(Params.parallel, Params.n_workers);   
    
     OutcomeData = Dataset.outcome;
     BrainData = Dataset.brain_data;
@@ -115,9 +116,13 @@ function rep_cal_function(Params)
                 error('Test type origin not found')
 
         end  
+
+        % Sets ground truth parameters for gt calculation
+        if Params.ground_truth
+            RP = setup_ground_truth_parameters(RP);
+        end
        
         run_benchmarking(RP, Y, X)
         
     end
-
 end
