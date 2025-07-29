@@ -36,11 +36,10 @@ Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.save_directory = './power_calculator_results/';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
-Params.output = 'abcd_with_intercept';
-% Params.output = 'idk';
+Params.output = 'test_new_file_structure';
 
-% Full files contain more the data about the subsampled repetitions - slower
-Params.full_subsample_file = false;
+% Options - full_file, compact_file;
+Params.subsample_file_type = 'compact_file';
 
 % Gt origin is currently deprecated
 Params.gt_origin = 'power_calculator';
@@ -95,6 +94,6 @@ Params.testing = true;
 Params.test_n_perms = 2;
 Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
-Params.test_disable_save = true;
+Params.test_disable_save = false;
 
 end

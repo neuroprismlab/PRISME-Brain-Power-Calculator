@@ -31,29 +31,14 @@ function save_incremental_results(RP, all_pvals, all_pvals_neg, ...
     [existence, output_dir] = create_and_check_rep_file(RP.save_directory, RP.output, RP.test_name, ...
                                                         RP.test_type, RP.n_subs_subset, RP.testing, RP.ground_truth);
 
-    output_dir_path = fileparts(output_dir);
-    if ~exist(output_dir_path, 'dir')
-        mkdir(output_dir_path);
+    if ~existence
+        error('A base file named % with meta-data should exist to append incremental results')
     end
 
     % Define the significance threshold for sparse storage
     sig_threshold = RP.save_significance_thresh;
 
-    % Always create fresh meta_data
-    meta_data = struct();
-    meta_data.output = RP.output;
-    meta_data.dataset = RP.data_set_base;
-    meta_data.map = RP.data_set_map;
-    meta_data.test = RP.test_type;
-    meta_data.test_components = strsplit(RP.test_name, '_');
-    meta_data.subject_number = RP.n_subs_subset;
-    meta_data.testing_code = RP.testing;
-    meta_data.repetition_ids = RP.ids_sampled;
-    RP = rmfield(RP, 'ids_sampled');
-    meta_data.rep_parameters = RP;
-    meta_data.date = datetime("today");
-    meta_data.method_list = RP.all_full_stat_type_names;
-    meta_data.method_current_rep = struct();
+    keyboard;
     
     % Initialize or load edge_level_stats and network_level_stats
     if existence

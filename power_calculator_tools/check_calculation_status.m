@@ -1,4 +1,4 @@
-function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
+function [existing_repetitions, ids_sampled, meta_data] = check_calculation_status(RP)
 %% check_calculation_status
 % **Description**
 % Checks which statistical methods already have repetitions computed and saved to disk.
@@ -142,7 +142,7 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
                     % Save updated meta_data
                     
                     if ~RP.test_disable_save
-                        save(file_path, 'meta_data', '-v7.3');
+                        meta_data = create_meta_data_file(file_path, RP, ids_sampled, existing_repetitions);
                         fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
                             n_additional_reps, file_path);
                     end
@@ -171,7 +171,7 @@ function [existing_repetitions, ids_sampled] = check_calculation_status(RP)
     
         % Save initialized file
         if ~RP.test_disable_save
-            save(file_path, 'meta_data', '-v7.3');
+            meta_data = create_meta_data_file(file_path, RP, ids_sampled, existing_repetitions);
             fprintf('Initialized results file with repetition IDs: %s\n', file_path);
         end
     end
