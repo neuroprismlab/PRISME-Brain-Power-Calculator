@@ -35,7 +35,12 @@ Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
+
 Params.output = 'abcd_with_intercept';
+% Params.output = 'idk';
+
+% Full files contain more the data about the subsampled repetitions - slower
+Params.full_subsample_file = false;
 
 % Gt origin is currently deprecated
 Params.gt_origin = 'power_calculator';
@@ -51,14 +56,14 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 10;
  
 
 %% Skip some tests - change ranges or the function
-ranges = {[0, 1]};
+ranges = {[0, 0]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
@@ -90,6 +95,6 @@ Params.testing = true;
 Params.test_n_perms = 2;
 Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
-Params.test_disable_save = false;
+Params.test_disable_save = true;
 
 end

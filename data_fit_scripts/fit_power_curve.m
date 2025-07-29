@@ -10,7 +10,7 @@ function [x, y, r_squared, fitted_params] = fit_power_curve(results_x, results_y
     
     addParameter(p, 'fit_function', default_func, @(x) isa(x, 'function_handle'));
     addParameter(p, 'lower_bounds', [1, 0.1], @isnumeric);  % Allow custom initial params
-    addParameter(p, 'upper_bounds', [10000, 5], @isnumeric);  % Allow custom initial params
+    addParameter(p, 'upper_bounds', [100000, 5], @isnumeric);  % Allow custom initial params
     
     parse(p, varargin{:});
 
