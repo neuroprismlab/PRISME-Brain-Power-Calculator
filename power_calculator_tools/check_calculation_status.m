@@ -83,7 +83,8 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
         method_name = RP.all_full_stat_type_names{i};
         existing_repetitions.(method_name) = 0;
     end
-
+     
+    
     if existence
 
         try
@@ -106,18 +107,10 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
                            'requires %d subjects. Please delete the existing results file: %s'], ...
                            actual_n_subs, expected_n_subs, file_path);
                 end
-                
-                % Extract method_current_rep
-                if isfield(meta_data, 'method_current_rep')
-                    method_reps = meta_data.method_current_rep;
-                    method_names = fieldnames(method_reps);
-                    for i = 1:length(method_names)
-                        method_name = method_names{i};
-                        if isfield(existing_repetitions, method_name)
-                            existing_repetitions.(method_name) = method_reps.(method_name);
-                        end
-                    end
-                end
+               
+                % Extract alredy calculated repetititons
+                existing_repetitions = extract_method_rep(RP.subsample_file_type, file_path, ...
+                    meta_data, existing_repetitions);
 
                 ids_sampled = meta_data.repetition_ids;
                 required_reps = RP.n_repetitions;
@@ -134,26 +127,26 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
                     new_ids = draw_repetition_ids(RP, 'n_reps', n_additional_reps);
                     
                     % Append the new IDs to the existing ones
-                    ids_sampled = [ids_sampled, new_ids];
+                    ids_sampled = [ids_sampled, new_ids];           
                     
-                    % Update meta_data
-                    meta_data.repetition_ids = ids_sampled;
-                    
-                    % Save updated meta_data
-                    
-                    if ~RP.test_disable_save
-                        meta_data = create_meta_data_file(file_path, RP, ids_sampled, existing_repetitions);
-                        fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
-                            n_additional_reps, file_path);
-                    end
-                    
+                    fprintf('Updated results file with %d additional repetition IDs: %s\n', ...
+                        n_additional_reps, file_path);
                 end
-                
+
+                if ~RP.test_disable_save
+                    meta_data = create_meta_data_file(file_path, meta_data, RP, ids_sampled, existing_repetitions);     
+                end
+            
             else
                 error('Meta_data missing in file: %s. Please delete file to continue calculations', file_path);
             end
-
-        catch 
+        catch ME
+            fprintf('Error: %s\n', ME.message);
+            fprintf('Error ID: %s\n', ME.identifier);
+            fprintf('Stack trace:\n');
+            for i = 1:length(ME.stack)
+                fprintf('  In %s (line %d)\n', ME.stack(i).name, ME.stack(i).line);
+            end
             error('Corrupted file in %s. Please delete it or add correct meta-data.\n', file_path);
         end
 
@@ -168,10 +161,14 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
             method_name = RP.all_full_stat_type_names{i};
             meta_data.method_current_rep.(method_name) = 0;
         end
-    
+
         % Save initialized file
         if ~RP.test_disable_save
-            meta_data = create_meta_data_file(file_path, RP, ids_sampled, existing_repetitions);
+            meta_data = create_meta_data_file(file_path, meta_data, RP, ids_sampled, existing_repetitions);
+
+            create_edge_level_stats_in_file(file_path, RP.subsample_file_type, ...
+                RP.n_var, RP.n_repetitions, RP.edge_groups)
+
             fprintf('Initialized results file with repetition IDs: %s\n', file_path);
         end
     end

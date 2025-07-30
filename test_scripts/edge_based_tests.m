@@ -40,6 +40,9 @@ function edge_based_tests(data_set_name, varargin)
 
     Params = common_test_setup(data_set_name);
 
+    %% This test works with full_files only
+    Params.subsample_file_type = 'full_file';
+
     data_set_name = get_data_set_name(data_set, Params);
 
     Params.all_cluster_stat_types = stat_method_cell;

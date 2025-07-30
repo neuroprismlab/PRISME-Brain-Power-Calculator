@@ -16,25 +16,21 @@ function check_test_meta_data(meta_data)
 %   - Verifies both the main test configuration and nested parameters under
 %     'rep_parameters'.
 
-    assert(meta_data.rep_parameters.n_repetitions == 5)
+    assert(meta_data.n_repetitions == 5)
 
-    assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset_c2)
-    assert(meta_data.rep_parameters.n_subs_subset_c1 == meta_data.rep_parameters.n_subs_subset)
-    assert(meta_data.rep_parameters.n_subs_subset_c1 == 40)
+    assert(meta_data.n_subs_1 == meta_data.n_subs_2)
+    assert(meta_data.n_subs == 40)
 
-    switch meta_data.rep_parameters.test_type
+    switch meta_data.test_type
 
         case 't'
-            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'onesample'))
-            assert(meta_data.rep_parameters.observations == 40)
+            assert(meta_data.observations == 40)
 
         case 't2'
-            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'ttest'))
-            assert(meta_data.rep_parameters.observations == 80)
+            assert(meta_data.observations == 80)
 
         case 'r' 
-            assert(strcmp(meta_data.rep_parameters.nbs_test_stat,'onesample'))
-            assert(meta_data.rep_parameters.observations == 40)
+            assert(meta_data.observations == 40)
         
         otherwise
             error('A stored test type does not matched the covered test types')
