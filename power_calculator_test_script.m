@@ -36,6 +36,12 @@ clean_test_directories()
 create_test_fc_data_set()
 create_test_fc_atlas()
 
+edge_based_tests('test_t2_fc.mat', 'file_structure', 'compact_file')
+
+% Avoid errors where the same file already exists but is in a different
+% format
+clean_test_directories()
+
 edge_based_tests('test_hcp_fc.mat')
 
 network_based_tests('test_hcp_fc.mat')
