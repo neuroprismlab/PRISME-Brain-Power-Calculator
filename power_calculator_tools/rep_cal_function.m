@@ -118,6 +118,8 @@ function rep_cal_function(Params)
         end  
 
         % Sets ground truth parameters for gt calculation
+        % Future note, avoid this, for clarity, make sure each function returns exactly
+        % what is changed - to be fixed
         if Params.ground_truth
             RP = setup_ground_truth_parameters(RP);
         end

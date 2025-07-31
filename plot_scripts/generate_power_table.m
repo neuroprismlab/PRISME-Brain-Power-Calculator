@@ -21,7 +21,7 @@ end
 %% Parse varargin
 p = inputParser;
 addParameter(p, 'undesired_subject_numbers', {}, @iscell);
-addParameter(p, 'excluded_methods', {'Size', 'Constrained_FDR', 'Constrained_FWER', 'TFCE'}, @iscell);
+addParameter(p, 'excluded_methods', {'Size', 'Constrained_FDR', 'Constrained_FWER', 'TFCE', 'Ground_Truth'}, @iscell);
 parse(p, varargin{:});
 
 excluded_methods = p.Results.excluded_methods;
@@ -118,8 +118,8 @@ for ti = 1:numel(sorted_tests)
         row_idx = row_idx + 1;
         
         % Use cellfun to extract power values for this method across all subject numbers
-        power_values = cellfun(@(sub_num) data_agregator.(test).(sub_num).(method), ...
-                                sorted_sub_numbers, 'UniformOutput', false); 
+        power_values = cellfun(@(sub_num) extract_power_with_context(data_agregator, test, sub_num, method), ...
+                        sorted_sub_numbers, 'UniformOutput', false);
         x = sorted_nums;
         y = cell2mat(power_values);
 
@@ -145,4 +145,33 @@ table_method = table_method';
 % Aggregate all data into one matrix
 power_table = [table_test, table_method, table_subs_power, table_parameters, table_r_squared];
 
+end
+
+% Helper function for better error messages
+function value = extract_power_with_context(data_agregator, test, sub_num, method)
+    try
+        % Check if test exists
+        if ~isfield(data_agregator, test)
+            error('Test "%s" does not exist in data_agregator', test);
+        end
+        
+        % Check if sub_num exists within test
+        if ~isfield(data_agregator.(test), sub_num)
+            error('Field "%s" does not exist in data_agregator.%s\nAvailable fields: %s', ...
+                  sub_num, test, strjoin(fieldnames(data_agregator.(test)), ', '));
+        end
+        
+        % Check if method exists within test.sub_num
+        if ~isfield(data_agregator.(test).(sub_num), method)
+            error('Method "%s" does not exist in data_agregator.%s.%s\nAvailable methods: %s', ...
+                  method, test, sub_num, strjoin(fieldnames(data_agregator.(test).(sub_num)), ', '));
+        end
+        
+        % If all checks pass, return the value
+        value = data_agregator.(test).(sub_num).(method);
+        
+    catch ME
+        % Re-throw with additional context
+        error('Error accessing data_agregator.%s.%s.%s:\n%s', test, sub_num, method, ME.message);
+    end
 end

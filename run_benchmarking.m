@@ -49,8 +49,9 @@ function run_benchmarking(RP, Y, X)
 
         % Check which repetitions are already computed for each method
         % Get repetition IDS here too - 
-        [existing_repetitions, RP.ids_sampled] = check_calculation_status(RP);
-       
+        [existing_repetitions, RP.ids_sampled, meta_data] = check_calculation_status(RP);
+        RP.file_meta_data = meta_data;
+
         num_pending_per_method = structfun(@(x) max(RP.n_repetitions - x, 0), existing_repetitions, ...
             'UniformOutput', false);
         max_rep_pending = max(structfun(@(x) x, num_pending_per_method));

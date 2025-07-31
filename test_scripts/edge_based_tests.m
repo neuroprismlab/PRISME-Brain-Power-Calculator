@@ -29,16 +29,21 @@ function edge_based_tests(data_set_name, varargin)
     addParameter(p, 'submethod_cell', {'FWER', 'FDR'}, @iscell);  % No validation
     addParameter(p, 'full_method_name_cell', {'Parametric_FWER', 'Parametric_FDR', 'Size_cpp', 'Fast_TFCE_cpp'}, ...
         @iscell);  % No validation
+    addParameter(p, 'file_structure', 'full_file')
 
     parse(p, data_set_name, varargin{:});
     
     stat_method_cell = p.Results.stat_method_cell;
     submethod_cell = p.Results.submethod_cell;
     full_method_name_cell = p.Results.full_method_name_cell;
+    file_structure = p.Results.file_structure;
 
     data_set = load(['./data/', data_set_name]);
 
     Params = common_test_setup(data_set_name);
+
+    %% This test works with full_files only
+    Params.subsample_file_type = file_structure;
 
     data_set_name = get_data_set_name(data_set, Params);
 
@@ -62,8 +67,7 @@ function edge_based_tests(data_set_name, varargin)
         
         %% Test regression results
         brain_data = getfield(ResData, query{:});
-    
-        sig_vals = brain_data.sig_prob;
+        
 
         % I think I need to add the power calculator scripts too - just to
         % make sure 
@@ -75,14 +79,36 @@ function edge_based_tests(data_set_name, varargin)
             data_set_name, method);
 
         % Check for significant p-values where an effect is expected (rows 1 to 6)
-        for row = 1:6
-            assert(all(sig_vals(row, :) > 0.95), error_effect);
-        end
+        switch file_structure
+            
+            case 'full_file'
+                sig_vals = brain_data.sig_prob;
 
-        % Check for non-significant p-values where no effect is expected (rows 7 to 10)
-        for row = 7:10
-            assert(all(sig_vals(row, :) <= 0.5), error_non_effect);
-        end
+                for row = 1:6
+                    assert(all(sig_vals(row, :) > 0.95), error_effect);
+                end
+        
+                % Check for non-significant p-values where no effect is expected (rows 7 to 10)
+                for row = 7:10
+                    assert(all(sig_vals(row, :) <= 0.5), error_non_effect);
+                end
+
+            case 'compact_file'         
+                sig_vals = brain_data.positives;
+
+                % Check effect rows (1-6) have exactly 5 detections
+                for row = 1:6
+                    assert(sig_vals(row) == 5, error_effect);
+                end
+                
+                % Check non-effect rows (7-10) have 0 detections
+                for row = 7:10
+                    assert(sig_vals(row) == 0, error_non_effect);
+                end
+
+            otherwise
+                error('Not supported')
+        end               
 
         %% Test meta-data results 
         query = {'testing', data_set_name, task_name, method, 'subs_40', 'meta_data'};

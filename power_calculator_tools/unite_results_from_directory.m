@@ -26,9 +26,9 @@ function RepetitionResults = unite_results_from_directory(varargin)
         
         %% Query elements 
         data_set_name = strcat(meta_data.dataset, '_', meta_data.map);
-        task_name = get_test_components_from_meta_data(meta_data.test_components);
+        task_name = meta_data.study_name;
 
-        subject_number = sprintf('subs_%d', meta_data.subject_number);
+        subject_number = sprintf('subs_%d', meta_data.n_subs);
         methods = meta_data.method_list;
 
         for j = 1:numel(methods)

@@ -18,6 +18,8 @@ function network_based_tests(data_set_name)
     data_set = load(['./data/', data_set_name]);
 
     Params = common_test_setup(data_set_name);
+
+    Params.subsample_file_type = 'full_file';
     
     data_set_name = get_data_set_name(data_set, Params);
 
