@@ -1,4 +1,4 @@
-function PowerRes = summarize_tprs(summary_type, rep_data, gt_data, Params)
+function PowerRes = summarize_tprs(summary_type, method_data, gt_data, Params, method_name, file_type, meta_data)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script summarizes results data to ultimately compare true positive
 % rates across levels of inference.
@@ -62,7 +62,7 @@ switch summary_type
             stat_type = stat_types{s};
 
             % calculate and save tpr (checking before saving is built in)
-            [~, save_settings] = summary_tools.calculate_positives(rep_data, save_settings);
+            [~, save_settings] = summary_tools.calculate_positives(method_data, save_settings);
 
             error('The code is buggy - Fix the tasks and stat_types loop')
                        
@@ -91,11 +91,15 @@ switch summary_type
     
     
         %% Calculate positives here
-        PowerRes = summary_tools.calculate_positives(rep_data, alpha);
+        PowerRes = summary_tools.calculate_positives(method_data, alpha, file_type);
     
         %% Calculate true positives
-        PowerRes = summary_tools.calculate_tpr(rep_data, gt_data, Params.tpr_dthresh, PowerRes);
-        PowerRes = summary_tools.calculate_fpr(rep_data, gt_data, Params.tpr_dthresh, PowerRes);
+        PowerRes = summary_tools.calculate_tpr(method_data, gt_data, Params.tpr_dthresh, PowerRes, method_name, ...
+            meta_data);
+        
+        %% Calculate false positives
+        PowerRes = summary_tools.calculate_tpr(method_data, gt_data, Params.tpr_dthresh, PowerRes, method_name, ...
+            meta_data);
            
 end
 

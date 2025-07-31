@@ -36,7 +36,7 @@ Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.save_directory = './power_calculator_results/';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
-Params.output = 'test_new_file_structure';
+Params.output = 'abcd_100_reps';
 
 % Options - full_file, compact_file;
 Params.subsample_file_type = 'compact_file';
@@ -55,10 +55,10 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
-Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 2;
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 25; % num parallel workers for parfor, best if # workers = # cores
+Params.n_repetitions = 100;  % 500 recommended
+Params.batch_size = 25;
  
 
 %% Skip some tests - change ranges or the function
@@ -67,7 +67,7 @@ Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges)
 
 
 %% List of subjects per subset
-Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
+Params.list_of_nsubset = {500, 1000, 2000, 4000}; % To change this, add more when necessary
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
                             % Current model (see above design matrix) only designed for t-test
@@ -90,7 +90,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = 2;
 Params.test_n_repetitions = 5;
 Params.test_n_workers = 1;

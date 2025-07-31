@@ -18,16 +18,14 @@ function gt_filename = construct_gt_filename(meta_data, output_name)
 %
 
     % Extract information from metadata
-    data_set_name = output_name;
-    test_components = strjoin(meta_data.test_components, '_');
-    test_type = meta_data.test;   
+    [test_components, test_type, ~, testing_code] = get_data_for_file_naming(meta_data);
 
     % Construct the GT filename
     gt_filename = sprintf('%s-%s-%s-%s', ...
-                          data_set_name, test_components, ...
+                          output_name, test_components, ...
                           test_type, 'Ground_Truth');
 
-    if meta_data.testing_code 
+    if testing_code 
         gt_filename = strcat(gt_filename, '-test.mat');
     else
         gt_filename = strcat(gt_filename, '.mat');

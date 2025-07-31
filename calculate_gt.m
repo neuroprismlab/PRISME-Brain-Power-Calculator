@@ -54,6 +54,7 @@ addpath(genpath(current_path));
 Params = setparams();
 Params.ground_truth = true;
 Params.parallel = false;
+Params.subsample_file_type = 'full_file';
 
 rep_cal_function(Params)
 
