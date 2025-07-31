@@ -128,33 +128,45 @@ end
     
 %% -------------------------------------------------------------------------%
 % ******** Calculate positives (not *true* positives) **********
-function PowerRes = calculate_positives(rep_data, alpha)
+function PowerRes = calculate_positives(method_data, alpha, file_type)
 %% calculate_positives
 % Computes positive detection indicators and summary statistics from repetition data.
 % The function thresholds the p-value matrices to create binary indicators of positive
 % detections and then computes summary statistics to support subsequent power analysis.
 %
 % Inputs:
-%   - rep_data: Struct containing repetition data (e.g., p-value matrices and test statistics).
+%   - method_data: Struct containing repetition data (e.g., p-value matrices and test statistics).
 %
 % Outputs:
 %   - PowerRes: Struct aggregating positive detection metrics and summary statistics.
 %
+    switch file_type
 
-      PowerRes = struct();
+        case 'full_file'
+            PowerRes = struct();
+            
+            positives=+(method_data.sig_prob > 1 - alpha);
+            positives_neg=+(method_data.sig_prob_neg > 1 - alpha);
+            
+            PowerRes.positives_total=full(sum(positives, length(size(positives))));
+            PowerRes.positives_total_neg=full(sum(positives_neg, length(size(positives_neg))));
+        
+        case 'compact_file'
+            PowerRes = struct();
 
-      positives=+(rep_data.sig_prob > 1 - alpha);
-      positives_neg=+(rep_data.sig_prob_neg > 1 - alpha);
+            % For compact files, positives and negatives are already cumulative sums
+            % Just pass them through with the same field names for downstream compatibility
+            PowerRes.positives_total = full(method_data.positives);
+            PowerRes.positives_total_neg = full(method_data.negatives);
 
-      PowerRes.positives_total=full(sum(positives, length(size(positives))));
-      PowerRes.positives_total_neg=full(sum(positives_neg, length(size(positives_neg))));
+    end
 
-      
+
 end
 
 %% -------------------------------------------------------------------------%
 % ******** Calculate true positives **********
-function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
+function PowerRes = calculate_tpr(method_data, gt_data, tpr_dthresh, PowerRes, method_name, meta_data)
 %% calculate_tpr
 % Calculates true positive rates (TPR) from repetition and ground-truth data.
 %
@@ -164,7 +176,7 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 % according to the statistic level (edge, network, or whole_brain).
 %
 % Inputs:
-%   - rep_data: Struct containing repetition data with meta_data, including the 
+%   - method_data: Struct containing repetition data with meta_data, including the 
 %               field statistic_level and rep_parameters.
 %   - gt_data: Struct containing ground-truth brain data (field brain_data).
 %   - tpr_dthresh: Numeric threshold used to define significant ground-truth effects.
@@ -176,7 +188,7 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 %               computed as a percentage.
 %
 % Workflow:
-%   1. Extracts the statistic level from rep_data.meta_data.
+%   1. Extracts the statistic level from method_data.meta_data.
 %   2. Determines indices where ground-truth values exceed the positive threshold or 
 %      fall below the negative threshold.
 %   3. For 'edge' and 'network' levels, it assigns the corresponding positive and negative 
@@ -188,8 +200,8 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
     
     
     %% Get stat level - edge, network, or brain
-    stat_gt_level_str = extract_stat_level(rep_data.meta_data.level);
-    
+    stat_gt_level_str = get_stats_level_from_method_data(method_name, method_data, meta_data);
+      
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
 
@@ -221,20 +233,31 @@ function PowerRes = calculate_tpr(rep_data, gt_data, tpr_dthresh, PowerRes)
         end
 
     end
+    
+    file_type = get_file_type(meta_data);
 
-    n_reps = size(rep_data.sig_prob, 2);
+    switch file_type
+
+        case 'full_file'
+            n_reps = size(method_data.sig_prob, 2);
+
+        case 'compact_file'
+            n_reps = meta_data.n_repetitions;
+
+    end       
+    
     PowerRes.tpr=true_positives*100/n_reps;
     
 end
 
-function PowerRes = calculate_fpr(rep_data, gt_data, tpr_dthresh, PowerRes)
+function PowerRes = calculate_fpr(method_data, gt_data, tpr_dthresh, PowerRes)
 %   Calculates the true negative rate to conclude the confusion table with
 %   the tpr. It's quite similar to the funciton where it first find the
 %   gt position and then the repetition data to estimate errors.
 %
 
      %% Get stat level - edge, network, or brain
-    stat_gt_level_str = extract_stat_level(rep_data.meta_data.level);
+    stat_gt_level_str = extract_stat_level(method_data.meta_data.level);
     
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
@@ -269,7 +292,7 @@ function PowerRes = calculate_fpr(rep_data, gt_data, tpr_dthresh, PowerRes)
 
     end
 
-    n_reps = size(rep_data.sig_prob, 2);
+    n_reps = size(method_data.sig_prob, 2);
     PowerRes.fpr=false_positives*100/n_reps;
 
 end

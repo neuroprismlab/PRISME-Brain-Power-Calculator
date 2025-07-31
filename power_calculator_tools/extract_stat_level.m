@@ -4,6 +4,7 @@ function level = extract_stat_level(level)
     % Here there is no distrinction between nodes and averages - so we
     % return to fc data
     switch level
+
         case 'whole_brain'
             level = 'whole_brain';
 

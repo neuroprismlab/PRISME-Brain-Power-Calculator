@@ -81,14 +81,17 @@ function calculate_power(varargin)
         rep_file_path = fullfile(rep_files(i).folder, rep_files(i).name);
         rep_data = load(rep_file_path);
         
+        
         % Meta-data from the file encompassing everything
         method_list = rep_data.meta_data.method_list;
-    
-        test_components = get_test_components_from_meta_data(rep_data.meta_data.test_components);
+        
+
+
+        [test_components, test_type, sub_number, testing_code] = get_data_for_file_naming(rep_data.meta_data);
         [~, file_name] = create_and_check_rep_file(Params.save_directory, Params.output, test_components, ...
-                                                   rep_data.meta_data.test, ...
-                                                   rep_data.meta_data.subject_number, ...
-                                                   rep_data.meta_data.testing_code, false);
+                                                   test_type, ...
+                                                   sub_number, ...
+                                                   testing_code, false);
     
         % Split the path and filename
         [file_path, file_name_only, file_ext] = fileparts(file_name);
@@ -97,18 +100,17 @@ function calculate_power(varargin)
         
         % Save metadata regardless
         meta_data = rep_data.meta_data;
-    
-        % Check if both stats fields exist
-        if isfield(rep_data, 'edge_level_stats') && isfield(rep_data, 'network_level_stats')
-            % Calculate means and save everything
-            edge_level_stats_mean = mean(rep_data.edge_level_stats, 2);
-            network_level_stats_mean = mean(rep_data.network_level_stats, 2);
-            save(file_name, 'meta_data', 'edge_level_stats_mean', 'network_level_stats_mean');
-        else
-            % Just save metadata
-            save(file_name, 'meta_data');
-        end
-    
+        
+        % Get file type for correct calculation
+        file_type = get_file_type(rep_data.meta_data);
+
+        % Calculate means and save everything
+        [edge_level_stats_mean, network_level_stats_mean, edge_level_stats_std, network_level_stats_std] = ...
+             calculate_edge_stats(file_type, rep_data);
+
+        save(file_name, 'meta_data', 'edge_level_stats_mean', 'network_level_stats_mean', 'edge_level_stats_std', ...
+                'network_level_stats_std');
+   
     
         for j = 1:numel(method_list)
             method = method_list{j};
@@ -116,7 +118,7 @@ function calculate_power(varargin)
     
             gt_filename = construct_gt_filename(rep_data.meta_data, Params.output);
             gt_fullpath = fullfile(Params.gt_data_dir, Params.output, gt_filename);
-    
+   
             if exist(gt_filename, 'file')
                 gt_data = load(gt_fullpath);
             else
@@ -126,18 +128,20 @@ function calculate_power(varargin)
     
             matching_datasets_check(rep_data.meta_data, gt_data.meta_data)
      
-            stat_level = extract_stat_level(method_data.meta_data.level);
+            stat_level = get_stat_level_from_file(rep_data, method);
             
             gt_brain_data = extract_gt_brain_data(gt_data, stat_level);
     
-            PowerRes = summarize_tprs('calculate_tpr', method_data, gt_brain_data, Params);
+            PowerRes = summarize_tprs('calculate_tpr', method_data, gt_brain_data, Params, method, ...
+                file_type, meta_data);
             eval([method ' = PowerRes;']);  % creates a variable named after the method
-            eval([method '.meta_data = method_data.meta_data']); % add method meta_data to power calculations
             
             save(file_name, method, '-append');
-    
+
+            fprintf('Finished power calculation for file %s \n', file_name);
     
         end
     
     end
+
 end
