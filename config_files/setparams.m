@@ -55,7 +55,7 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 25; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 25;
@@ -67,7 +67,7 @@ Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges)
 
 
 %% List of subjects per subset
-Params.list_of_nsubset = {500, 1000, 2000, 4000}; % To change this, add more when necessary
+Params.list_of_nsubset = {250, 500, 1000, 2000}; % To change this, add more when necessary
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
                             % Current model (see above design matrix) only designed for t-test
@@ -78,9 +78,10 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
+% Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
+Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
 
-Params.all_submethods = {'FWER', 'FDR', 'Multidimensional_cNBS'};
+Params.all_submethods = {'FWER', 'FDR'};
 
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
                             % Only used if cluster_stat_type='Size'
