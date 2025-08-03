@@ -23,17 +23,21 @@ function compact_file_append_sol_struct(RP, output_file, all_pvals, all_pvals_ne
             % For Welford's algorithm, we need to track count
             n = i;  % Current repetition number serves as count
             
+            % Update sum
+            edge_level_stats = edge_level_stats + edge_stats_all{i_cell};
+            network_level_stats = network_level_stats + cluster_stats_all{i_cell};
+
+            if i == 1
+                continue;
+            end
+
 
             % Calculate delta from old mean
             old_mean_edge = edge_level_stats / (n - 1);
             old_mean_network = network_level_stats / (n - 1);
             
             delta_edge = edge_stats_all{i_cell} - old_mean_edge;
-            delta_network = cluster_stats_all{i_cell} - old_mean_network;
-            
-            % Update sum
-            edge_level_stats = edge_level_stats + edge_stats_all{i_cell};
-            network_level_stats = network_level_stats + cluster_stats_all{i_cell};
+            delta_network = cluster_stats_all{i_cell} - old_mean_network;          
             
             % Update mean squared error using Welford's formula
             new_mean_edge = edge_level_stats / n;
@@ -44,6 +48,7 @@ function compact_file_append_sol_struct(RP, output_file, all_pvals, all_pvals_ne
             
             edge_mean_squared_error = edge_mean_squared_error + delta_edge .* delta2_edge;
             network_mean_squared_error = network_mean_squared_error + delta_network .* delta2_network;
+
         end
     end
     
