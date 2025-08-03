@@ -55,10 +55,10 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 25; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 50; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
-Params.batch_size = 25;
+Params.batch_size = 50;
  
 
 %% Skip some tests - change ranges or the function
@@ -79,6 +79,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 % Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus'};
+% Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp'};
 Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
 
 Params.all_submethods = {'FWER', 'FDR'};
