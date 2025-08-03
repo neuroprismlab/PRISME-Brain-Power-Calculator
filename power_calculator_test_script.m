@@ -50,7 +50,8 @@ network_based_tests('test_hcp_fc.mat')
 data_inference_from_contrast_test()
 
 %% Test power calculator
-test_power_calculation_from_gt_and_data()
+% I am going to depracate this power test
+% test_power_calculation_from_gt_and_data()
 
 %% Create t2-test dataset 
 create_t2_test_dataset()

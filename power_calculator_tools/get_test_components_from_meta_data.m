@@ -5,7 +5,7 @@ function task_name = get_test_components_from_meta_data(meta_data)
         task_name = meta_data.study_name;
         return;
     end
-    
+
     % Legacy meta_data
     if isfield(meta_data, 'test_components')
         

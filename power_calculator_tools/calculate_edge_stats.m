@@ -1,6 +1,6 @@
 function [edge_level_stats_mean, network_level_stats_mean, edge_level_stats_std, network_level_stats_std] = ...
     calculate_edge_stats(file_type, rep_data)
-
+    
     switch file_type
 
         case 'full_file'
