@@ -1,30 +1,22 @@
 function color = method_color_assingment(method)
 
    switch method
-       case 'Parametric_FWER'
+       case 'edge'
            color = 'y';  % Yellow (edge)
-       case 'Parametric_FDR'
+       case 'edge (FDR)'
            color = [1 0.5 0];  % Orange (edge fdr)
-       case 'Size_cpp'
+       case 'size'
            color = [0 0.7 1];  % Light blue (cluster)
-       case 'Size'
-           color = [0 0.7 1];  % Light blue (cluster - same as cpp)
-       case 'Fast_TFCE_cpp'
+       case 'TFCE'
            color = [0 0.5 0.5];  % Dark teal (cluster rtce)
-       case 'Fast_TFCE'
-           color = [0 0.5 0.5];  % Dark teal (cluster rtce - same as cpp)
-       case 'Constrained_cpp_FWER'
+       case 'network'
            color = [1 0.3 0.3];  % Red (network)
-       case 'Constrained_FWER'
-           color = [1 0.3 0.3];  % Red (network - same as cpp)
-       case 'Constrained_cpp_FDR'
+       case 'network (FDR)'
            color = [1 0.5 1];  % Pink/magenta (network fdr)
-       case 'Constrained_FDR'
-           color = [1 0.5 1];  % Pink/magenta (network fdr - same as cpp)
-       case 'Omnibus_Multidimensional_cNBS'
+       case 'whole-brain'
            color = [0 0 0.7];  % Dark blue (whole brain)
        otherwise
-           color = 'k';  % Black for unknown methods
+           error('Lacking color assingment')
    end
    
 end

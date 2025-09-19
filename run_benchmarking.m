@@ -11,7 +11,7 @@ function run_benchmarking(RP, Y, X)
 %   * `list_of_nsubset` – list of sample sizes.
 %   * `n_repetitions` – number of repetitions to compute.
 %   * `test_name` – test identifier.
-% - `Y` (matrix): Brain data matrix (features × subjects).
+% - `Y` (matrix): Brain data matrix (features x subjects).
 % - `X` (matrix): Design matrix for statistical testing.
 %
 % **Workflow**

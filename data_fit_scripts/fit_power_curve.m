@@ -6,11 +6,11 @@ function [x, y, r_squared, fitted_params] = fit_power_curve(results_x, results_y
     
     % Default Weibull function
     % default_func = @(params, x) 100*(1 - exp(-(x./params(1)).^params(2)));
-    default_func = @(params, x) 100 ./ (1 + (params(1) ./ x).^params(2));
+    default_func = @(params, x) params(3) ./ (1 + (params(1) ./ x).^params(2));
     
     addParameter(p, 'fit_function', default_func, @(x) isa(x, 'function_handle'));
-    addParameter(p, 'lower_bounds', [1, 0.1], @isnumeric);  % Allow custom initial params
-    addParameter(p, 'upper_bounds', [100000, 5], @isnumeric);  % Allow custom initial params
+    addParameter(p, 'lower_bounds', [1, 0.1, 0], @isnumeric);  % Allow custom initial params
+    addParameter(p, 'upper_bounds', [100000, 5, 100], @isnumeric);  % Allow custom initial params
     
     parse(p, varargin{:});
 
@@ -24,9 +24,10 @@ function [x, y, r_squared, fitted_params] = fit_power_curve(results_x, results_y
     % b: start with exponential shape (b=1)
     a_init = median(results_x);
     b_init = 1;
+    c_init = 50;
 
     % Initial guess: [scale, shape]
-    initial_params = [a_init, b_init];
+    initial_params = [a_init, b_init, c_init];
 
     % Define cost function (sum of squared residuals)
     cost_func = @(params) sum((results_y - power_func(params, results_x)).^2);

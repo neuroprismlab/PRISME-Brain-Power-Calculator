@@ -40,9 +40,9 @@ test_names = {};
 for ri = 1:numel(multi_variable_data)
     res = multi_variable_data{ri};
     
-    test = res.meta_data.rep_parameters.test_name;
+    test = get_study_name_from_meta_data(res.meta_data);
 
-    n_subs = res.meta_data.subject_number;
+    n_subs = get_sub_number_from_meta_data(res.meta_data);
     n_subs = ['subs_' num2str(n_subs)];
     
     if ~ismember(test, test_names)
@@ -68,10 +68,10 @@ end
 for ri = 1:numel(multi_variable_data)
     res = multi_variable_data{ri};
 
-    n_subs = res.meta_data.subject_number;
+    n_subs = get_sub_number_from_meta_data(res.meta_data);
     n_subs = ['subs_' num2str(n_subs)];
 
-    test = res.meta_data.rep_parameters.test_name;
+    test = get_study_name_from_meta_data(res.meta_data);
     
     for mi = 1:numel(res.meta_data.method_list)
         method = res.meta_data.method_list{mi};
@@ -131,6 +131,8 @@ for ti = 1:numel(sorted_tests)
         table_r_squared{row_idx} = r_sqr;
         table_parameters{row_idx, 1} = fit_p(1);  % Scale parameter
         table_parameters{row_idx, 2} = fit_p(2);  % Shape parameter
+        table_parameters{row_idx, 3} = fit_p(3);  % Inf parameter
+
         
         % Store power values for each subject number (in natural order)
         for si = 1:numel(sorted_sub_numbers)

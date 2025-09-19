@@ -1,4 +1,7 @@
 function plot_power_results(dataset_or_directory)
+
+    % function calls for paper for easy usage:
+    % plot_power_results('/Users/f.cravogomes/Desktop/Cloned Repos/Power_Calculator/power_calculator_results/power_calculation/abcd_100_reps')
     
     % Change this to remove some of the subjects
     undesired_subject_numbers = {20, 200};
@@ -13,26 +16,12 @@ function plot_power_results(dataset_or_directory)
     for i = 1:numel(files)
         file_path = fullfile(files(i).folder, files(i).name);
         data = load(file_path);
-
-        if ~isfield(data, 'meta_data') || ~isfield(data.meta_data, 'subject_number')
-            warning('Skipping file (missing meta_data): %s', files(i).name);
-            continue;
-        end
-
-        % Extract subject number from meta_data
-        n_subjects = data.meta_data.subject_number;
+          
+        n_subjects = get_sub_number_from_meta_data(data.meta_data);
 
         % Keep track of unique subject numbers
         if ~ismember(n_subjects, unique_subject_numbers)
             unique_subject_numbers = [unique_subject_numbers, n_subjects]; %#ok<AGROW>
-        end
-
-        % Extract subject number
-        n_subjects = data.meta_data.subject_number;
-
-        % Track unique subject numbers
-        if ~ismember(n_subjects, unique_subject_numbers)
-            unique_subject_numbers = [unique_subject_numbers, n_subjects];
         end
 
         % Use method list from metadata
@@ -58,7 +47,7 @@ function plot_power_results(dataset_or_directory)
             tpr_values = method_data.tpr(:);
 
             % Derive task component info
-            test_components = get_test_components_from_meta_data(data.meta_data.test_components);
+            test_components = get_test_components_from_meta_data(data.meta_data);
 
             % Define path: power_results.method.n_<subjects>.task_type = mean(tpr)
             field_path = {method_name, sprintf('n_%d', n_subjects), test_components};

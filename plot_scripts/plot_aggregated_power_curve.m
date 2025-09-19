@@ -1,5 +1,9 @@
 function plot_aggregated_power_curve(directory, varargin)
     
+    % For paper, the function call
+    % plot_aggregated_power_curve('/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/abcd_100_sex')
+    % plot_aggregated_power_curve('/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/s_hcp_act_noble_1')
+
     %% Check if input is a directory
     if ~isfolder(directory)
         error('Input must be a directory name')
@@ -25,7 +29,8 @@ function plot_aggregated_power_curve(directory, varargin)
     % First loop: prepare empty structs for all subjects
     for ri = 1:numel(multi_variable_average)
         res = multi_variable_average{ri};
-        n_subs = res.meta_data.subject_number;
+
+        n_subs = get_sub_number_from_meta_data(res.meta_data);
         n_subs = ['subs_' num2str(n_subs)];
         
         if ~isfield(data_agregator, n_subs)
@@ -37,7 +42,7 @@ function plot_aggregated_power_curve(directory, varargin)
     for ri = 1:numel(multi_variable_average)
         res = multi_variable_average{ri};
 
-        n_subs = res.meta_data.subject_number;
+        n_subs = get_sub_number_from_meta_data(res.meta_data);
         n_subs = ['subs_' num2str(n_subs)];
         
         for mi = 1:numel(res.meta_data.method_list)
@@ -92,8 +97,8 @@ function plot_aggregated_power_curve(directory, varargin)
         
         [x_fit, y_fit, r_squared, ~] = fit_power_curve(results_x, results_y);
         
-        color = method_color_assingment(method);
         method_name = method_name_assigment(method);
+        color = method_color_assingment(method_name);
 
         % Plot data points
         plot(results_x, results_y, 'o', 'Color', color, 'MarkerSize', 8, ...

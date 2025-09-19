@@ -19,7 +19,7 @@ function latex_code = generate_latex_table_from_cell(cell_data, headers, varargi
     parse(p, varargin{:});
     
     decimal_places = p.Results.format_numbers;
-    
+
     if size(cell_data, 2) ~= numel(headers)
         error('Header data must be provided with correct number of headers')
     end

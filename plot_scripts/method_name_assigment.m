@@ -15,6 +15,8 @@ function name = method_name_assigment(method)
             name = 'TFCE';
         case 'Fast_TFCE'
             name = 'TFCE';
+        case 'IC_TFCE_Node_cpp'
+            name = 'TFCE';
         case 'Constrained_cpp_FWER'
             name = 'network';
         case 'Constrained_FWER'
@@ -23,6 +25,8 @@ function name = method_name_assigment(method)
             name = 'network (FDR)';
         case 'Constrained_FDR'
             name = 'network (FDR)';
+        case 'Omnibus_cNBS'
+            name = 'whole-brain';
         case 'Omnibus_Multidimensional_cNBS'
             name = 'whole-brain';
         otherwise

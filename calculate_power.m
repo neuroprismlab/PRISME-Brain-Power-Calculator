@@ -137,10 +137,10 @@ function calculate_power(varargin)
             eval([method ' = PowerRes;']);  % creates a variable named after the method
             
             save(file_name, method, '-append');
-
-            fprintf('Finished power calculation for file %s \n', file_name);
     
         end
+
+        fprintf('Finished power calculation for file %s \n', file_name);
     
     end
 

@@ -1,9 +1,10 @@
-function average_array = average_heat_map_gen(method, n_subs, directory, varargin)   
+function [average_array, c_above_80] = ...
+    average_heat_map_gen(method, n_subs, directory, varargin)   
 %
 % For the paper: Shitf - down to select for paste
-% - average_heat_map_gen('Parametric_FDR',40,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/power_calculation/hcp_fc')
-% - average_heat_map_gen('Constrained_cpp_FWER',40,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/power_calculation/abcd_fc_test2')
-    
+% - average_heat_map_gen('Constrained_FDR',80,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/hcp_fc')
+% - average_heat_map_gen('Size_cpp',500,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/abcd_100_sex/')
+
     % Create parser object
     p = inputParser;
     
@@ -45,23 +46,28 @@ function average_array = average_heat_map_gen(method, n_subs, directory, varargi
         end
 
         data = load(fullfile(files(i_f).folder, files(i_f).name));
-
-        if data.meta_data.subject_number ~= n_subs
+ 
+        if get_sub_number_from_meta_data(data.meta_data) ~= n_subs
             continue
         end
-        
+
         data_acrs_tasks{end + 1} = data.(method).tpr;
     end
     
     % Calculate average accross tasks 
     data_acrs_tasks = cat(3, data_acrs_tasks{:});
     average_array = mean(data_acrs_tasks, 3);
+
+    c_above_80 = sum(average_array > 80, 'all');
     
     % Get unflattening function based on experiment mask
-    unflat_matrix_fun = unflatten_matrix(data.meta_data.rep_parameters.mask);
+    mask = get_mask_from_meta_data(data.meta_data);
+    unflat_matrix_fun = unflatten_matrix(mask);
 
     % Unflat
-    if ~strcmp(data.(method).meta_data.level, 'network')
+    if ~strcmp( ...
+            get_stats_level_from_method_data(method, data.(method), data.meta_data), ...
+            'network')
 
         try
             power_data = unflat_matrix_fun(average_array);
@@ -89,8 +95,9 @@ function average_array = average_heat_map_gen(method, n_subs, directory, varargi
         end
 
     end
-
-    edge_groups_line = data.meta_data.rep_parameters.edge_groups(1, :);
+    
+    edge_groups = get_edge_groups_from_meta_data(data.meta_data);
+    edge_groups_line = edge_groups(1, :);
 
     
     previous_number = edge_groups_line(1);
@@ -114,21 +121,43 @@ function average_array = average_heat_map_gen(method, n_subs, directory, varargi
         end
         
     end
-
-    % Assuming your 2D matrix is called 'data'
-    figure;
+    
+    % Figure config
+    figure('Position', [100, 100, 800, 700]);
+    
     imagesc(power_data);
-    colorbar;
-    title(heatmap_title);
-    xlabel(x_label);
-    ylabel(y_label);
+    
+    c = colorbar;
+    c.FontSize = 12;
+    c.FontWeight = 'bold';
+    c.Label.String = 'Power (%)';
+    c.Label.FontSize = 14;
+    c.Label.FontWeight = 'bold';
+    
+    title(heatmap_title, 'FontSize', 16, 'FontWeight', 'bold');
+    
+    xlabel(x_label, 'FontSize', 14, 'FontWeight', 'bold');
+    ylabel(y_label, 'FontSize', 14, 'FontWeight', 'bold');
+    
+    set(gca, 'FontSize', 11, 'FontWeight', 'normal');
+    
+    set(gca, 'LineWidth', 1.5);
+    
+    set(gca, 'Layer', 'top');
+    set(gca, 'GridLineStyle', '-');
+    set(gca, 'GridColor', [0.5, 0.5, 0.5]);
+    set(gca, 'GridAlpha', 0.1);
+    grid on;
 
     add_network_lines_from_starts(network_boundaries);
     
     heat_map_color = custom_colors('sci_blu');
-
-    % Convert to 0-1 range
     colormap(heat_map_color);
+    
+    axis square;  
+    
+    set(gca, 'TickDir', 'out');
+    set(gca, 'Box', 'on');  
 
 end
 

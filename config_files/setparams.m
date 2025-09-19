@@ -28,15 +28,16 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
+% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 % Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-% Params.data_dir = './data/s_hcp_act_noble_1.mat';
+Params.data_dir = './data/s_hcp_act_noble_1.mat';
+Params.output = NaN;
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
 Params.gt_data_dir = './power_calculator_results/ground_truth/';
 
-Params.output = 'abcd_100_reps';
+
 
 % Options - full_file, compact_file;
 Params.subsample_file_type = 'compact_file';
