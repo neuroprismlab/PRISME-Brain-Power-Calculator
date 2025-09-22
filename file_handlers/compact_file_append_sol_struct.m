@@ -97,7 +97,6 @@ function compact_file_append_sol_struct(RP, output_file, all_pvals, all_pvals_ne
 
         end
 
-
         % Update p-values for new repetitions
         for i_cell = 1:numel(reps_to_save)
             i = reps_to_save{i_cell};  % repetition index
@@ -121,10 +120,8 @@ function compact_file_append_sol_struct(RP, output_file, all_pvals, all_pvals_ne
 
             method_struct.total_calculations = method_struct.total_calculations + 1;
         end
-        
 
         has_field = cellfun(@(timing_struct) isfield(timing_struct, method_name), method_timing_all);
-    
 
         if any(has_field)
             valid_indices = find(has_field);
@@ -132,7 +129,6 @@ function compact_file_append_sol_struct(RP, output_file, all_pvals, all_pvals_ne
                 method_timing_all(valid_indices)));
             method_struct.total_time = method_struct.total_time + total_batch_time;
         end
-     
 
         % Use eval to save method struct with dynamic name (unavoidable)
         eval([method_name ' = method_struct;']);

@@ -1,57 +1,42 @@
-classdef Fast_TFCE_dh5
+classdef Exact_FC_TFCE
     
     properties 
         level = "edge";
         permutation_based = true;
         permutations = 800; % Override permutation number
-        
-        method_params = Fast_TFCE_dh5.get_fast_tfce_params()
+        method_params = Exact_FC_TFCE.get_tfce_params()
     end
 
     methods (Static, Access = private)
-        function method_params = get_fast_tfce_params()
+        function method_params = get_tfce_params()
             method_params = struct();
-            method_params.dh = 0.05;
             method_params.H = 3.0;
             method_params.E = 0.4;
         end
     end
-    
-    methods
+
+   methods
 
         function pval = run_method(obj,varargin)
-
-            % Applies Threshold-Free Cluster Enhancement (TFCE) and computes p-values
-            % using a permutation-based approach.
-            %
-            % Inputs:
-            %   - STATS: Structure containing statistical parameters, including threshold.
-            %   - edge_stats: Raw test statistics for edges.
-            %   - permutation_edge_data: Precomputed permutation edge statistics.
-            %
-            % Outputs:
-            %   - pval: TFCE-corrected p-values.
-        
+            
+            % Extract parameters 
             params = struct(varargin{:});
-        
-            % Extract relevant inputs
             STATS = params.statistical_parameters;
             edge_stats = params.edge_stats;
-            permuted_edge_stats = params.permuted_edge_data; % Explicitly using the new argument
+            permuted_edge_stats = params.permuted_edge_data; 
         
             % Convert the edge statistics back into a matrix
             test_stat_mat = STATS.unflatten_matrix(edge_stats);
-        
-            % Apply TFCE transformation to the observed test statistics
-            cluster_stats_target = apply_tfce(test_stat_mat, 'dh', obj.method_params.dh, ...
-                'H',  obj.method_params.H, 'E', obj.method_params.E);
+           
+            cluster_stats_target = apply_exact_tfce(test_stat_mat, ...
+                'H', obj.method_params.H, 'E', obj.method_params.E);
             cluster_stats_target = STATS.flatten_matrix(cluster_stats_target);
-        
+
             % Ensure permutation data is provided
             if isempty(permuted_edge_stats)
                 error('Permutation data is missing. Ensure precomputed permutations are provided.');
             end
-        
+
             % Number of permutations
             if size(permuted_edge_stats, 2) < obj.permutations
                 K = size(permuted_edge_stats, 2);
@@ -63,18 +48,15 @@ classdef Fast_TFCE_dh5
             % Apply TFCE transformation to each permutation
             for i = 1:K
                 perm_stat_mat = STATS.unflatten_matrix(permuted_edge_stats(:, i));
-                tfce_null = apply_tfce(perm_stat_mat, 'dh', obj.method_params.dh, ...
+                tfce_null = apply_exact_tfce(perm_stat_mat, ...
                     'H',  obj.method_params.H, 'E', obj.method_params.E);
                 null_dist(i) = max(tfce_null(:)); % Store max TFCE value for permutation
             end
-        
+            
             % Compute p-values using permutation-based FWER correction
             pval = arrayfun(@(stat) (sum(stat <= null_dist)) /K, cluster_stats_target);
 
         end
-        
+
     end
-
 end
-
-

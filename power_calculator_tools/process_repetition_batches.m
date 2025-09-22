@@ -84,6 +84,7 @@ function process_repetition_batches(X, Y, RP, UI)
         STATS.edge_groups = RP.edge_groups;
         STATS.test_type = RP.test_type;
         STATS.unflatten_matrix = RP.unflat_matrix_fun;
+        STATS.flatten_matrix = RP.flat_matrix_fun;
         STATS.mask = RP.mask;
         STATS.existing_repetitions = RP.existing_repetitions;
         STATS.all_submethods = RP.all_submethods;

@@ -95,9 +95,10 @@ function rep_cal_function(Params)
         [RP.flat_to_spatial, RP.spatial_to_flat] = create_spatial_flat_map(RP);
         [RP.triumask, RP.trilmask] = create_masks_from_nodes(size(RP.mask, 1));
 
-        % Create graph converter (flat to graph)
+        % Create graph converter (flat to graph) and reverse
         RP.unflat_matrix_fun = unflatten_matrix(RP.mask, 'variable_type', ...
             RP.variable_type, 'flat_to_spatial', RP.flat_to_spatial, 'spatial_to_flat', RP.spatial_to_flat);
+        RP.flat_matrix_fun = create_flat_function(RP.mask, 'variable_type', RP.variable_type);
 
         [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
 
