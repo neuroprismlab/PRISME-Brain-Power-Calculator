@@ -52,6 +52,7 @@ function meta_data = extract_relevant_meta_data_from_RP(RP)
     
     % File related 
     meta_data.atlas_file = RP.atlas_file;
+    meta_data.n_networks = RP.n_networks;
     
     % Sub related data - total subs and this run subs
     meta_data.total_n_subs_1 = RP.n_subs_1;

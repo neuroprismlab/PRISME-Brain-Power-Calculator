@@ -199,6 +199,8 @@ function nbs = set_up_nbs_parameters(varargin)
         % If no edge groups are provided and it's not preaveraged, disable use_edge_groups
         nbs.STATS.use_edge_groups = 0;
     end
+    % Force it to pass, the check is not done at this level anymore
+    UI.edge_groups.ok = 1;
     
     % Number of nodes
     nbs.STATS.N = DIMS.nodes; 

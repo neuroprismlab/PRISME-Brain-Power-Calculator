@@ -119,6 +119,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     int max_network_idx = 0;
     for (mwSize i = 0; i < num_edges; i++) {
         int idx = static_cast<int>(network_indices[i]);
+        
+        // Zero is not a network
+        if(idx == 0) continue;
+
         network_set.insert(idx);
         if (idx > max_network_idx) {
             max_network_idx = idx;
@@ -137,6 +141,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     // Calculate network statistics for observed data
     for (mwSize e = 0; e < num_edges; e++) {
         int network_idx = static_cast<int>(network_indices[e]);
+        
+        if(network_idx == 0) continue;
+
         network_stats[network_idx] += edge_stats[e];
     }
     
@@ -154,6 +161,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
         // Calculate network statistics for this permutation
         for (mwSize e = 0; e < num_edges; e++) {
             int network_idx = static_cast<int>(network_indices[e]);
+            
+            if(network_idx == 0) continue;
+
             perm_network_stats[network_idx] += perm_data[e];
         }
         

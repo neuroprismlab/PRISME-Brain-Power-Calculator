@@ -49,7 +49,7 @@ function atlas_file = atlas_data_set_map(Params)
                 atlas_file = './atlas_storage/map268_subnetwork.mat';
 
             case strcmp(data_set_choice, 'hcp_act')
-                atlas_file = NaN;
+                atlas_file = './atlas_storage/shen_2mm_268_parcellation__in_subnetworks.nii';
 
             case startsWith(data_set_choice, 'test') && endsWith(data_set_choice, 'fc')
                 atlas_file = './atlas_storage/test_hcp_fc_atlas.mat';

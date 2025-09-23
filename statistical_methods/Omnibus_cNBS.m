@@ -56,6 +56,10 @@ function return_vector = calculate_network_vector(n_networks, edge_stats, flatte
     % Aggregate edge statistics by network
     for i = 1:length(edge_stats)
         network_index = flatted_edge_groups(i);
+        if network_index == 0
+            continue;
+        end
+
         return_vector(network_index) = return_vector(network_index) + edge_stats(i);
     end
 end

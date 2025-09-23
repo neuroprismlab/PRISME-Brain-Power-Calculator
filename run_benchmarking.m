@@ -42,7 +42,8 @@ function run_benchmarking(RP, Y, X)
         RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
         RP = set_n_subs_subset(RP);
 
-        [RP.node_nets, RP.trilmask_net, RP.edge_groups] = extract_atlas_related_parameters(RP, Y);
+        [RP.node_nets, RP.trilmask_net, RP.edge_groups, RP.n_networks] = ...
+            extract_atlas_related_parameters(RP, Y);
         
         % Prepare benchmarking setup
         [UI, RP] = setup_benchmarking(RP);

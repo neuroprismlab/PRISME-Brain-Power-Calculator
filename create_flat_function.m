@@ -5,9 +5,8 @@ function flat_function = create_flat_function(mask, varargin)
     parse(p, varargin{:});
     variable_type = p.Results.variable_type;
     
+    % Ok, it stayed like this because of legacy code, sorry
     switch variable_type
-        case 'node'
-            flat_function = @(x) x(:);
         otherwise
             flat_function = @(x) x(mask);
     end

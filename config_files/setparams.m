@@ -29,9 +29,9 @@ function Params = setparams()
 
 % Datasets - Commented for easy use
 % Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-% Params.data_dir = './data/s_hcp_act_noble_1.mat';
-Params.output = 'test_tfce_comparions';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+Params.data_dir = './data/s_hcp_act_noble_1.mat';
+Params.output = 'hcp_activation';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
@@ -56,7 +56,7 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 25;
@@ -79,8 +79,8 @@ Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-Params.all_cluster_stat_types = {'Exact_FC_TFCE', 'Fast_TFCE_dh1', 'Fast_TFCE_dh5', 'Fast_TFCE_dh10'};
 % Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
+Params.all_cluster_stat_types = {'Constrained_cpp', 'Omnibus_cNBS'};
 
 Params.all_submethods = {'FWER', 'FDR'};
 

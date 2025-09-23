@@ -167,7 +167,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
             meta_data = create_meta_data_file(file_path, meta_data, RP, ids_sampled, existing_repetitions);
 
             create_edge_level_stats_in_file(file_path, RP.subsample_file_type, ...
-                RP.n_var, RP.n_repetitions, RP.edge_groups)
+                RP.n_var, RP.n_repetitions, RP.edge_groups, RP.n_networks)
 
             fprintf('Initialized results file with repetition IDs: %s\n', file_path);
         end
