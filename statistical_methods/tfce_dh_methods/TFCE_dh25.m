@@ -1,11 +1,11 @@
-classdef TFCE_dh250
+classdef TFCE_dh25
     
     properties (Constant)
         level = "edge";
         permutation_based = true;
         permutations = 800; % Override permutation number, not implemented yet
         
-        method_params = TFCE_dh250.get_tfce_params()
+        method_params = TFCE_dh25.get_tfce_params()
     end
 
     methods (Static, Access = private)

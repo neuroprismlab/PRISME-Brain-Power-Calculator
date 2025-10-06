@@ -1,11 +1,11 @@
-classdef Fast_TFCE_dh250
+classdef Fast_TFCE_dh25
     
     properties 
         level = "edge";
         permutation_based = true;
         permutations = 800; % Override permutation number, not implemented yet
         
-        method_params = Fast_TFCE_dh250.get_fast_tfce_params()
+        method_params = Fast_TFCE_dh25.get_fast_tfce_params()
     end
 
     methods (Static, Access = private)
