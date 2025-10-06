@@ -80,8 +80,8 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 % Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
-Params.all_cluster_stat_types = {'Exact_FC_TFCE', 'TFCE_dh1', 'TFCE_dh5', 'TFCE_dh10', 'TFCE_dh250', ...
-    'Fast_TFCE_dh1', 'Fast_TFCE_dh5', 'Fast_TFCE_dh10', 'Fast_TFCE_dh250'};
+Params.all_cluster_stat_types = {'Exact_FC_TFCE', 'TFCE_dh1', 'TFCE_dh5', 'TFCE_dh10', 'TFCE_dh25', ...
+    'Fast_TFCE_dh1', 'Fast_TFCE_dh5', 'Fast_TFCE_dh10', 'Fast_TFCE_dh25'};
 
 Params.all_submethods = {'FWER', 'FDR'};
 
@@ -94,8 +94,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
 Params.testing = true;
-Params.test_n_perms = 2;
-Params.test_n_repetitions = 5;
+Params.test_n_perms = 1;
+Params.test_n_repetitions = 1;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 
