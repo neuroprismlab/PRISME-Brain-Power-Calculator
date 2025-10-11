@@ -31,7 +31,7 @@ function Params = setparams()
 % Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 % Params.data_dir = './data/s_hcp_act_noble_1.mat';
-Params.output = 'tfce_power_comp';
+Params.output = 'tfce_cpp_speed_cmp';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
@@ -81,7 +81,7 @@ Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 % Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
 Params.all_cluster_stat_types = {'IC_TFCE_FC_cpp_dh1','IC_TFCE_FC_cpp_dh5','IC_TFCE_FC_cpp_dh10', ...
-    'IC_TFCE_FC_cpp_dh25'};
+    'IC_TFCE_FC_cpp_dh25', 'TFCE_cpp_dh1', 'TFCE_cpp_dh5', 'TFCE_cpp_dh10', 'TFCE_cpp_dh25'};
 
 Params.all_submethods = {'FWER', 'FDR'};
 
