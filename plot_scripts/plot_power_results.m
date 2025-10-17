@@ -1,12 +1,34 @@
-function plot_power_results(dataset_or_directory)
+function plot_power_results(varargin)
+    
+    %%%%%%%%%% CONFIG
+    % Parse optional inputs
+    p = inputParser;
+    
+    % Default values
+    default_dataset = '/tfce_power_comp/';
+    default_undesired_subjects = {};
+    default_sub_directory = '/power_calculation/';
+    % Be careful not to call the function here
+    default_map_function = map_tfce_comp;
+    
+    % Add optional parameters
+    addOptional(p, 'dataset_or_directory', default_dataset);
+    addParameter(p, 'undesired_subject_numbers', default_undesired_subjects, @iscell);
+    addParameter(p, 'sub_directory', default_sub_directory, @ischar);
+    addParameter(p, 'default_map_function', default_map_function);
+    
+    % Parse inputs
+    parse(p, varargin{:});
+    
+    % Extract values
+    dataset_or_directory = p.Results.dataset_or_directory;
+    undesired_subject_numbers = p.Results.undesired_subject_numbers;
+    sub_directory = p.Results.sub_directory;
+    map_function = p.Results.default_map_function;
+    %%%%%%%%%%%%
 
-    % function calls for paper for easy usage:
-    % plot_power_results('/Users/f.cravogomes/Desktop/Cloned Repos/Power_Calculator/power_calculator_results/power_calculation/abcd_100_reps')
-    
-    % Change this to remove some of the subjects
-    undesired_subject_numbers = {20, 200};
-    
-    files = data_set_or_directory_mat_file_loading(dataset_or_directory, 'sub_directory', '/power_calculation/');
+     % Load files
+    files = data_set_or_directory_mat_file_loading(dataset_or_directory, 'sub_directory', sub_directory);
 
     % Initialize structure to store power results
     power_results = struct();
@@ -98,55 +120,46 @@ function plot_power_results(dataset_or_directory)
     end
     
     % Create mapping from internal method names to display names
-    method_to_display = containers.Map();
-    method_to_display('Parametric_FWER') = 'edge';
-    method_to_display('Parametric_FDR') = 'edge (fdr)';
-    method_to_display('Size_cpp') = 'cluster';
-    method_to_display('Size') = 'cluster';
-    method_to_display('Fast_TFCE_cpp') = 'cluster tfce';
-    method_to_display('Fast_TFCE') = 'cluster tfce';
-    method_to_display('Constrained_cpp_FWER') = 'network';
-    method_to_display('Constrained_FWER') = 'network';
-    method_to_display('Constrained_cpp_FDR') = 'network (fdr)';
-    method_to_display('Constrained_FDR') = 'networkm (fdr)';
-    method_to_display('Omnibus_Multidimensional_cNBS') = 'whole brain';
+
+    map = map_function();
     
-    % Create mapping from internal method names to display order
-    method_to_index = containers.Map();
-    method_to_index('Parametric_FWER') = 1;
-    method_to_index('Parametric_FDR') = 2;
-    method_to_index('Size_cpp') = 3;
-    method_to_index('Size') = 3;
-    method_to_index('Fast_TFCE_cpp') = 4;
-    method_to_index('Fast_TFCE') = 4;
-    method_to_index('Constrained_cpp_FWER') = 5;
-    method_to_index('Constrained_FWER') = 5;
-    method_to_index('Constrained_cpp_FDR') = 6;
-    method_to_index('Constrained_FDR') = 6;
-    method_to_index('Omnibus_Multidimensional_cNBS') = 7;
-    
+    method_display_names = cell(0);
+    for j = 1:num_methods
+        method_name = method_names{j};
+        method_dis_name = map.display(method_name);
+        
+        if ~ismember(method_dis_name, method_display_names)
+            method_display_names{end + 1} = method_dis_name;    
+        end
+    end
+    n_display_methods = numel(method_display_names);
+
     % Define the display order and names for the plot
-    display_order = 1:7;
-    display_names = {'edge', 'edge (fdr)', 'cluster', 'cluster rtce', 'network', 'network (fdr)', 'whole brain'};
-    
+    display_names = cell(n_display_methods);
+    for j = 1:n_display_methods
+        met = method_display_names{j};
+        idx_met = map.order(met);
+        
+        display_names{idx_met} = met;
+    end
+
     % Create arrays to hold the reordered data
-    reordered_mean = zeros(num_subjects, 7);
-    reordered_error = zeros(num_subjects, 7);
+    reordered_mean = zeros(num_subjects, n_display_methods);
+    reordered_error = zeros(num_subjects, n_display_methods);
     
     % Map the data to the display order
     for i = 1:num_subjects
-        for j = 1:num_methods
-            method_name = method_names{j};
-            if isKey(method_to_index, method_name)
-                idx = method_to_index(method_name);
+        for j = 1:n_display_methods
+            method_name = method_display_names{j};
+            if isKey(map.order, method_name)
+                idx = map.order(method_name);
                 reordered_mean(i, idx) = mean_power(i, j);
                 reordered_error(i, idx) = error_power(i, j);
             end
         end
     end
 
-    
-        % Generate a figure with high resolution and appropriate dimensions
+    % Generate a figure with high resolution and appropriate dimensions
     figure_width = 2000;  % Width in pixels (increased for better quality)
     figure_height = 400;  % Height in pixels
     figure('Position', [100, 100, figure_width, figure_height], 'Color', 'white');

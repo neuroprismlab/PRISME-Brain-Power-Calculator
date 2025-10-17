@@ -31,7 +31,7 @@ function Params = setparams()
 % Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 % Params.data_dir = './data/s_hcp_act_noble_1.mat';
-Params.output = 'tfce_cpp_speed_cmp';
+Params.output = 'tfce_power_comp';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
@@ -56,10 +56,10 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
-Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
+Params.parallel = true; % run stuff sequentially or in parallel
+Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
-Params.batch_size = 10;
+Params.batch_size = 5;
  
 
 %% Skip some tests - change ranges or the function
@@ -72,7 +72,7 @@ Params.list_of_nsubset = {20, 80, 200}; % To change this, add more when necessar
                     % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
                             % Current model (see above design matrix) only designed for t-test
-Params.force_permute = false;               
+Params.force_permute = true;               
 Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
 Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF=10-1000)
                             % Only used if cluster_stat_type='Size'
@@ -80,8 +80,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 % Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
-Params.all_cluster_stat_types = {'IC_TFCE_FC_cpp_dh1','IC_TFCE_FC_cpp_dh5','IC_TFCE_FC_cpp_dh10', ...
-    'IC_TFCE_FC_cpp_dh25', 'TFCE_cpp_dh1', 'TFCE_cpp_dh5', 'TFCE_cpp_dh10', 'TFCE_cpp_dh25'};
+Params.all_cluster_stat_types = {'Exact_FC_TFCE_cpp'};
 
 Params.all_submethods = {'FWER', 'FDR'};
 
@@ -93,9 +92,9 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
-Params.test_n_perms = 2;
-Params.test_n_repetitions = 2;
+Params.testing = false;
+Params.test_n_perms = 50;
+Params.test_n_repetitions = 5;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
 

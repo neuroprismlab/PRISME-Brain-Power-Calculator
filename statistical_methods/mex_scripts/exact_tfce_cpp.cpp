@@ -107,18 +107,19 @@ void mexFunction(int nlhs, mxArray *plhs[],
     double* img_input = mxGetPr(prhs[0]);
     H = mxGetScalar(prhs[1]);
     E = mxGetScalar(prhs[2]);
-
-    // Find number of valid edges - upper triangle 
-    int n_edges = num_nodes*(num_nodes - 1)/2;
     
     // Create sorted elements array
     std::vector<SortedElement> sorted_elements;
-    sorted_elements.reserve(n_edges);
+    sorted_elements.reserve(num_nodes * (num_nodes - 1) / 2);
     
     int l_idx = 0;
     for (int j = 0; j < num_nodes; j++) {
         for (int i = 0; i < num_nodes; i++) {
             if (i >= j) {
+                continue;
+            }
+
+            if (img_input[i + j * num_nodes] <= 0){
                 continue;
             }
 
@@ -131,6 +132,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
             l_idx = l_idx + 1;
         }
     }
+    int n_edges = l_idx;
     
     // Sort elements in descending order (NaN values will be at the end)
     std::sort(sorted_elements.begin(), sorted_elements.end(), compareDescending);

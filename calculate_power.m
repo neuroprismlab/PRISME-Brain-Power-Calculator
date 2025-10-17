@@ -67,7 +67,7 @@ function calculate_power(varargin)
     
     %% Process each repetition file one by one to reduce memory usage
     rep_files = dir(fullfile(Params.save_directory, Params.output, '*.mat'));
-    
+
     % If no files were found output an error
     if isempty(rep_files)
         error('No files found.')
