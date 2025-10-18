@@ -98,7 +98,7 @@ switch summary_type
             meta_data);
         
         %% Calculate false positives
-        PowerRes = summary_tools.calculate_tpr(method_data, gt_data, Params.tpr_dthresh, PowerRes, method_name, ...
+        PowerRes = summary_tools.calculate_fpr(method_data, gt_data, Params.tpr_dthresh, PowerRes, method_name, ...
             meta_data);
            
 end

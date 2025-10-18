@@ -1,4 +1,4 @@
-%% Repetition Calculation Workflow
+    %% Repetition Calculation Workflow
 % This script sets up and runs the repetition calculation workflow for the 
 % power calculator. It computes repeated statistical analyses on randomly 
 % sampled subsets of subjects to enable power estimation via simulation.
