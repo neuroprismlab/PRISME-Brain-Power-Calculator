@@ -1,4 +1,12 @@
-function results_cell = multi_experiment_average(input_path)
+function results_cell = multi_experiment_average(input_path, varargin)
+    
+    % Input Parser 
+    p = inputParser;
+
+    addOptional(p, 'attribute_name_calculation', 'tpr');
+
+    parse(p, varargin{:});
+    attribute = p.Results.attribute_name_calculation;
     
     %% Check if input is multiple files or single
     multiple_files = false;
@@ -36,7 +44,7 @@ function results_cell = multi_experiment_average(input_path)
     for fi = 1:num_files
         full_file = files{fi};
 
-        file_results = get_output_file_statistics(full_file);
+        file_results = get_output_file_statistics(full_file, 'attribute', attribute);
         
         results_cell{fi} = file_results;
     end

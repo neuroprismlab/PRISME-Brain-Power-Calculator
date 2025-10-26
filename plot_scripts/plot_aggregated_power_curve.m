@@ -11,11 +11,13 @@ function plot_aggregated_power_curve(varargin)
     default_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/Power_Calculator/power_calculator_results/power_calculation/tfce_power_comp';
     default_undesired_sub_numbers = {};
     default_map = map_tfce_comp;
+    default_attribute_name = 'tpr';
     
      % Add optional parameter
     addParameter(p, 'dir', default_dir);
     addParameter(p, 'undesired_subject_numbers', default_undesired_sub_numbers);
     addParameter(p, 'map_function', default_map);
+    addParameter(p, 'attribute_name_calculation', default_attribute_name)
   
     % Parse input
     parse(p, varargin{:});
@@ -23,6 +25,7 @@ function plot_aggregated_power_curve(varargin)
     directory = p.Results.dir;
     undesired_subject_numbers = p.Results.undesired_subject_numbers;
     map_function = p.Results.map_function;
+    attribute = p.Results.attribute_name_calculation;
     
     %% Check if input is a directory
     if ~isfolder(directory)
@@ -31,7 +34,7 @@ function plot_aggregated_power_curve(varargin)
     %%%%% Config end %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %% Get averages 
-    multi_variable_average = multi_experiment_average(directory);
+    multi_variable_average = multi_experiment_average(directory, 'attribute_name_calculation', attribute);
 
     data_agregator = struct();
 

@@ -66,7 +66,7 @@ function calculate_power(varargin)
     [Params.output, ~, ~] = get_data_set_name(Study_Info, Params);
     
     %% Process each repetition file one by one to reduce memory usage
-    rep_files = dir(fullfile(Params.save_directory, Params.output, '*.mat'));
+    rep_files = dir(fullfile(Params.save_directory, Params.output, "repetitions",'*.mat'));
 
     % If no files were found output an error
     if isempty(rep_files)
@@ -74,7 +74,8 @@ function calculate_power(varargin)
     end
     
     %% Create output directory (only if it doesn't exist)
-    Params = create_power_output_directory(Params);
+    [Params.gt_data_dir, Params.gt_output] = setup_gt_directory(Params);
+    Params.save_directory = create_power_output_directory(Params);
     
     for i = 1:length(rep_files)
         % Load a single repetition data file
@@ -85,7 +86,6 @@ function calculate_power(varargin)
         % Meta-data from the file encompassing everything
         method_list = rep_data.meta_data.method_list;
         
-
 
         [test_components, test_type, sub_number, testing_code] = get_data_for_file_naming(rep_data.meta_data);
         [~, file_name] = create_and_check_rep_file(Params.save_directory, Params.output, test_components, ...
@@ -116,9 +116,9 @@ function calculate_power(varargin)
             method = method_list{j};
             method_data = rep_data.(method);
     
-            gt_filename = construct_gt_filename(rep_data.meta_data, Params.output);
-            gt_fullpath = fullfile(Params.gt_data_dir, Params.output, gt_filename);
-   
+            gt_filename = construct_gt_filename(rep_data.meta_data, Params.gt_output);
+            gt_fullpath = fullfile(Params.gt_data_dir, gt_filename);
+          
             if exist(gt_filename, 'file')
                 gt_data = load(gt_fullpath);
             else

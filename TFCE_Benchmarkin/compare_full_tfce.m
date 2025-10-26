@@ -6,14 +6,40 @@
 n = 268; % Full connectivity matrix for 268 ROIs (35,778 edges)
 img = zeros(n, n);
 
-% Create random functional connectivity values between -1 and 1
-% Fill the upper triangular part of the matrix with random FC values
+% Parameters for peak generation
+num_peaks = 8; % Number of functional network "hubs"
+peak_width = 15; % Width of Gaussian peaks (in ROI units)
+peak_strength = 0.99; % Maximum correlation strength
+background_noise = 0.15; % Background connectivity noise level
+
+% Generate random peak centers (representing functional network hubs)
+rng(20); % Set seed for reproducibility
+peak_centers = randi([1, n], num_peaks, 2);
+
+% Create the connectivity matrix
 for i = 1:n
     for j = (i+1):n
-        img(i,j) = (rand() * 2) - 1;  % Random value between -1 and 1
+        % Start with Gaussian background noise
+        value = randn() * background_noise;
+        
+        % Add Gaussian peaks centered at network hubs
+        for p = 1:num_peaks
+            % Distance from this edge to the peak center
+            dist_i = min(abs(i - peak_centers(p, 1)), abs(i - peak_centers(p, 2)));
+            dist_j = min(abs(j - peak_centers(p, 1)), abs(j - peak_centers(p, 2)));
+            dist = sqrt(dist_i^2 + dist_j^2);
+            
+            % Add Gaussian contribution from this peak
+            value = value + peak_strength * exp(-dist^2 / (2 * peak_width^2));
+        end
+        
+        % Add some distance-dependent decay (closer ROIs more correlated)
+        distance_factor = exp(-abs(i-j) / 100);
+        value = value + 0.2 * distance_factor * randn();
+        
+        img(i, j) = value;
     end
 end
-
 
 % Make it symmetric
 img = img + img';
@@ -87,6 +113,9 @@ imagesc(abs(tfced1 - tfced2));
 title('Absolute Difference', 'FontSize', 18, 'FontWeight', 'bold');
 colormap(gca, 'redblue');
 colorbar('FontSize', 12);
+tfce_max = max([max(tfced1(:)), max(tfced2(:))]);
+caxis([0, 1]);
 set(gca, 'FontSize', 14);
 xlabel('ROI', 'FontSize', 14);
 ylabel('ROI', 'FontSize', 14);
+

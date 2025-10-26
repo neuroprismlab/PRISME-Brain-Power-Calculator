@@ -1,15 +1,9 @@
-function Params = create_power_output_directory(Params)
-    
-    Params.save_directory = [Params.save_directory, 'power_calculation/'];
+function save_directory = create_power_output_directory(Params)
 
-    if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-        mkdir(Params.save_directory);       % Create the directory
-    end
+    save_directory = [Params.save_directory, Params.output, '/power_calculation/'];
 
-    Params.save_directory = [Params.save_directory, Params.output, '/'];
-
-    if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-        mkdir(Params.save_directory);       % Create the directory
+    if ~exist(save_directory, 'dir') % Check if the directory does not exist
+        mkdir(save_directory);       % Create the directory
     end
 
 end

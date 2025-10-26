@@ -1,4 +1,4 @@
-function Params = create_output_directory(Params)
+function save_directory = create_output_directory(Params)
 %% create_output_directory
 % **Description**
 % Ensures the existence of the output directory for saving results. If the 
@@ -22,30 +22,26 @@ function Params = create_output_directory(Params)
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
 
+    save_directory = [Params.save_directory, Params.output];
+
+    if ~exist(save_directory, 'dir') % Check if the directory does not exist
+        mkdir(save_directory);       % Create the directory
+    end
+
     if ~Params.ground_truth
     
-        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-            mkdir(Params.save_directory);       % Create the directory
-        end
-    
-        Params.save_directory = [Params.save_directory, Params.output, '/'];
+        save_directory = [save_directory, '/repetitions/'];
     
         if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
             mkdir(Params.save_directory);       % Create the directory
         end
 
     else
-
-        Params.save_directory = [Params.save_directory, 'ground_truth/'];
-
-        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-            mkdir(Params.save_directory);       % Create the directory
-        end
     
-        Params.save_directory = [Params.save_directory, Params.output, '/'];
+        save_directory = [save_directory, '/ground_truth/'];
     
-        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-            mkdir(Params.save_directory);       % Create the directory
+        if ~exist(save_directory, 'dir') % Check if the directory does not exist
+            mkdir(save_directory);       % Create the directory
         end
         
     end

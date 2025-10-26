@@ -169,35 +169,6 @@ end
 function PowerRes = calculate_tpr(method_data, gt_data, tpr_dthresh, PowerRes, method_name, meta_data)
 %% calculate_tpr
 % Calculates true positive rates (TPR) from repetition and ground-truth data.
-%
-% This function compares the ground-truth brain data with the power calculation 
-% results to determine the percentage of true positives. It identifies indices with 
-% significant positive and negative effects (based on a threshold) and computes the TPR 
-% according to the statistic level (edge, network, or whole_brain).
-%
-% Inputs:
-%   - method_data: Struct containing repetition data with meta_data, including the 
-%               field statistic_level and rep_parameters.
-%   - gt_data: Struct containing ground-truth brain data (field brain_data).
-%   - tpr_dthresh: Numeric threshold used to define significant ground-truth effects.
-%   - PowerRes: Struct containing computed detection totals (positives_total and 
-%               positives_total_neg) and possibly other summary metrics.
-%
-% Outputs:
-%   - PowerRes: The updated PowerRes struct with a new field 'tpr' (true positive rate)
-%               computed as a percentage.
-%
-% Workflow:
-%   1. Extracts the statistic level from method_data.meta_data.
-%   2. Determines indices where ground-truth values exceed the positive threshold or 
-%      fall below the negative threshold.
-%   3. For 'edge' and 'network' levels, it assigns the corresponding positive and negative 
-%      detection totals.
-%   4. For 'whole_brain', it aggregates detections from both positive and negative effects,
-%      then adjusts for the doubled repetitions.
-%   5. Finally, it computes the TPR as the ratio of true positives to the total number of 
-%      repetitions, multiplied by 100.
-    
     
     %% Get stat level - edge, network, or brain
     stat_gt_level_str = get_stats_level_from_method_data(method_name, method_data, meta_data);
@@ -205,97 +176,53 @@ function PowerRes = calculate_tpr(method_data, gt_data, tpr_dthresh, PowerRes, m
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
 
-    % calculate TPR
-    true_positives = nan(size(gt_data));
-    if contains(stat_gt_level_str, 'variable')
-
-        true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
-        true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg_vec);
-
-    elseif contains(stat_gt_level_str,'network')
-
-        true_positives(ids_pos_vec)=PowerRes.positives_total(ids_pos_vec);
-        true_positives(ids_neg_vec)=PowerRes.positives_total_neg(ids_neg_vec);
-
-    elseif contains(stat_gt_level_str,'whole_brain')
-
-        true_positives = 0;
-        if pos_effect
-            true_positives = true_positives + PowerRes.positives_total;
-        end
-        if neg_effect
-            true_positives = true_positives + PowerRes.positives_total_neg;
-        end
-        
-        %% Divide by two only if both positive and negative effects are present
-        if pos_effect && neg_effect
-           true_positives = floor(true_positives/2);
-        end
-
-    end
+    % Calculate true positives using unified function
+    true_positives = get_significance_vector(false, ids_pos_vec, ids_neg_vec, PowerRes, ...
+        size(gt_data), stat_gt_level_str, pos_effect, neg_effect);
     
     file_type = get_file_type(meta_data);
 
     switch file_type
-
         case 'full_file'
             n_reps = size(method_data.sig_prob, 2);
-
         case 'compact_file'
             n_reps = meta_data.n_repetitions;
-
     end       
     
-    PowerRes.tpr=true_positives*100/n_reps;
+    PowerRes.tpr = true_positives * 100 / n_reps;
     
 end
 
-function PowerRes = calculate_fpr(method_data, gt_data, tpr_dthresh, PowerRes)
-%   Calculates the true negative rate to conclude the confusion table with
-%   the tpr. It's quite similar to the funciton where it first find the
-%   gt position and then the repetition data to estimate errors.
+function PowerRes = calculate_fpr(method_data, gt_data, tpr_dthresh, PowerRes, method_name, meta_data)
+%% calculate_fpr
+% Calculates false positive rates (FPR) from repetition and ground-truth data.
 %
+% This is the complement to calculate_tpr - it identifies where the method
+% declared significance but the ground truth shows no effect.
 
-     %% Get stat level - edge, network, or brain
-    stat_gt_level_str = extract_stat_level(method_data.meta_data.level);
+    %% Get stat level - edge, network, or brain
+    stat_gt_level_str = get_stats_level_from_method_data(method_name, method_data, meta_data);
     
     [ids_pos_vec, ids_neg_vec, ~, pos_effect, neg_effect] = ...
         extract_effect_vector(stat_gt_level_str, gt_data, tpr_dthresh);
 
+    % Calculate false positives using unified function
+    false_positives = get_significance_vector(true, ids_pos_vec, ids_neg_vec, PowerRes, ...
+        size(gt_data), stat_gt_level_str, pos_effect, neg_effect);
 
-    % calculate TPR
-    false_positives = nan(size(gt_data));
-    if contains(stat_gt_level_str,'variable')
+    file_type = get_file_type(meta_data);
 
-        false_positives(~ids_pos_vec)=PowerRes.positives_total(~ids_pos_vec);
-        false_positives(~ids_neg_vec)=PowerRes.positives_total_neg(~ids_neg_vec);
-
-    elseif contains(stat_gt_level_str,'network')
-
-        false_positives(~ids_pos_vec)=PowerRes.positives_total(~ids_pos_vec);
-        false_positives(~ids_neg_vec)=PowerRes.positives_total_neg(~ids_neg_vec);
-
-    elseif contains(stat_gt_level_str,'whole_brain')
-
-        false_positives = 0;
-        if ~pos_effect
-            false_positives = false_positives + PowerRes.positives_total;
-        end
-        if ~neg_effect
-            false_positives = false_positives + PowerRes.positives_total_neg;
-        end
-        
-        %% Divide by two only if both positive and negative effects are present
-        if ~pos_effect && ~neg_effect
-           false_positives = floor(false_positives/2);
-        end
-
-    end
-
-    n_reps = size(method_data.sig_prob, 2);
-    PowerRes.fpr=false_positives*100/n_reps;
+    switch file_type
+        case 'full_file'
+            n_reps = size(method_data.sig_prob, 2);
+        case 'compact_file'
+            n_reps = meta_data.n_repetitions;
+    end       
+    
+    PowerRes.fpr = false_positives * 100 / n_reps;
 
 end
+
 
 
 %% -------------------------------------------------------------------------%
@@ -1064,323 +991,6 @@ function ss=write_summary_log(dcoeff_windowed,tpr_windowed,fdr,fwer_strong,local
         end
         fclose(fid);
     end
-end
-
-
-%% -------------------------------------------------------------------------%
-% ******** Calculate FPR metrics for the case when the null is not true everywhere **********
-function [fpr,fwer_strong,fdr,localizing_power,num_fp,spatial_extent_fp]=calculate_fpr_metrics(stat_level_str,benchmarking_summary_filename,n_repetitions,ids_esz_pos_vec,ids_esz_neg_vec,ids_esz_zero_vec,ids_esz_pos,ids_esz_neg,ids_esz_zero,edge_groups,dcoeff_edge,triu_msk,ids_triu,tpr_dthresh)
-
-    % TODO: all of this could be more efficient
-    load(benchmarking_summary_filename,'positives','positives_neg');
-
-    % reshape if needed -  TFCE and Size_Extent are *sometimes* n_nodes x n_nodes due to older code, but need to be n_edges x n_reps
-    if ndims(positives)==3 
-        positives=reshape(positives, [], n_repetitions);
-        positives_neg=reshape(positives_neg, [], n_repetitions);
-    end
-    
-
-
-    % 1. Calculate FPR maps and strong FWER
-    % TODO: here and elsewhere pass and use stats_levelstr_map so can just call out cluster, network, etc.
-    
-    if contains(stat_level_str,'edge') % ids from matrix vector (max=n*(n-1)/2)
-
-        ids_esz_pos_vec = ids_esz_pos_vec | ids_esz_zero_vec;
-        ids_esz_neg_vec = ids_esz_neg_vec | ids_esz_zero_vec;
-        ids_esz_neg_vec__tri=find(ids_esz_neg_vec);
-        ids_esz_pos_vec__tri=find(ids_esz_pos_vec);
-        ids_esz_zero_vec__tri=find(ids_esz_zero_vec);
-        
-        % count n_nodes
-        n_nodes__edge_level=size(triu_msk,1);
-        
-        fp_pos=zeros(size(positives));
-        fp_neg=zeros(size(positives_neg));
-        fp_pos(ids_esz_neg_vec__tri,:)=positives(ids_esz_neg_vec__tri,:);
-        fp_neg(ids_esz_pos_vec__tri,:)=positives_neg(ids_esz_pos_vec__tri,:);
-        fp_zero__avg_tails(ids_esz_zero_vec__tri,:)=(positives(ids_esz_zero_vec__tri,:)+positives_neg(ids_esz_zero_vec__tri,:))/2; % for null, take average false positives in both dir
-
-        % summarize false positives across both tails
-        fdr_pos=100*sum(fp_pos)./sum(positives);
-        fdr_neg=100*sum(fp_neg)./sum(positives_neg);
-        fdr = (fdr_pos+fdr_neg)/2; % percent per repetition - avg of test in both dirs
-
-        fpr(ids_esz_neg_vec__tri)=100 * sum(fp_pos(ids_esz_neg_vec__tri,:),2)/n_repetitions;
-        fpr(ids_esz_pos_vec__tri)=100 * sum(fp_neg(ids_esz_pos_vec__tri,:),2)/n_repetitions;  % will overwrite fpr_pos at true zero edges, thus the next step
-        fpr(ids_esz_zero_vec__tri)=100 * sum(fp_zero__avg_tails(ids_esz_zero_vec__tri,:),2)/n_repetitions; % per edge - average fp for true zero edges
-        num_fp=(sum(fp_pos)+sum(fp_neg))/2; % per repetition, in edges - avg of test in both dirs
-        spatial_extent_fp = 100 * num_fp / size(positives,1); % per repetition, in % total edges - avg of test in both dirs
-        fwer_strong = 100 * (sum(fdr_pos>0)+sum(fdr_neg>0)) / 2 / n_repetitions;
-
-
-    elseif contains(stat_level_str,'cluster')  % special procedure for cluster — a FP cluster occurs when no true effect exists in the whole cluster
-
-         n_nodes__edge_level=size(triu_msk,1);
-
-        % reshape positives to square symmetric adjacency, as required for get_components
-        ids_esz_pos_vec(ids_esz_zero_vec)=0;  % using the opposite strategy here as for the other procedures, since now we're using this indexing var to get true positives (then false positives), not false positives directly
-        ids_esz_neg_vec(ids_esz_zero_vec)=0;
-        ids_esz_zero_vec__tri=find(ids_esz_zero_vec);
-
-        fp_pos=zeros(length(ids_esz_pos_vec),n_repetitions);
-        fp_neg=zeros(length(ids_esz_pos_vec),n_repetitions);
-        fp_zero__avg_tails=zeros(length(ids_esz_pos_vec),n_repetitions);
-
-        positives_sq_thisrep__pos=zeros(n_nodes__edge_level);
-        positives_sq_thisrep__neg=zeros(n_nodes__edge_level);
-
-        for this_rep=1:n_repetitions
-            positives_sq_thisrep__pos=structure_data(positives(:,this_rep),'mask',ones(size(triu_msk)));
-            positives_sq_thisrep__neg=structure_data(positives_neg(:,this_rep),'mask',ones(size(triu_msk)));
-            
-            % get individual positive clusters
-            % IMPORTANT: get_edge_components labels components by size, so it is possible (though unlikely in practice) to have multiple components with the same label that are actually unique but unable to be distinguished % NOTE: size is full and double counts component sizes, whereas tfce is upper triangle only
-            [positives_labelled_by_comp__pos,comp_sizes__pos] = get_edge_components(positives_sq_thisrep__pos,0,positives_sq_thisrep__pos,0,268,find(triu_msk),0);
-            [positives_labelled_by_comp__neg,comp_sizes__neg] = get_edge_components(positives_sq_thisrep__neg,0,positives_sq_thisrep__neg,0,268,find(triu_msk),0);
-            positives_labelled_by_comp_vec__pos=positives_labelled_by_comp__pos(triu_msk); % could be more efficient - convert to triu but then use original for fp_map
-            positives_labelled_by_comp_vec__neg=positives_labelled_by_comp__neg(triu_msk);
-            num_pos_clusters__pos(this_rep)=length(comp_sizes__pos);
-            num_pos_clusters__neg(this_rep)=length(comp_sizes__neg);
-
-            % find all clusters that contain true positive edges
-            components_with_tp__pos=unique(positives_labelled_by_comp_vec__pos(ids_esz_pos_vec));
-            components_with_tp__neg=unique(positives_labelled_by_comp_vec__neg(ids_esz_neg_vec));
-            components_with_tp__pos(components_with_tp__pos==0)=[];
-            components_with_tp__neg(components_with_tp__neg==0)=[];
-            num_tp_clusters__pos(this_rep)=length(components_with_tp__pos);
-            num_tp_clusters__neg(this_rep)=length(components_with_tp__neg);
-
-            num_fp_clusters__pos(this_rep)=num_pos_clusters__pos(this_rep)-num_tp_clusters__pos(this_rep);
-            num_fp_clusters__neg(this_rep)=num_pos_clusters__neg(this_rep)-num_tp_clusters__neg(this_rep);
-
-            % create FP map by duplicating P map and zeroing out any components that contain a true positive edge
-            fp_map__pos=positives_sq_thisrep__pos;
-            fp_map__neg=positives_sq_thisrep__neg;
-            for j=1:length(components_with_tp__pos)
-                fp_map__pos(positives_labelled_by_comp__pos==components_with_tp__pos(j))=0;
-            end
-            for j=1:length(components_with_tp__neg)
-                fp_map__neg(positives_labelled_by_comp__neg==components_with_tp__neg(j))=0;
-            end
-
-            fp_pos(:,this_rep)=fp_map__pos(triu_msk);
-            fp_neg(:,this_rep)=fp_map__neg(triu_msk);
-            fp_zero__avg_tails(ids_esz_zero_vec__tri,this_rep)=(fp_pos(ids_esz_zero_vec__tri,this_rep)+fp_neg(ids_esz_zero_vec__tri,this_rep))/2; % for null, take average false positives in both dir
-
-        end
-
-        % convert positives from full mat *vector* (nxn) to triu *vector* (nx(n-1)/2) so fp and positives are all in the same space for spatial extent and spatial precision calculation
-        positives=positives(ids_triu,:); 
-        positives_neg=positives_neg(ids_triu,:);
-        
-        % summarize false positive rates
-        fdr_pos=100 * num_fp_clusters__pos./num_pos_clusters__pos;
-        fdr_neg=100 * num_fp_clusters__neg./num_pos_clusters__neg;
-        fdr = (fdr_pos+fdr_neg)/2; % per repetition - avg of test in both dirs
-        fpr=100 * sum(fp_pos,2)/n_repetitions;
-        fpr=100 * sum(fp_neg,2)/n_repetitions;  % will overwrite fpr_pos at true zero edges, thus the next step
-        fpr(ids_esz_zero_vec__tri)=100 * sum(fp_zero__avg_tails(ids_esz_zero_vec__tri,:),2)/n_repetitions; % per edge - average fp for true zero edges
-
-        num_fp=(num_fp_clusters__pos + num_fp_clusters__neg)/2; % per repetition, in clusters - avg of test in both dirs
-        num_fp__in_edges=(sum(fp_pos) + sum(fp_neg)) /2; % per repetition, in edges - avg of test in both dirs
-        spatial_extent_fp = 100 * num_fp__in_edges / size(positives,1); % per repetition, in % total edges - avg of test in both dirs
-        fwer_strong = 100 * (sum(fdr_pos>0)+sum(fdr_neg>0)) / 2 / n_repetitions;
-    
-    elseif contains(stat_level_str,'network') % ids from vectorized matrix (max=n*n ?)
-        
-        n_nodes__edge_level=size(edge_groups,1);
-        ids_esz_pos = ids_esz_pos | ids_esz_zero;
-        ids_esz_neg = ids_esz_neg | ids_esz_zero;
-
-        fp_pos=zeros(size(positives));
-        fp_neg=zeros(size(positives_neg));
-        fp_pos(ids_esz_neg,:)=positives(ids_esz_neg,:);
-        fp_neg(ids_esz_pos,:)=positives_neg(ids_esz_pos,:);
-        fp_zero__avg_tails(ids_esz_zero,:)=(positives(ids_esz_zero,:)+positives_neg(ids_esz_zero,:))/2; % for null, take average false positives in both dir
-
-        fp_in_edges_pos=fp_pos;
-        fp_in_edges_neg=fp_neg;
-        for i=1:size(positives,1)
-            fp_in_edges_pos(i,:)=fp_pos(i,:)*nnz(edge_groups==i);
-            fp_in_edges_neg(i,:)=fp_neg(i,:)*nnz(edge_groups==i);
-        end
-
-        % summarize false positives across both tails
-        fdr_pos=100 * sum(fp_pos)./sum(positives);
-        fdr_neg=100 * sum(fp_neg)./sum(positives_neg);
-        fdr = (fdr_pos+fdr_neg)/2; % per repetition - avg of test in both dirs
-        fpr(ids_esz_neg)=100 * sum(fp_pos(ids_esz_neg,:),2)/n_repetitions;
-        fpr(ids_esz_pos)=100 * sum(fp_neg(ids_esz_pos,:),2)/n_repetitions;  % will overwrite fpr_pos at true zero network, thus the next step
-        fpr(ids_esz_zero)=100 * sum(fp_zero__avg_tails(ids_esz_zero,:),2)/n_repetitions; % per network - average fp for true zero networks
-        num_fp=(sum(fp_pos)+sum(fp_neg))/2; % per repetition, in networks - avg of test in both dirs
-        num_fp__in_edges=(sum(fp_in_edges_pos)+sum(fp_in_edges_neg))/2; % per repetition, in edges - avg of test in both dirs
-        spatial_extent_fp = 100 * num_fp__in_edges / nnz(edge_groups); % per repetition, in % total edges - avg of test in both dirs
-        fwer_strong = 100 * (sum(fdr_pos>0)+sum(fdr_neg>0)) / 2 / n_repetitions;
-        
-        
-    elseif contains(stat_level_str,'whole brain')
-        
-        ids_esz_pos_vec = ids_esz_pos_vec | ids_esz_zero_vec;
-        ids_esz_neg_vec = ids_esz_neg_vec | ids_esz_zero_vec;
-        n_nodes__edge_level=int16(roots([1 -1 -2*length(dcoeff_edge)]));
-        n_nodes__edge_level=n_nodes__edge_level(1);
-        fp=zeros(1,n_repetitions); % in the task contrast experiment, there is always at least one real ground truth effect - thus, a positive MV test is always a true positive
-        
-        % summarize false positive rates
-        fdr = 100 * sum(fp)./sum(positives); % per repetition
-        fpr = 100 * sum(fp')/n_repetitions; % per variable
-        num_fp = fp; % per repetition
-        spatial_extent_fp = 100 * fp; % per repetition, in % edges
-        fwer_strong = 100 * sum(+(sum(fp)>0)) / n_repetitions / 2;
-
-    end
-
-
-
-    % 2. Calculate localizing power as univariate "true discovery rate" (PPV)
-    % final measure is average localizing power per repetition
-    % TDR = TP/P = (P - FP)/P = 1 - FP/P = 1 - FDR
-    % For this, need univariate pseudo-false positives for everything beyond the edge-level
-    % (note: these are not strictly false positives according to the definition of broader scales of inference)
-    if contains(stat_level_str,'edge')
-        fdr_perrep = fdr;
-        lp_perrep= 100 - fdr_perrep;
-        localizing_power = mean(lp_perrep);
-        
-
-    elseif contains(stat_level_str,'cluster')
-        pseudo_fp_pos=zeros(size(positives));
-        pseudo_fp_neg=zeros(size(positives));
-        pseudo_fp_pos(find(ids_esz_neg_vec | ids_esz_zero_vec),:)=positives(find(ids_esz_neg_vec | ids_esz_zero_vec),:);
-        pseudo_fp_neg(find(ids_esz_pos_vec | ids_esz_zero_vec),:)=positives_neg(find(ids_esz_pos_vec | ids_esz_zero_vec),:);
-        
-        pseudo_fdr_pos = 100 * sum(pseudo_fp_pos)./sum(positives);
-        pseudo_fdr_neg = 100 * sum(pseudo_fp_neg)./sum(positives_neg);
-        pseudo_fdr = (pseudo_fdr_pos+pseudo_fdr_neg)/2; % per repetition - avg of test in both dirs
-
-        lp_perrep = 100 - pseudo_fdr;
-        localizing_power = mean(lp_perrep);
-
-    elseif contains(stat_level_str,'network')
-        
-        % First convert positives map to univariate map
-        % Note: input positives are upper triangle (only network-level dcoeffs are lower triangular, but these are not used here - this uses edge-level dcoeffs, which are upper triangular)
-        % TODO: possibly adjust - this is the only one that needs dcoeff_edge and triu_msk passed to the function (although whole_brain uses for dimensions)
-
-        ids_esz_pos_vec=dcoeff_edge>tpr_dthresh;
-        ids_esz_neg_vec=dcoeff_edge<(-1*tpr_dthresh);
-        ids_esz_zero_vec=(dcoeff_edge<tpr_dthresh) & (dcoeff_edge>(-1*tpr_dthresh));
-        ids_esz_pos_vec=ids_esz_pos_vec | ids_esz_zero_vec;
-        ids_esz_neg_vec=ids_esz_neg_vec | ids_esz_zero_vec;
-        
-        map=load_atlas_mapping(n_nodes__edge_level,'subnetwork');  % TODO: should be able to use edge_groups rather than loading Shen - for future flexibility
-
-        triu_msk_edge=logical(triu(ones([n_nodes__edge_level,n_nodes__edge_level]),1));
-        pseudo_positives_pos_vec=zeros(size(dcoeff_edge,1),n_repetitions);
-        pseudo_positives_neg_vec=zeros(size(dcoeff_edge,1),n_repetitions);
-        pseudo_fp_pos=zeros(size(dcoeff_edge,1),n_repetitions);
-        pseudo_fp_neg=zeros(size(dcoeff_edge,1),n_repetitions);
-        
-        for this_rep=1:n_repetitions
-            positives_mat_pos=structure_data(positives(:,this_rep),'mask',triu_msk); % sum of num positive reps per network
-            positives_mat_neg=structure_data(positives_neg(:,this_rep),'mask',triu_msk);
-    
-            pseudo_positives_fullmat_pos=summary_to_full_matrix(positives_mat_pos,map); % convert num positive reps/net to num per edge
-            pseudo_positives_fullmat_neg=summary_to_full_matrix(positives_mat_neg,map);
-    
-
-            pseudo_positives_pos_vec(:,this_rep)=pseudo_positives_fullmat_pos{1}(triu_msk_edge);
-            pseudo_positives_neg_vec(:,this_rep)=pseudo_positives_fullmat_neg{1}(triu_msk_edge);
-    
-            pseudo_fp_pos(ids_esz_neg_vec,this_rep)=pseudo_positives_pos_vec(ids_esz_neg_vec,this_rep);
-            pseudo_fp_neg(ids_esz_pos_vec,this_rep)=pseudo_positives_neg_vec(ids_esz_pos_vec,this_rep);
-    
-        end
-
-        %  the following is equal to mean(fdr_perrep) and mean(lp_perrep)
-        pseudo_fdr_pos = 100 * sum(pseudo_fp_pos)./sum(pseudo_positives_pos_vec);
-        pseudo_fdr_neg = 100 * sum(pseudo_fp_neg)./sum(pseudo_positives_neg_vec);        
-        pseudo_fdr = (pseudo_fdr_pos+pseudo_fdr_neg)/2;
-        
-        lp_perrep = 100 - pseudo_fdr;
-        localizing_power = mean(lp_perrep);
-
-        % get per group - added for supp analysis
-        %{
-        edge_groups_triu=edge_groups';        
-        edge_groups_triu=edge_groups_triu(triu_msk_edge);
-        for i=1:n_repetitions
-            for j=1:length(unique(edge_groups_triu))
-                pseudo_fp_pos_by_group(j,i)=mean(pseudo_fp_pos((edge_groups_triu==j),i));
-                pseudo_fp_neg_by_group(j,i)=mean(pseudo_fp_neg((edge_groups_triu==j),i));
-                pseudo_positives_pos_by_group(j,i)=mean(pseudo_positives_pos_vec((edge_groups_triu==j),i));
-                pseudo_positives_neg_by_group(j,i)=mean(pseudo_positives_neg_vec((edge_groups_triu==j),i));
-            end
-        end
-        localizing_power_pos_by_group=100*(1-pseudo_fp_pos_by_group./pseudo_positives_pos_by_group);
-        localizing_power_neg_by_group=100*(1-pseudo_fp_neg_by_group./pseudo_positives_neg_by_group);
-        fprintf('SP:           %1.1f\n',localizing_power);
-        fprintf('SP, by group: %1.1f\n',mean([nanmean(localizing_power_pos_by_group(:)),nanmean(localizing_power_neg_by_group(:))]));
-        %}
-
-    elseif contains(stat_level_str,'whole brain')
-        % Here we leave localizing power undefined. Since there is no edge-level bidirectional null, this is biased towards showing 100% "localizing power" each time
-        localizing_power=0;
-        pseudo_fp = 0;
-
-    end
-
-
-
-    % 3. Save an example map of positives at repetition 1
-    save_example_map=0; % TODO: temp
-    
-    if save_example_map
-        example_rep=1;
-
-        tp_fp_map=positives(:,example_rep)-2*fp(:,example_rep); % 1 is TP, -1 is FP
-
-        if contains(stat_level_str,'edge')
-            example_pos_map=structure_data(tp_fp_map,'mask',triu_msk);
-        elseif contains(stat_level_str,'cluster')
-            example_pos_map=structure_data(tp_fp_map,'mask',triu_msk);
-        elseif contains(stat_level_str,'network')
-            tp_fp_map_mat=structure_data(tp_fp_map','mask',triu_msk);
-            map=load_atlas_mapping(n_nodes__edge_level,'subnetwork'); % TODO: should be able to use edge_groups rather than loading Shen - for future flexibility
-            example_pos_map=summary_to_full_matrix(tp_fp_map_mat,map);
-            example_pos_map=example_pos_map{1};
-        elseif contains(stat_level_str,'whole brain')
-           example_pos_map=ones(n_nodes__edge_level)*tp_fp_map;
-        end
-
-        this_grsize=80; % TODO: TEMP - don't want to use here, so don't bother passing...
-        this_clim_tpmap=[0,1];
-        this_fontsz_lg=18;
-        this_folder='/Volumes/GoogleDrive/My Drive/Lab/Misc/Software/scripts/Matlab/myscripts/fwer_fdr_lp_indvid_files/pics/';
-        example_tpmap=(example_pos_map+example_pos_map')>0;
-        example_fpmap=(example_pos_map+example_pos_map')<0;
-
-        figure;
-        draw_atlas_boundaries(example_tpmap);
-        set(gca,'fontsize',this_fontsz_lg)
-        caxis(this_clim_tpmap); 
-        colormap([1,1,1;1,0,0])
-        print(gcf,sprintf([this_folder,'example_posmap_%s_gr%d__tp'],stat_level_str,this_grsize),'-dpng','-r300'); 
-
-        figure;
-        draw_atlas_boundaries(example_fpmap);
-        set(gca,'fontsize',this_fontsz_lg)
-        caxis(this_clim_tpmap); 
-        colormap([1,1,1;0,0,1])
-        print(gcf,sprintf([this_folder,'example_posmap_%s_gr%d__fp'],stat_level_str,this_grsize),'-dpng','-r300'); 
-
-        writematrix(example_tpmap,sprintf([this_folder,'example_posmap_%s_gr%d__tp.txt'],stat_level_str,this_grsize))
-        writematrix(example_fpmap,sprintf([this_folder,'example_posmap_%s_gr%d__fp.txt'],stat_level_str,this_grsize))
-    end
-
-
 end
 
 %% -------------------------------------------------------------------------%

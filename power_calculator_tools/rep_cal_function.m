@@ -65,7 +65,7 @@ function rep_cal_function(Params)
     [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
     
     %% Create output directory - setup save directory
-    Params = create_output_directory(Params);
+    Params.save_directory = create_output_directory(Params);
 
     %% Parallel Workers 
     % Uncoment the disp line if setup is commented out - as reminder 

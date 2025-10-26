@@ -31,11 +31,11 @@ function Params = setparams()
 % Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
 Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 % Params.data_dir = './data/s_hcp_act_noble_1.mat';
-Params.output = 'tfce_power_comp';
+Params.output = 'test_new_output_struct';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
-Params.gt_data_dir = './power_calculator_results/ground_truth/';
+% Params.gt_data_dir = './power_calculator_results/'; 
 
 
 
@@ -56,7 +56,7 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 500;  % 500 recommended
 Params.batch_size = 5;
@@ -92,8 +92,8 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
-Params.test_n_perms = 50;
+Params.testing = true;
+Params.test_n_perms = 10;
 Params.test_n_repetitions = 5;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;

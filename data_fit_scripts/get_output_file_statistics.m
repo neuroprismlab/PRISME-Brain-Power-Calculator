@@ -1,4 +1,12 @@
-function results = get_output_file_statistics(file_name)
+function results = get_output_file_statistics(file_name, varargin)
+
+    % Input Parser 
+    p = inputParser;
+
+    addOptional(p, 'attribute', 'tpr');
+    parse(p, varargin{:});
+    attribute = p.Results.attribute;
+    
     
     results = struct();
     results.mean = struct();
@@ -11,8 +19,8 @@ function results = get_output_file_statistics(file_name)
     for m = 1:length(method_list)
         method_name = method_list{m}; 
 
-        results.mean.(method_name) = mean(data.(method_name).tpr, 'omitnan');
-        results.deviation.(method_name) = std(data.(method_name).tpr, 'omitnan');
+        results.mean.(method_name) = mean(data.(method_name).(attribute), 'omitnan');
+        results.deviation.(method_name) = std(data.(method_name).(attribute), 'omitnan');
         
     end
     
