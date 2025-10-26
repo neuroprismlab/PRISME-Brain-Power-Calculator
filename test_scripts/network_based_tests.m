@@ -32,8 +32,14 @@ function network_based_tests(data_set_name)
 
     rep_cal_function(Params)
     
-    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
+    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, ...
+        '/repetitions/']);
     
+    if isempty(ResData) || (isstruct(ResData) && isempty(fieldnames(ResData)))
+        error('No results found in the specified directory: %s', ['./power_calculator_results/', data_set_name,  ...
+            '/repetitions/']);
+    end
+
     task_name = get_task_name_for_test(data_set);
     for i = 1:length(full_method_name_cell)
         method = full_method_name_cell{i};

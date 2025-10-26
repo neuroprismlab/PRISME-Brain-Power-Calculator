@@ -52,10 +52,11 @@ function edge_based_tests(data_set_name, varargin)
 
     rep_cal_function(Params)
     
-    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/']);
+    ResData = unite_results_from_directory('directory', ['./power_calculator_results/', data_set_name, '/repetitions/']);
     
     if isempty(ResData) || (isstruct(ResData) && isempty(fieldnames(ResData)))
-        error('No results found in the specified directory: %s', ['./power_calculator_results/', data_set_name, '/']);
+        error('No results found in the specified directory: %s', ['./power_calculator_results/', data_set_name,  ...
+            '/repetitions/']);
     end
     
     task_name = get_task_name_for_test(data_set);

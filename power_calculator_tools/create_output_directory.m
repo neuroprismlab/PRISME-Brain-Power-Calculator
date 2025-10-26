@@ -32,8 +32,8 @@ function save_directory = create_output_directory(Params)
     
         save_directory = [save_directory, '/repetitions/'];
     
-        if ~exist(Params.save_directory, 'dir') % Check if the directory does not exist
-            mkdir(Params.save_directory);       % Create the directory
+        if ~exist(save_directory, 'dir') % Check if the directory does not exist
+            mkdir(save_directory);       % Create the directory
         end
 
     else
