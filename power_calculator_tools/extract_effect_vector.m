@@ -19,8 +19,8 @@ function [ids_pos_vec, ids_neg_vec, ids_zero_vec, pos_effect, neg_effect] ...
         case 'whole_brain'
             % the Cohen's d-coefficient threshold doesn't directly translate to this multivariate effect size - 
             % treating all nonzero as non-null
-            pos_effect = any(gt_data > 0);
-            neg_effect = any(gt_data < 0);
+            pos_effect = any(gt_data > 0) | any(gt_data < 0);
+            neg_effect = any(gt_data > 0) | any(gt_data < 0);
         
         otherwise
             error('In extract_effect_vector method not supported')

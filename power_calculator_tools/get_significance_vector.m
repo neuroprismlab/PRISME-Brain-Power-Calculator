@@ -34,20 +34,11 @@ function positives = get_significance_vector(is_fp, ids_pos_vec, ids_neg_vec, Po
         positives(ids_neg)=PowerRes.positives_total_neg(ids_neg);
 
     elseif contains(stat_gt_level_str,'whole_brain')
-
-        positives = 0;
-        if xor(pos_effect, is_fp)
-            positives = positives + PowerRes.positives_total;
-        end
-        if xor(neg_effect, is_fp)
-            positives = positives + PowerRes.positives_total_neg;
-        end
         
-        %% Divide by two only if both positive and negative effects are present
-        if xor(pos_effect, is_fp) && xor(neg_effect, is_fp)
-           positives = floor(positives/2);
-        end
-
+        % If pos_effect - return all positives
+        % If non positive effect - all are false positives
+        positives = PowerRes.positives_total * xor(pos_effect, is_fp);
+           
     end
 
 end
