@@ -4,4 +4,6 @@ power_calculator_results/*
 /test_power_calculator/*
 GLM_permutations/*
 *.mex*
-
+PRISME_docs/site/
+.idea/
+.DS_Store
