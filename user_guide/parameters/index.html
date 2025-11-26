@@ -1,0 +1,898 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://neuroprismlab.github.io/PRISME-Brain-Power-Calculator/user_guide/parameters/">
+      
+      
+        <link rel="prev" href="../input_format/">
+      
+      
+        <link rel="next" href="../workflows/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+    
+    
+      
+        <title>Configuration Parameters - PRISME Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e53b48f4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration-parameters" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PRISME Documentation" class="md-header__button md-logo" aria-label="PRISME Documentation" data-md-component="logo">
+      
+  <img src="../../assets/avatar.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PRISME Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration Parameters
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/neuroprismlab/PRISME-Brain-Power-Calculator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PRISME Documentation" class="md-nav__button md-logo" aria-label="PRISME Documentation" data-md-component="logo">
+      
+  <img src="../../assets/avatar.jpg" alt="logo">
+
+    </a>
+    PRISME Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/neuroprismlab/PRISME-Brain-Power-Calculator" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    User Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            User Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../input_format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Input Data Format
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Configuration Parameters
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration Parameters
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-and-output-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data and Output Paths
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistical-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Statistical Settings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Developer Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running Workflows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Developer Guide
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Developer Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/adding_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Adding New Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Architecture Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer/cpp_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    C++ Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Reference
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-and-output-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data and Output Paths
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistical-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Statistical Settings
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#developer-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Developer Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="configuration-parameters">Configuration Parameters</h1>
+<p>This page describes the parameters in <code>setparams.m</code>. This file is located in the project root directory and serves as the configuration file for PRISME. Please modify it to run your analysis. We recommend reviewing the file before going through this guide.</p>
+<h2 id="quick-reference">Quick Reference</h2>
+<ul>
+<li><code>data_dir</code> - Path to your dataset used for the analysis</li>
+<li><code>list_of_nsubset</code> - List of sample sizes to perform the power calculation</li>
+<li><code>n_repetitions</code> - Number of subsampling repetitions to be used</li>
+<li><code>all_cluster_stat_types</code> - List of statistical inference methods used in the analysis </li>
+<li><code>n_perms</code> - Number of permutations used for the non-parametric inference methods</li>
+</ul>
+<h2 id="data-and-output-paths">Data and Output Paths</h2>
+<p>All attributes here are fields in the Params struct defined in the setparams.m file.</p>
+<p><strong><code>data_dir</code></strong> (string, required)</p>
+<p>Path to the input dataset <code>.mat</code> file used for the power calculation. See <a href="../input_format/">Input Data Format</a> for more instructions.</p>
+<pre><code class="language-matlab">Params.data_dir = './data/my_dataset.mat';
+</code></pre>
+<p><strong><code>output</code></strong> (string, optional)</p>
+<p>Name for the output directory. If not specified, defaults to the dataset filename. PRISME saves the results from the subsampling repetitions in a directory folder called <code>repetitions</code>, the ground truth calculation in <code>ground_truth</code>, and the power calculation in <code>power_calculation</code>. All three folders are contained in a directory named after Params.output within <code>power_calculator_results</code>.</p>
+<pre><code class="language-matlab">Params.output = 'my_power_analysis';
+</code></pre>
+<p><strong><code>save_directory</code></strong> (string, optional)</p>
+<p>The directory where all results are saved. Default: <code>'./power_calculator_results/'</code></p>
+<pre><code class="language-matlab">Params.save_directory = './my_results/';
+</code></pre>
+<p><strong><code>subsample_file_type</code></strong> (string, optional)</p>
+<p>Output file format: <code>'full_file'</code> or <code>'compact_file'</code>. Full files save all relevant p-values and all estimated t-statistics. Therefore, they consume significantly more storage and are slower to checkpoint. Compact files only save the average t-statistic and the number of times each variable was found significant. Default: <code>'compact_file'</code></p>
+<pre><code class="language-matlab">Params.subsample_file_type = 'compact_file';
+</code></pre>
+<p><strong><code>atlas_file</code></strong> (string or NaN, optional)</p>
+<p>Path to a custom brain atlas file. Default: NaN. If no atlas is provided, PRISME cannot assign variables to networks, and network-level inference methods will not be performed.</p>
+<pre><code class="language-matlab">Params.atlas_file = './atlases/schaefer_268.mat';
+% or
+Params.atlas_file = NaN;  % No atlas
+</code></pre>
+<p><strong><code>recalculate</code></strong> (boolean, optional)</p>
+<p>If <code>true</code>, recalculates existing results. If <code>false</code>, resumes from existing checkpoints. Default: <code>false</code></p>
+<pre><code class="language-matlab">Params.recalculate = true;  % Force recalculation
+</code></pre>
+<p><strong><code>list_of_nsubset</code></strong> (cell array, required)</p>
+<p>Sample sizes to test in your power analysis.</p>
+<pre><code class="language-matlab">Params.list_of_nsubset = {20, 40, 80, 120, 200};
+</code></pre>
+<p>Note: For two-sample t-tests, this is the size per group (total N = 2n).</p>
+<p><strong><code>n_repetitions</code></strong> (integer, required)</p>
+<p>Number of subsampling repetitions.</p>
+<pre><code class="language-matlab">Params.n_repetitions = 100;
+</code></pre>
+<p><strong><code>batch_size</code></strong> (integer, optional)</p>
+<p>Number of repetitions per checkpoint batch. Results are only saved to disk once a batch is completed. Therefore, this parameter balances how much data will be stored in RAM before saving it to disk and checkpointing. The larger it is, the faster the overall calculation, but the more RAM memory will be necessary.</p>
+<pre><code class="language-matlab">Params.batch_size = 50;  % Process 50 repetitions before saving
+</code></pre>
+<p><strong><code>tests_to_skip</code></strong> (function handle, optional)</p>
+<p>Function handle that defines which studies to skip based on their index. Default skips nothing. This will be replaced in a future update.</p>
+<pre><code class="language-matlab">% Skip studies 5-10
+ranges = {[5, 10]};
+Params.tests_to_skip = @(x) any(cellfun(@(r) (x &gt;= r(1)) &amp;&amp; (x &lt;= r(2)), ranges));
+</code></pre>
+<h2 id="statistical-settings">Statistical Settings</h2>
+<p><strong><code>all_cluster_stat_types</code></strong> (cell array, required)</p>
+<p>Statistical inference methods to evaluate. Some of the available methods:</p>
+<ul>
+<li><code>'Parametric'</code> - Parametric inference using t-distribution</li>
+<li><code>'Size_cpp'</code> - Cluster-size inference with C++ implementation</li>
+<li><code>'Fast_TFCE_cpp'</code> - TFCE with incremental cluster and C++ </li>
+<li><code>'Constrained_cpp'</code> - cNBS with C++ implementation</li>
+<li><code>'Omnibus_cNBS'</code> - Multivariate whole-brain test</li>
+</ul>
+<p>Non-C++ versions are named identically without the <code>_cpp</code> suffix.</p>
+<pre><code class="language-matlab">Params.all_cluster_stat_types = {'Parametric', 'Fast_TFCE_cpp', 'Constrained_cpp'};
+</code></pre>
+<p><strong><code>all_submethods</code></strong> (cell array, optional)</p>
+<p>Multiple comparison correction methods. Current options: <code>'FWER'</code>, <code>'FDR'</code></p>
+<pre><code class="language-matlab">Params.all_submethods = {'FWER', 'FDR'};
+</code></pre>
+<p><strong><code>n_perms</code></strong> (integer, required for non-parametric methods)</p>
+<p>Number of permutations for non-parametric inference.</p>
+<pre><code class="language-matlab">Params.n_perms = 1000;
+</code></pre>
+<p><strong><code>force_permute</code></strong> (boolean, optional)</p>
+<p>If <code>true</code>, forces permutation generation even if parametric methods that don't require permutations are chosen. Default: <code>false</code></p>
+<pre><code class="language-matlab">Params.force_permute = true;
+</code></pre>
+<p><strong><code>pthresh_second_level</code></strong> (float, optional)</p>
+<p>Significance threshold (alpha level). This significance threshold is applied to multiple-comparison corrected p-values when applicable.</p>
+<pre><code class="language-matlab">Params.pthresh_second_level = 0.05;  % 5% significance level
+</code></pre>
+<p><strong><code>tthresh_first_level</code></strong> (float, optional)</p>
+<p>T-statistic threshold for initial cluster formation. Only used by the Cluster Size method. Default: 3.1. This parameter will be moved into method-specific implementations in a future update.</p>
+<pre><code class="language-matlab">Params.tthresh_first_level = 3.1;  % Approximately p=0.001-0.005
+</code></pre>
+<p><strong><code>tpr_dthresh</code></strong> (float, optional)</p>
+<p>Threshold for defining true effects from ground truth. If the magnitude is above this value, the ground truth effect is considered a true effect. Default: 0</p>
+<pre><code class="language-matlab">Params.tpr_dthresh = 0;
+</code></pre>
+<p><strong><code>save_significance_thresh</code></strong> (float, optional)</p>
+<p>Only p-values below this threshold are saved to disk (memory optimisation). Default: 0.15. This only applies to the full_file structure. Compact files only save the number of times a variable was found significant.</p>
+<pre><code class="language-matlab">Params.save_significance_thresh = 0.15;
+</code></pre>
+<p><strong><code>cluster_size_type</code></strong> (string, optional)</p>
+<p>For Cluster Size method: <code>'Extent'</code> (cluster size) or <code>'Intensity'</code> (cluster mass). Default: <code>'Extent'</code>. This parameter will be moved into method-specific implementations in a future update.</p>
+<pre><code class="language-matlab">Params.cluster_size_type = 'Extent';
+</code></pre>
+<h2 id="parallel-processing">Parallel Processing</h2>
+<p><strong><code>parallel</code></strong> (boolean, optional)</p>
+<p>Enable parallel processing across repetitions. Default: <code>true</code></p>
+<pre><code class="language-matlab">Params.parallel = true;
+</code></pre>
+<p><strong><code>n_workers</code></strong> (integer, optional)</p>
+<p>Number of parallel workers. Set to the number of available CPU cores. Default: <code>10</code></p>
+<pre><code class="language-matlab">Params.n_workers = 16;  % Use 16 cores
+</code></pre>
+<h2 id="advanced-parameters">Advanced Parameters</h2>
+<p><strong><code>gt_origin</code></strong> (string, deprecated)</p>
+<p>Ground truth calculation origin. Deprecated.</p>
+<pre><code class="language-matlab">Params.gt_origin = 'power_calculator';
+</code></pre>
+<p><strong><code>nbs_dir</code></strong> (string, internal)</p>
+<p>Path to NBS directory for internal dependencies.</p>
+<pre><code class="language-matlab">Params.nbs_dir = './NBS1.2';
+</code></pre>
+<p><strong><code>other_scripts_dir</code></strong> (string, internal)</p>
+<p>Deprecated - path to old cNBS scripts.</p>
+<pre><code class="language-matlab">Params.other_scripts_dir = './NBS_benchmarking/support_scripts/';
+</code></pre>
+<h2 id="developer-options">Developer Options</h2>
+<p>These parameters enable faster execution for testing and development. <strong>Do not use for actual power calculations.</strong></p>
+<p><strong><code>testing</code></strong> (boolean, optional)</p>
+<p>Enables testing mode with reduced parameters. Default: <code>false</code></p>
+<pre><code class="language-matlab">Params.testing = true;
+</code></pre>
+<p><strong><code>test_n_perms</code></strong> (integer, optional)</p>
+<p>Reduced permutation count for testing. Default: <code>10</code></p>
+<pre><code class="language-matlab">Params.test_n_perms = 10;
+</code></pre>
+<p><strong><code>test_n_repetitions</code></strong> (integer, optional)</p>
+<p>Reduced repetition count for testing. Default: <code>5</code></p>
+<pre><code class="language-matlab">Params.test_n_repetitions = 5;
+</code></pre>
+<p><strong><code>test_n_workers</code></strong> (integer, optional)</p>
+<p>Worker count for testing. Default: <code>1</code></p>
+<pre><code class="language-matlab">Params.test_n_workers = 1;
+</code></pre>
+<p><strong><code>test_disable_save</code></strong> (boolean, optional)</p>
+<p>Disables saving results during testing. Default: <code>false</code></p>
+<pre><code class="language-matlab">Params.test_disable_save = true;
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
