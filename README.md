@@ -53,7 +53,7 @@ Params.list_of_nsubset = {40, 80, 120, 200};
 Params.n_repetitions = 100;
 
 % Statistical inference methods to compare (required - which methods to use for this analysis)
-Params.all_cluster_stat_types = {'Parametric', 'Fast_TFCE_cpp', 'Constrained_cpp'};
+Params.all_cluster_stat_types = {'Parametric', 'Fast_TFCE', 'Size'};
 
 % 2. Run the workflow
 Params = setparams();  % Load all parameters
