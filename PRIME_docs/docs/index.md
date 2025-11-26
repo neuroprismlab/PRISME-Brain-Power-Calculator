@@ -11,7 +11,7 @@ PRISME calculates statistical power through repeated subsampling. The algorithm:
 1. Samples n subjects from your full dataset (N subjects)
 2. Fits a GLM to generate t-statistics for each brain variable
 3. Applies statistical inference methods to produce p-values and detect an effect if the obtained p-value is below a significance threshold
-4. Repeats this process R times (typically 500 repetitions - user defined)
+4. Repeats this process R times 
 5. Compares detected effects against an estimated ground truth from the full dataset
 6. Returns power estimates for each variable and method
 
@@ -53,7 +53,7 @@ Params.list_of_nsubset = {40, 80, 120, 200};
 Params.n_repetitions = 100;
 
 % Statistical inference methods to compare (required - which methods to use for this analysis)
-Params.all_cluster_stat_types = {'Parametric', 'Fast_TFCE_cpp', 'Constrained_cpp'};
+Params.all_cluster_stat_types = {'Parametric', 'Fast_TFCE', 'Size'};
 
 % 2. Run the workflow
 Params = setparams();  % Load all parameters
