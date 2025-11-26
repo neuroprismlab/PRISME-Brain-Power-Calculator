@@ -1,0 +1,33 @@
+site_name: PRISME Documentation
+site_url: https://neuroprismlab.github.io/PRISME-Brain-Power-Calculator/
+repo_url: https://github.com/neuroprismlab/PRISME-Brain-Power-Calculator
+
+theme:
+  name: material
+  logo: assets/avatar.jpg
+  palette:
+    # Light content with very dark header
+    - scheme: default
+      primary: black         # Very dark header (matches your site!)
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Switch to dark mode
+    # Optional: Full dark mode
+    - scheme: slate
+      primary: black
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Input Data Format: user_guide/input_format.md
+      - Configuration Parameters: user_guide/parameters.md
+      - Running Workflows: user_guide/workflows.md
+  - Developer Guide:
+      - Adding New Methods: developer/adding_methods.md
+      - Architecture Overview: developer/architecture.md
+      - C++ Integration: developer/cpp_integration.md
