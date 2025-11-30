@@ -1,4 +1,5 @@
 data/*
+!data/test_*.mat
 power_calculator_results/*
 *.asv
 /test_power_calculator/*
