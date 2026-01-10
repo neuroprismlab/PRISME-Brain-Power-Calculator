@@ -1,139 +1,127 @@
-%% TFCE vs Fast_TFCE Speed Comparison Script
-% This script compares the speed of TFCE and Fast_TFCE methods across different dh values
-% to assess the performance gains.
+%% TFCE Speed Comparison - LaTeX Table Generator
+% Generates LaTeX tables for IC-TFCE vs TFCE speed comparison
 
-% Clear workspace but keep important variables
-vars = who;
-vars(strcmp(vars, 'data_matrix')) = [];
-vars(strcmp(vars, 'testing_yml_workflow')) = [];
-clear(vars{:});
-clc;
+clear; clc;
 
-% Initialize methods to compare
-fast_tfce_methods = {'Fast_TFCE_dh1', 'Fast_TFCE_dh5', 'Fast_TFCE_dh50', 'Fast_TFCE_dh100', 'Fast_TFCE_dh250'};
-tfce_methods = {'TFCE_dh1', 'TFCE_dh5', 'TFCE_dh50', 'TFCE_dh100', 'TFCE_dh250'};
-dh_values = [1, 5, 50, 100, 250]; % dh values for each method
+% Directory with result files
+results_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/PRISME-Brain-Power-Calculator/power_calculator_results/re_tfce_speed_comp';
 
-% Combine all methods
-all_methods = [fast_tfce_methods, tfce_methods];
+% Method names
+ic_tfce_methods = {'IC_TFCE_FC_cpp_dh1', 'IC_TFCE_FC_cpp_dh5', 'IC_TFCE_FC_cpp_dh10', 'IC_TFCE_FC_cpp_dh25'};
+tfce_methods = {'TFCE_cpp_dh1', 'TFCE_cpp_dh5', 'TFCE_cpp_dh10', 'TFCE_cpp_dh25'};
+exact_method = 'Exact_FC_TFCE_cpp';
+dh_values = [1, 5, 10, 25];
+n_subs_list = [20, 80, 200];
 
-% Get the directory of the current script
-current_script_dir = fileparts(mfilename('fullpath'));
-parent_dir = fileparts(current_script_dir);
+% Load all result files
+result_files = dir(fullfile(results_dir, '**/*.mat'));
+fprintf('Found %d result files\n', length(result_files));
 
-% Change the current working directory to the parent directory
-cd(parent_dir);
+% Initialize storage
+ic_tfce_times = struct();
+tfce_times = struct();
+exact_tfce_times = struct();
 
-% Create the full path for the results directory - using a different folder
-speed_results_dir = './power_calculator_results/tfce_speed_dh_test/';
-if ~exist(speed_results_dir, 'dir')
-    mkdir(speed_results_dir);
+for ns = n_subs_list
+    key = sprintf('n%d', ns);
+    ic_tfce_times.(key) = cell(1, length(dh_values));
+    tfce_times.(key) = cell(1, length(dh_values));
+    exact_tfce_times.(key) = [];
+    for i = 1:length(dh_values)
+        ic_tfce_times.(key){i} = [];
+        tfce_times.(key){i} = [];
+    end
 end
 
-% Define path for speed comparison results file
-speed_comparison_filepath = fullfile(speed_results_dir, 'tfce_speed_test_.mat');
-
-% Check if results already exist
-if exist(speed_comparison_filepath, 'file')
-    error('Delete or remove old file to continue')
-else
-    fprintf('No existing speed comparison results found. Starting fresh.\n');
-    speed_results = struct();
-end
-
-% Define path to clear
-clear_dir = fullfile(speed_results_dir, 'hcp_fc');
-if ~exist(clear_dir, 'dir')
-    mkdir(clear_dir);
-end
-
-% Set up parameters
-fprintf('\n========================================\n');
-fprintf('Starting TFCE vs Fast_TFCE dh Speed Comparison\n');
-fprintf('========================================\n\n');
-
-% Set parameters
-Params = setparams();
-Params.testing = false;
-Params.save_directory = speed_results_dir;
-Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-Params.all_cluster_stat_types = all_methods; % All methods at once
-Params.n_perms = 100; % Reduced number of permutations since we're just comparing speed
-Params.n_repetitions = 10; % Reduced number of repetitions
-Params.list_of_nsubset = {20}; % Using 20 subjects
-Params.save_significance_thresh = 0.15;
-
-% ADD HERE: Skip tests on parameters if needed
-% Params.skip_param_tests = true; 
-
-% Run the analysis
-rep_cal_function(Params);
-
-% Find and load the results files
-result_files = dir(fullfile(speed_results_dir, 'hcp_fc', 'hcp_fc*.mat'));
-if isempty(result_files)
-    error('No result files found for %d repetitions', Params.n_repetitions);
-end
-
-fprintf('Found %d result files. Loading all tasks...\n', length(result_files));
-
-% Initialize the results structure
-speed_results = struct();
-speed_results.tasks = {};
-speed_results.dh_values = dh_values;
-
-% Create structures to store timing data across all tasks
-all_fast_tfce_times = zeros(length(fast_tfce_methods), length(result_files));
-all_tfce_times = zeros(length(tfce_methods), length(result_files));
-task_names = cell(1, length(result_files));
-
-% Process all result files
-for file_idx = 1:length(result_files)
-    temp_file_path = fullfile(result_files(file_idx).folder, result_files(file_idx).name);
-    temp_results = load(temp_file_path);
+% Process each file
+for f = 1:length(result_files)
+    filepath = fullfile(result_files(f).folder, result_files(f).name);
+    data = load(filepath);
     
-    % Get the task name
-    task_name = strcat(temp_results.meta_data.test_components{1}, '_', ...
-        temp_results.meta_data.test_components{2});
-    task_names{file_idx} = task_name;
+    if ~isfield(data, 'meta_data') || ~isfield(data.meta_data, 'n_subs')
+        continue;
+    end
     
-    % Extract Fast_TFCE times for this task
-    for m = 1:length(fast_tfce_methods)
-        method = fast_tfce_methods{m};
-        if isfield(temp_results, method) && isfield(temp_results.(method), 'total_time')
-            all_fast_tfce_times(m, file_idx) = temp_results.(method).total_time;
-        else
-            all_fast_tfce_times(m, file_idx) = NaN;
+    n_subs = data.meta_data.n_subs;
+    key = sprintf('n%d', n_subs);
+    
+    if ~ismember(n_subs, n_subs_list)
+        continue;
+    end
+    
+    % Extract times for each dh value
+    for i = 1:length(dh_values)
+        if isfield(data, ic_tfce_methods{i}) && isfield(data.(ic_tfce_methods{i}), 'total_time')
+            ic_tfce_times.(key){i}(end+1) = data.(ic_tfce_methods{i}).total_time;
+        end
+        if isfield(data, tfce_methods{i}) && isfield(data.(tfce_methods{i}), 'total_time')
+            tfce_times.(key){i}(end+1) = data.(tfce_methods{i}).total_time;
         end
     end
     
-    % Extract TFCE times for this task
-    for m = 1:length(tfce_methods)
-        method = tfce_methods{m};
-        if isfield(temp_results, method) && isfield(temp_results.(method), 'total_time')
-            all_tfce_times(m, file_idx) = temp_results.(method).total_time;
-        else
-            all_tfce_times(m, file_idx) = NaN;
-        end
+    % Extract Exact TFCE time
+    if isfield(data, exact_method) && isfield(data.(exact_method), 'total_time')
+        exact_tfce_times.(key)(end+1) = data.(exact_method).total_time;
     end
-
-    speed_results.all_fast_tfce_times = all_fast_tfce_times;
-    speed_results.all_tfce_times = all_tfce_times;
 end
 
-% Store all task names
-speed_results.tasks = task_names;
+% Generate LaTeX output
+fprintf('\n\n%% ========== COPY BELOW ==========\n\n');
 
-% Calculate average times across all tasks
-speed_results.fast_tfce_times = nanmean(all_fast_tfce_times, 2)';
-speed_results.tfce_times = nanmean(all_tfce_times, 2)';
+fprintf('\\begin{table}[h!]\n');
+fprintf('\\centering\n');
+fprintf('\\caption{Runtime comparison of TFCE implementations across varying sample sizes.}\n');
+fprintf('\\label{tab:tfce_comparison}\n\n');
 
-% Calculate speed gain (time difference and percentage)
-speed_results.speed_gain = zeros(1, length(dh_values));
+labels = {'(a)', '(b)', '(c)'};
 
-for i = 1:length(dh_values)
-    speed_results.speed_gain(i) = speed_results.tfce_times(i)/speed_results.fast_tfce_times(i);     
+for ns_idx = 1:length(n_subs_list)
+    ns = n_subs_list(ns_idx);
+    key = sprintf('n%d', ns);
+    
+    fprintf('\\vspace{0.5em}\n');
+    fprintf('\\textbf{%s N = %d}\n\n', labels{ns_idx}, ns);
+    fprintf('\\begin{tabular}{cccc}\n');
+    fprintf('\\hline\n');
+    fprintf('dh & IC\\_TFCE (s) & TFCE (s) & Speedup \\\\\n');
+    fprintf('\\hline\n');
+    
+    for i = 1:length(dh_values)
+        ic_mean = mean(ic_tfce_times.(key){i});
+        tfce_mean = mean(tfce_times.(key){i});
+        speedup = tfce_mean / ic_mean;
+        fprintf('%d & %.4f & %.4f & %.2fx \\\\\n', dh_values(i), ic_mean, tfce_mean, speedup);
+    end
+    
+    fprintf('\\hline\n');
+    fprintf('\\end{tabular}\n\n');
 end
 
-% Save the speed comparison results
-save(speed_comparison_filepath, 'speed_results');
+% Exact TFCE table - by subject size
+fprintf('\\vspace{0.5em}\n');
+fprintf('\\textbf{(d) Exact TFCE}\n\n');
+fprintf('\\begin{tabular}{cccc}\n');
+fprintf('\\hline\n');
+fprintf('N & Exact TFCE (s) & \\begin{tabular}[c]{@{}c@{}}Speedup\\\\IC-TFCE\\end{tabular} & \\begin{tabular}[c]{@{}c@{}}Speedup\\\\TFCE\\end{tabular} \\\\\n');
+fprintf('\\hline\n');
+
+for ns_idx = 1:length(n_subs_list)
+    ns = n_subs_list(ns_idx);
+    key = sprintf('n%d', ns);
+    
+    exact_mean = mean(exact_tfce_times.(key));
+    % Compare to dh=1 (finest discretization)
+    ic_mean_dh1 = mean(ic_tfce_times.(key){1});
+    tfce_mean_dh1 = mean(tfce_times.(key){1});
+    
+    speedup_ic = exact_mean / ic_mean_dh1;
+    speedup_tfce = exact_mean / tfce_mean_dh1;
+    
+    fprintf('%d & %.4f & %.2fx & %.2fx \\\\\n', ns, exact_mean, speedup_ic, speedup_tfce);
+end
+
+fprintf('\\hline\n');
+fprintf('\\end{tabular}\n\n');
+fprintf('\\end{table}\n');
+
+fprintf('\n%% ========== END COPY ==========\n');

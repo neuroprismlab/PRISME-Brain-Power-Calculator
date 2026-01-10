@@ -2,8 +2,8 @@ function [average_array, c_above_80] = ...
     average_heat_map_gen(method, n_subs, directory, varargin)   
 %
 % For the paper: Shitf - down to select for paste
-% - average_heat_map_gen('Constrained_FDR',80,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/hcp_fc')
-% - average_heat_map_gen('Size_cpp',500,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/abcd_100_sex/')
+% - average_heat_map_gen('Constrained_FDR',80,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/PRISME Paper Results/power_calculation/hcp_fc')
+% - average_heat_map_gen('Size_cpp',500,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/PRISME Paper Results/power_calculation/abcd_100_sex')
 
     % Create parser object
     p = inputParser;
@@ -123,9 +123,12 @@ function [average_array, c_above_80] = ...
     end
     
     % Figure config
-    figure('Position', [100, 100, 800, 700]);
+    figure('Position', [100, 100, 800, 700], 'Color', 'white');
     
     imagesc(power_data);
+
+    set(gca, 'XTickLabel', []);
+    set(gca, 'YTickLabel', []);
     
     c = colorbar;
     c.FontSize = 12;

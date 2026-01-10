@@ -5,7 +5,7 @@ function voxel_heat_map = voxel_heat_map_brain(method, n_subs, directory, vararg
 %   However, I can see a point to directly updating them consistently
 %  
 %   Usage for paper:
-%   - voxel_heat_map_brain('Size_Node_cpp',40,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/power_calculation/s_hcp_act_noble_1')
+%   - voxel_heat_map_brain('Size_Node_cpp',40,'/Users/f.cravogomes/Desktop/Pc_Res_Updated/PRISME Paper Results/power_calculation/s_hcp_act_noble_1')
      
     % Create parser object
     p = inputParser;
@@ -90,6 +90,17 @@ function voxel_heat_map = voxel_heat_map_brain(method, n_subs, directory, vararg
     [x_l, y_l, z_l] = ind2sub(size(Flat_creator.mask), find(Flat_creator.mask));
 
     scatter3(x_l, y_l, z_l, 50, power_values, 'filled');
-    colorbar;
+
+    % Set the axes background to white
+    set(gca, 'Color', 'white');
+
+    % Set the figure background to white
+    set(gcf, 'Color', 'white');
+
+    cb = colorbar;
+    cb.Label.String = 'Power %';
+    cb.Label.FontSize = 14;
+    cb.Label.FontWeight = 'bold';
+
 
 end

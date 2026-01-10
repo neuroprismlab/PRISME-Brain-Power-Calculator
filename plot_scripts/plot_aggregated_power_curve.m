@@ -1,23 +1,23 @@
 function plot_aggregated_power_curve(varargin)
     
-    % For paper, the function call
-    % plot_aggregated_power_curve('/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/abcd_100_sex')
-    % plot_aggregated_power_curve('/Users/f.cravogomes/Desktop/Pc_Res_Updated/SHOCK Paper Results/power_calculation/s_hcp_act_noble_1')
-
     %% Parse varargin
     % Create input parser
     p = inputParser;
     
-    default_dir = '/Users/f.cravogomes/Desktop/Cloned Repos/Power_Calculator/power_calculator_results/power_calculation/tfce_power_comp';
+    default_dir = '/Users/f.cravogomes/Desktop/Pc_Res_Updated/PRISME Paper Results/hcp_activation/power_calculation';
     default_undesired_sub_numbers = {};
-    default_map = map_tfce_comp;
+    default_map = map_method_plot_name;
     default_attribute_name = 'tpr';
+    default_legend = 1;
+    default_with_labels = 0;
     
      % Add optional parameter
     addParameter(p, 'dir', default_dir);
     addParameter(p, 'undesired_subject_numbers', default_undesired_sub_numbers);
     addParameter(p, 'map_function', default_map);
     addParameter(p, 'attribute_name_calculation', default_attribute_name)
+    addParameter(p, 'legend', default_legend)
+    addParameter(p, 'with_labels', default_with_labels)
   
     % Parse input
     parse(p, varargin{:});
@@ -26,6 +26,8 @@ function plot_aggregated_power_curve(varargin)
     undesired_subject_numbers = p.Results.undesired_subject_numbers;
     map_function = p.Results.map_function;
     attribute = p.Results.attribute_name_calculation;
+    with_legend = p.Results.legend;
+    with_labels = p.Results.with_labels;
     
     %% Check if input is a directory
     if ~isfolder(directory)
@@ -120,7 +122,7 @@ function plot_aggregated_power_curve(varargin)
     
         % Plot fitted curve
         plot(x_fit, y_fit, '-', 'Color', color, 'LineWidth', 3, ...
-             'DisplayName', sprintf('%s (R² = %.3f)', method_name, r_squared));
+             'DisplayName', sprintf(method_name));
 
     end
 
@@ -131,12 +133,16 @@ function plot_aggregated_power_curve(varargin)
     hold off;
     
     % Add info
-    xlabel('Number of Subjects', 'FontSize', 16, 'FontName', 'Arial');
-    ylabel('Statistical Power (%)', 'FontSize', 16, 'FontName', 'Arial');
-    title('Statistical Power Curves by Method', 'FontSize', 18, 'FontName', 'Arial');
+    if with_labels
+        xlabel('Number of Subjects', 'FontSize', 16, 'FontName', 'Arial');
+        ylabel('Statistical Power (%)', 'FontSize', 16, 'FontName', 'Arial');
+        title('Statistical Power Curves by Method', 'FontSize', 18, 'FontName', 'Arial');
+    end
 
     % Add legend
-    legend('Location', 'best', 'FontSize', 12, 'FontName', 'Arial', ...
-           'Box', 'on', 'LineWidth', 1.5);
+    if with_legend
+        legend('Location', 'best', 'FontSize', 12, 'FontName', 'Arial', ...
+                'Box', 'on', 'LineWidth', 1.5);
+    end
 
 end

@@ -114,13 +114,10 @@ function tfced = apply_tfce(img, varargin)
             end
 
         end
-        
 
-        for j = 1:numel(clusters)
-            cc = clusters(j);
-            if cc.active
-                cluster_size_per_node(h, cc.nodes) = cc.size;
-            end 
+        for j = 1:num_nodes
+            cc = cluster_labels(j);
+            cluster_size_per_node(h, j) = clusters(cc).size;
         end
         
     end

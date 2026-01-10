@@ -29,9 +29,11 @@ function Params = setparams()
 
 % Datasets - Commented for easy use
 % Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-Params.data_dir = './data/s_hcp_act_noble_1.mat';
-Params.output = 'tfce_voxel_power_comp';
+Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
+% Params.data_dir = './data/s_hcp_act_noble_1.mat';
+
+% Name of the output directory 
+Params.output = 're_tfce_speed_comp';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
@@ -57,9 +59,9 @@ Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
 Params.parallel = true; % run stuff sequentially or in parallel
-Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
-Params.n_repetitions = 100;  % 500 recommended
-Params.batch_size = 10;
+Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
+Params.n_repetitions = 5;  % 500 recommended
+Params.batch_size = 5;
  
 
 %% Skip some tests - change ranges or the function
@@ -73,15 +75,15 @@ Params.list_of_nsubset = {20, 80, 200}; % To change this, add more when necessar
 
                             % Current model (see above design matrix) only designed for t-test
 Params.force_permute = true;               
-Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
+Params.n_perms = 100;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
 Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF=10-1000)
                             % Only used if cluster_stat_type='Size'
 Params.pthresh_second_level = 0.05;  % FWER or FDR rate 
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
-% Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
-Params.all_cluster_stat_types = {'IC_TFCE_Node_cpp_dh1', 'IC_TFCE_Node_cpp_dh5', 'IC_TFCE_Node_cpp_dh10',...
-    'IC_TFCE_Node_cpp_dh25'};
+%Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
+Params.all_cluster_stat_types = {'IC_TFCE_FC_cpp_dh1', 'IC_TFCE_FC_cpp_dh5', 'IC_TFCE_FC_cpp_dh10',...
+    'IC_TFCE_FC_cpp_dh25', 'TFCE_cpp_dh1', 'TFCE_cpp_dh5','TFCE_cpp_dh10', 'TFCE_cpp_dh25', 'Exact_FC_TFCE_cpp'};
 
 Params.all_submethods = {'FWER', 'FDR'};
 

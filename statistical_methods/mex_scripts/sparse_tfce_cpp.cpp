@@ -141,7 +141,7 @@ std::vector<double> sparse_tfce_impl(double *I, double *J, double *V, int nnz,
                     double tfce_contribution = pow(clusters[cluster_id].size, E) * 
                         pow(current_threshold, H) * dh;
                     
-                    node_tfce_values[node_id] += tfce_contribution;
+                        node_tfce_values[node_id] += tfce_contribution;
                 }
             }
         }

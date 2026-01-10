@@ -19,40 +19,41 @@ function [x, y, r_squared, fitted_params] = fit_power_curve(results_x, results_y
     lb = p.Results.lower_bounds;
     ub = p.Results.upper_bounds;
 
-    % Initial parameter estimates
-    % a: roughly where we expect decent power (median of x range)
-    % b: start with exponential shape (b=1)
     a_init = median(results_x);
     b_init = 1;
     c_init = 50;
 
-    % Initial guess: [scale, shape]
+    % Initial parameter estimates
+    % a: roughly where we expect decent power (median of x range)
+    % b: start with exponential shape (b=1)
     initial_params = [a_init, b_init, c_init];
 
     % Define cost function (sum of squared residuals)
     cost_func = @(params) sum((results_y - power_func(params, results_x)).^2);
 
     % Set optimization options with bounds to ensure positive parameters
-    options = optimset('Display', 'off', 'MaxFunEvals', 10000);
+    options = optimoptions('fmincon', ...
+        'Display', 'off', ...
+        'MaxFunctionEvaluations', 10000, ...
+        'MaxIterations', 5000, ...
+        'OptimalityTolerance', 1e-8, ...
+        'StepTolerance', 1e-10, ...
+        'Algorithm', 'interior-point');
 
-    if exist('fmincon', 'file')
-        [fitted_params, ~] = fmincon(cost_func, initial_params, [], [], [], [], lb, ub, [], options);
-    else
-        % Fallback to fminsearch if Optimization Toolbox not available
-        [fitted_params, ~] = fminsearch(cost_func, initial_params, options);
-    end
-
+    [fitted_params, ~] = fmincon(cost_func, initial_params, [], [], [], [], lb, ub, [], options);
+    
 
     % Generate smooth curve for plotting
     x = linspace(0, max(results_x), 200);
     y = power_func(fitted_params, x);
-    
+
+    % Clip power values to avoid weird fits
+    y = max(0, min(100, y));
+
     % Calculate R-squared
     y_pred = power_func(fitted_params, results_x);
     ss_res = sum((results_y - y_pred).^2);
     ss_tot = sum((results_y - mean(results_y)).^2);
     r_squared = 1 - (ss_res / ss_tot);
-
-
 
 end

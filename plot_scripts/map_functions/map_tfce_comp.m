@@ -7,8 +7,21 @@ function map = map_tfce_comp()
     method_to_display('IC_TFCE_FC_cpp_dh5') = 'IC-TFCE dh 0.05';
     method_to_display('IC_TFCE_FC_cpp_dh10') = 'IC-TFCE dh 0.1';
     method_to_display('IC_TFCE_FC_cpp_dh25') = 'IC-TFCE dh 0.25';
+    method_to_display('IC_TFCE_Node_cpp_dh1') = 'IC-TFCE dh 0.01';
+    method_to_display('IC_TFCE_Node_cpp_dh5') = 'IC-TFCE dh 0.05';
+    method_to_display('IC_TFCE_Node_cpp_dh10') = 'IC-TFCE dh 0.1';
+    method_to_display('IC_TFCE_Node_cpp_dh25') = 'IC-TFCE dh 0.25';
     map.display = method_to_display;
     
+    % Create mapping from internal method names to display order
+    map_display_order = containers.Map();
+    map_display_order('IC-TFCE dh 0.01') = 1;
+    map_display_order('IC-TFCE dh 0.05') = 2;
+    map_display_order('IC-TFCE dh 0.1') = 3;
+    map_display_order('IC-TFCE dh 0.25') = 4;
+
+    map.order = map_display_order;
+
     % Color gradient for TFCE variants (green/teal gradient)
     color_map = containers.Map();
     color_map('IC-TFCE dh 0.01') = [0, 150, 136]/255;   % Dark teal

@@ -156,14 +156,8 @@ void apply_tfce_impl(double *img, int num_nodes, double dh, double H, double E, 
             }
         }
         
-        for (int j = 0; j < num_nodes; j++) {
-            if (clusters[j].active) {
-                for (int n = 0; n < num_nodes; n++) {
-                    if (clusters[j].nodes[n]) {
-                        cluster_size_per_node[h][n] = clusters[j].size;                      
-                    }
-                }
-            }
+        for (int n = 0; n < num_nodes; n++) {
+            cluster_size_per_node[h][n] = clusters[cluster_labels[n]].size;
         }
     }
     

@@ -5,11 +5,11 @@ function plot_power_results(varargin)
     p = inputParser;
     
     % Default values
-    default_dataset = '/tfce_power_comp/';
-    default_undesired_subjects = {};
-    default_sub_directory = '/power_calculation/';
+    default_dataset = '/Users/f.cravogomes/Desktop/Pc_Res_Updated/PRISME Paper Results/power_calculation/hcp_fc';
+    default_undesired_subjects = {20, 200};
+    default_sub_directory = '';
     % Be careful not to call the function here
-    default_map_function = map_tfce_comp;
+    default_map_function = map_method_plot_name;
     
     % Add optional parameters
     addOptional(p, 'dataset_or_directory', default_dataset);
@@ -114,7 +114,7 @@ function plot_power_results(varargin)
                 
                 % Compute mean and standard error
                 mean_power(i, j) = mean(all_task_values, 'omitnan');
-                error_power(i, j) = std(all_task_values, 'omitnan') / sqrt(length(all_task_values));
+                error_power(i, j) = std(all_task_values, 'omitnan');
             end
         end
     end
@@ -126,7 +126,12 @@ function plot_power_results(varargin)
     method_display_names = cell(0);
     for j = 1:num_methods
         method_name = method_names{j};
-        method_dis_name = map.display(method_name);
+        try
+            method_dis_name = map.display(method_name);
+        catch ME
+            fprintf(['Method not found in name to display name function. ' ...
+                'Please change default map parameter']);
+        end
         
         if ~ismember(method_dis_name, method_display_names)
             method_display_names{end + 1} = method_dis_name;    
@@ -135,7 +140,7 @@ function plot_power_results(varargin)
     n_display_methods = numel(method_display_names);
 
     % Define the display order and names for the plot
-    display_names = cell(n_display_methods);
+    display_names = cell(1, n_display_methods);
     for j = 1:n_display_methods
         met = method_display_names{j};
         idx_met = map.order(met);
@@ -223,7 +228,7 @@ function plot_power_results(varargin)
         
         % Enhance grid and appearance
         grid off;
-        set(ax, 'FontSize', 16, 'LineWidth', 1.5, 'Box', 'on');
+        set(ax, 'FontSize', 12, 'LineWidth', 1.5, 'Box', 'on');
         set(ax, 'GridAlpha', 0.15);
         
         % Add axis ticks at important percentages
@@ -255,7 +260,6 @@ function plot_power_results(varargin)
     set(gcf, 'PaperUnits', 'inches');
     set(gcf, 'PaperPositionMode', 'auto');
     set(gcf, 'Renderer', 'painters'); % For vector quality
-    saveas(gcf, './plot_scripts/power_results.png');
     print('-dpng', '-r300', 'power_results_figure.png');
 end
 
