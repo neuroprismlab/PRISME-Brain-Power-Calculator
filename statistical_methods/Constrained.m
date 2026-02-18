@@ -46,12 +46,16 @@ classdef Constrained
                 [p_sorted, ind_srt] = sort(pval_uncorr);
                 threshold = (1:J) / J * STATS.alpha;
                 sig_mask = p_sorted <= threshold;
+                
+                k = find(sig_mask, 1, 'last');
 
                 p_fdr = ones(1, J);
-                p_fdr(ind_srt(sig_mask)) = 0;
+                p_fdr(ind_srt(1:k)) = 0;
 
                 pvals.FDR = p_fdr;
             end
+
+
         end
     end
 end
