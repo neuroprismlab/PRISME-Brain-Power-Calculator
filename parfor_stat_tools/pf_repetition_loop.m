@@ -80,7 +80,7 @@ function [edge_stats, cluster_stats, pvals_method, pvals_method_neg, method_timi
             end
         
             % Skip method if no submethods need computation
-            if ~any(struct2array(submethods_struct))
+            if ~any(cell2mat(struct2cell(submethods_struct)))
                 continue;
             end
         

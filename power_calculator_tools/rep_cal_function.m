@@ -106,7 +106,7 @@ function rep_cal_function(Params)
         % However, only the r test type will use this test
         switch test_type_origin
             
-            % Here: RP.test_name, RP.n_subs_1, RP.n_subs_2, RP.n_subs
+            % Here: RP.test_name, RP.n_subs_1, RP.n_subs_2, RP.n_subs 
             case 'score_cond'
                 [X, Y , RP] = subs_data_from_score_condition(RP, OutcomeData.(t), BrainData, t);
            
@@ -117,6 +117,10 @@ function rep_cal_function(Params)
                 error('Test type origin not found')
 
         end  
+        
+        if strcmp(RP.test_type, 't2')
+            RP.list_of_nsubset = cap_t2_test_subs_when_data_limited(RP);
+        end
 
         % Sets ground truth parameters for gt calculation
         % Future note, avoid this, for clarity, make sure each function returns exactly

@@ -58,7 +58,9 @@ function atlas_file = atlas_data_set_map(Params)
                 atlas_file = NaN;
 
             otherwise
-                error('No atlas file found for dataset: %s', data_set_choice);
+                % Default to shen atlas now
+                atlas_file = './atlas_storage/map268_subnetwork.mat';
+                % error('No atlas file found for dataset: %s', data_set_choice);
         end
     end
 end

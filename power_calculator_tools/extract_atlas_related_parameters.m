@@ -43,7 +43,7 @@ function [n_node_nets, trilmask_net, edge_groups, n_networks] = extract_atlas_re
     trilmask_net = NaN;
     edge_groups = [];
     n_networks = 0;
-
+       
     % Only apply atlas to the network-based stats
     if ~isnan(RP.atlas_file)
 

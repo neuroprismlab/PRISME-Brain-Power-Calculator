@@ -55,11 +55,9 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
 
         test_type_origin = 'score_cond';
         % if two unique entries in score -> t (paired) or t2
-
-        % Are the subids always in outcomes? For the hpc one, we have
-        % NaN and it is likely a t2 test
-        index_cond_1 = strcmp(TestData.score, test_score_set{1});
-        index_cond_2 = strcmp(TestData.score, test_score_set{2});
+        
+        [index_cond_1, index_cond_2] = get_index_matching_score(TestData.score, ...
+            test_score_set);
 
         sub_ids_cond1 = BrainData.(TestData.reference_condition).sub_ids(index_cond_1);
         sub_ids_cond2 = BrainData.(TestData.reference_condition).sub_ids(index_cond_2);
@@ -67,7 +65,7 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
         %% TODO: Divided by the two - focus on group sizes
         n_equal = numel(intersect(sort(sub_ids_cond1), sort(sub_ids_cond2)));
         n_unique = numel(setxor(sub_ids_cond1, sub_ids_cond2));
- 
+
         if n_equal >= n_unique
             test_type = 't';
         else

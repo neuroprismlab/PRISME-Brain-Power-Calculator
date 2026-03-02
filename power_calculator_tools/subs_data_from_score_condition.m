@@ -43,10 +43,10 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
         case 't2'
            
             ref_cond = TestData.reference_condition;
-    
-            index_cond_1 = strcmp(TestData.score, test_score_set{1});
-            index_cond_2 = strcmp(TestData.score, test_score_set{2});
             
+            [index_cond_1, index_cond_2] = get_index_matching_score(TestData.score, ...
+                test_score_set);
+
             % I call c1 one rest and c2 task for consitency - even though
             % they might not be task and rest
             RP.sub_ids_rest = TestData.sub_ids(index_cond_1);
