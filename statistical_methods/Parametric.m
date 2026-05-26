@@ -42,12 +42,6 @@ classdef Parametric
                     pvals.FDR = mafdr(p_uncorr, 'BHFDR', true);
                 end
             end
-
-            % Optional: unwrap single submethod into vector directly
-            method_names = fieldnames(pvals);
-            if numel(method_names) == 1
-                pvals = pvals.(method_names{1});
-            end
         end
     end
 end
