@@ -28,9 +28,7 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-% Params.data_dir = './data/s_abcd_fc_rosenblatt.mat';
-% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
-Params.data_dir = './data/s_hbn_fc_ye.mat';
+Params.data_dir = './data/s_hcp_fc_noble_corr.mat';
 
 % Name of the output directory 
 % Params.output = nan;
@@ -58,14 +56,15 @@ Params.nbs_dir = './NBS1.2';
 Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 10;
  
 
 %% Skip some tests - change ranges or the function
-ranges = {[0, 0]};
+% Tests to skip accepts functions
+ranges = {[0, 1]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 
@@ -95,7 +94,7 @@ Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
+Params.testing = true;
 Params.test_n_perms = 10;
 Params.test_n_repetitions = 5;
 Params.test_n_workers = 1;

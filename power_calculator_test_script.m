@@ -31,6 +31,8 @@ compile_mex()
 
 cd(scriptDir);
 
+test_subs_score_retrieval()
+
 clean_test_directories()
 
 create_test_fc_data_set()

@@ -36,6 +36,9 @@ function Params = common_test_setup(data_set_name)
     Params.n_repetitions = 5;
     Params.list_of_nsubset = {40};
     
+    % never skip during testing
+    Params.tests_to_skip = @(x) false; 
+
     % Set test values equal to normal values - with a simple dataset like
     % the test one, there is no need for a difference
     Params.test_n_perms = Params.n_perms;

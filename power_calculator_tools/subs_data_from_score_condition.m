@@ -75,19 +75,29 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
         case 'r'
 
             ref_cond = TestData.reference_condition;
-            
-            % Remove nan values and extract Y
+
+            % Remove nan values
             valid_idx = ~isnan(TestData.score);
-            
-            % Convert to design matrix with intercept
-            n_subjects = numel(TestData.score(valid_idx));
-            X = [TestData.score(valid_idx), ones(n_subjects, 1)];
-            
-            % Retrieve X values from BrainData
             sub_ids = TestData.sub_ids(valid_idx);
-            data_indexes = ismember(BrainData.(ref_cond).sub_ids, sub_ids);
-            Y = BrainData.(ref_cond).data(:, data_indexes);      
-            
+            scores = TestData.score(valid_idx);
+
+            % Check for duplicate IDs before alignment
+            assert(numel(unique(sub_ids)) == numel(sub_ids), ...
+                'Dataset bug: duplicate subject IDs found in TestData.');
+            assert(numel(unique(BrainData.(ref_cond).sub_ids)) == numel(BrainData.(ref_cond).sub_ids), ...
+                'Dataset bug: duplicate subject IDs found in BrainData.%s.', ref_cond);
+
+            % Align to BrainData order
+            [~, brain_pos] = ismember(sub_ids, BrainData.(ref_cond).sub_ids);
+            valid_brain = brain_pos > 0;
+            sub_ids = sub_ids(valid_brain);
+            scores = scores(valid_brain);
+            Y = BrainData.(ref_cond).data(:, brain_pos(valid_brain));
+
+            % Build design matrix with intercept
+            n_subjects = numel(scores);
+            X = [scores(:), ones(n_subjects, 1)];
+
             RP.sub_ids_task = sub_ids;
             RP.sub_ids_rest = sub_ids;
 

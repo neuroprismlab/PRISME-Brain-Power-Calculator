@@ -21,10 +21,16 @@ function test_score_set = get_test_score_set(TestData)
 %
 % **Author**: Fabricio Cravo  
 % **Date**: March 2025
+    
+    % Check further downstream
 
     if iscell(TestData.score)
         test_score_set = unique(TestData.score); 
         test_score_set(cellfun('isempty', test_score_set)) = []; % Remove empty cells
+    elseif iscategorical(TestData.score)
+        test_score_set = unique(TestData.score);
+        test_score_set = cellstr(test_score_set); % convert to cell of strings
+        test_score_set(cellfun('isempty', test_score_set)) = [];
     else
         test_score_set = unique(TestData.score);
         test_score_set(isnan(test_score_set)) = []; % Remove NaNs from numeric data
