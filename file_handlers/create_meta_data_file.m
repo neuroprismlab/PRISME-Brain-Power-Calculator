@@ -2,7 +2,6 @@ function meta_data = create_meta_data_file(abs_filename, previous_meta_data, RP,
 % This function creates the original subsample file. It contains only the
 % meta_data, with other fields added through appending 
 %
-    
     % Initiliaze meta-data with previous things
     meta_data = previous_meta_data;
     

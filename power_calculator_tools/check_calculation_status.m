@@ -37,6 +37,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
     
     %% Check if correct dataset first
     % Get first .mat file in the folder for dataset validation
+    % If RP has a mat_file already, use it, if not, load it
     mat_files = dir(fullfile(RP.save_directory, '*.mat'));
 
     if ~isempty(mat_files)
@@ -54,7 +55,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
             % Look for dataset info in any of the files
             try
                 loaded_data = load(file_path, 'meta_data');
-                stored_dataset_name = loaded_data.meta_data.rep_parameters.data_dir;
+                stored_dataset_name = loaded_data.meta_data.data_dir;
                 [~, stored_dataset_name, ~] = fileparts(stored_dataset_name);
                 dataset_found = true;
                 break; % Found it, exit loop
@@ -62,6 +63,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
                 % This file doesn't have dataset info, try next one
                 continue;
             end
+
         end
           
         if dataset_found && ~strcmp(stored_dataset_name, current_dataset_name)
@@ -83,8 +85,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
         method_name = RP.all_full_stat_type_names{i};
         existing_repetitions.(method_name) = 0;
     end
-     
-    
+
     if existence
 
         try
@@ -108,7 +109,7 @@ function [existing_repetitions, ids_sampled, meta_data] = check_calculation_stat
                            actual_n_subs, expected_n_subs, file_path);
                 end
                
-                % Extract alredy calculated repetititons
+                % Extract already calculated repetitions
                 existing_repetitions = extract_method_rep(RP.subsample_file_type, file_path, ...
                     meta_data, existing_repetitions);
 

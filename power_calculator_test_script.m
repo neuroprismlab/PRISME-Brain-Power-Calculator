@@ -31,7 +31,14 @@ compile_mex()
 
 cd(scriptDir);
 
+% Test if retrieval of subject scores matches what is expected 
+% tests subs_data_from_score_condition function
 test_subs_score_retrieval()
+
+% test if calculation status is proper
+test_check_calculation_status()
+
+
 
 clean_test_directories()
 
