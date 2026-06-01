@@ -73,13 +73,15 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
             RP.n_subs = n_subs_1 + n_subs_2;
 
         case 'r'
-
+            
             ref_cond = TestData.reference_condition;
+            
+            scores = r_test_categorical_to_numeric(TestData.score);
 
             % Remove nan values
-            valid_idx = ~isnan(TestData.score);
+            valid_idx = ~isnan(scores);
             sub_ids = TestData.sub_ids(valid_idx);
-            scores = TestData.score(valid_idx);
+            scores = scores(valid_idx);
 
             % Check for duplicate IDs before alignment
             assert(numel(unique(sub_ids)) == numel(sub_ids), ...

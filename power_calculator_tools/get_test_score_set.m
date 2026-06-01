@@ -23,7 +23,6 @@ function test_score_set = get_test_score_set(TestData)
 % **Date**: March 2025
     
     % Check further downstream
-
     if iscell(TestData.score)
         test_score_set = unique(TestData.score); 
         test_score_set(cellfun('isempty', test_score_set)) = []; % Remove empty cells

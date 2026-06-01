@@ -99,7 +99,7 @@ function rep_cal_function(Params)
         RP.unflat_matrix_fun = unflatten_matrix(RP.mask, 'variable_type', ...
             RP.variable_type, 'flat_to_spatial', RP.flat_to_spatial, 'spatial_to_flat', RP.spatial_to_flat);
         RP.flat_matrix_fun = create_flat_function(RP.mask, 'variable_type', RP.variable_type);
-
+        
         [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
 
         % Important, X is calculated here for all test_types

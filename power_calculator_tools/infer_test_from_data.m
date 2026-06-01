@@ -46,7 +46,7 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
         % if all scores are equal to the same number - t test
         test_type = 't';
     
-    elseif all(cellfun(@isnumeric, test_score_set)) && length(test_score_set) > 2
+    elseif length(test_score_set) > 2
         % if score is continuous -> r
         test_type_origin = 'score_cond';
         test_type = 'r';
