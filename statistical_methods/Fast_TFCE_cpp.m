@@ -3,7 +3,7 @@
         properties 
             level = "edge";
             permutation_based = true;
-            permutations = 800; % Override permutation number
+            permutations = 1000; % Override permutation number
             method_params = Fast_TFCE_cpp.get_fast_tfce_params()
         end
     

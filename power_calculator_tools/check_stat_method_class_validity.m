@@ -40,8 +40,11 @@ function Params = check_stat_method_class_validity(Params)
         else
             replaced_method = replace_edge_per_node_methods(method_name, ...
                                 method_obj.level, Params.variable_type);
-            warning('The method %s was replaced by %s for an appropriate variable type', ...
+            
+            if ~strcmp(replaced_method, method_name)
+                warning('The method %s was replaced by %s for an appropriate variable type', ...
                     method_name, replaced_method)
+            end
         end
 
         new_cluster_stat_types{i} = replaced_method;

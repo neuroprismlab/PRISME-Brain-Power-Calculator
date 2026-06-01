@@ -3,7 +3,7 @@ classdef IC_TFCE_Node_cpp < handle
     properties
         level = "node";
         permutation_based = true;
-        permutations = 800; % Override permutation number
+        permutations = 1000; % Override permutation number
         method_params = IC_TFCE_Node_cpp.get_fast_tfce_params()
     end
     
