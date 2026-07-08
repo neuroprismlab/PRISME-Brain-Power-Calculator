@@ -42,9 +42,10 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
     
     test_score_set = get_test_score_set(TestData);
 
-    if length(test_score_set) == 1 && ~isnan(test_score_set)
+    if length(test_score_set) == 1 
         % if all scores are equal to the same number - t test
         test_type = 't';
+        test_type_origin = 'score_cond';
     
     elseif length(test_score_set) > 2
         % if score is continuous -> r
@@ -59,9 +60,18 @@ function [RP, test_type_origin] = infer_test_from_data(RP, TestData, BrainData)
         [index_cond_1, index_cond_2] = get_index_matching_score(TestData.score, ...
             test_score_set);
 
-        sub_ids_cond1 = BrainData.(TestData.reference_condition).sub_ids(index_cond_1);
-        sub_ids_cond2 = BrainData.(TestData.reference_condition).sub_ids(index_cond_2);
+        % resolve to actual subject IDs in TestData's own frame first
+        sub_ids_test_cond1 = TestData.sub_ids(index_cond_1);
+        sub_ids_test_cond2 = TestData.sub_ids(index_cond_2);
+
+        % now cross into BrainData's via ID matching
+        index_b_data_c1 = ismember(BrainData.(TestData.reference_condition).sub_ids, sub_ids_test_cond1);
+        index_b_data_c2 = ismember(BrainData.(TestData.reference_condition).sub_ids, sub_ids_test_cond2);
         
+        % Get the ids for the condition
+        sub_ids_cond1 = BrainData.(TestData.reference_condition).sub_ids(index_b_data_c1);
+        sub_ids_cond2 = BrainData.(TestData.reference_condition).sub_ids(index_b_data_c2);
+
         %% TODO: Divided by the two - focus on group sizes
         n_equal = numel(intersect(sort(sub_ids_cond1), sort(sub_ids_cond2)));
         n_unique = numel(setxor(sub_ids_cond1, sub_ids_cond2));

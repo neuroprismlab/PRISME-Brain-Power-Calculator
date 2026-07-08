@@ -35,10 +35,11 @@ cd(scriptDir);
 % tests subs_data_from_score_condition function
 test_subs_score_retrieval()
 
+% Test automatic test type retrieval function
+test_type_inference_tests()
+
 % test if calculation status is proper
 test_check_calculation_status()
-
-
 
 clean_test_directories()
 

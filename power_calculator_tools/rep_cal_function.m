@@ -59,7 +59,7 @@ function rep_cal_function(Params)
     Params.variable_type = get_variable_type(Dataset);
 
     %% Check method validity
-    Params = check_stat_method_class_validity(Params);
+    [Params, Params.has_mvm] = check_stat_method_class_validity(Params);
     
     %% Finish method naming
     [Params.all_full_stat_type_names, Params.full_name_method_map] = extract_submethod_info(Params);
@@ -99,7 +99,7 @@ function rep_cal_function(Params)
         RP.unflat_matrix_fun = unflatten_matrix(RP.mask, 'variable_type', ...
             RP.variable_type, 'flat_to_spatial', RP.flat_to_spatial, 'spatial_to_flat', RP.spatial_to_flat);
         RP.flat_matrix_fun = create_flat_function(RP.mask, 'variable_type', RP.variable_type);
-        
+       
         [RP, test_type_origin] = infer_test_from_data(RP, OutcomeData.(t), BrainData);
 
         % Important, X is calculated here for all test_types
@@ -117,7 +117,15 @@ function rep_cal_function(Params)
                 error('Test type origin not found')
 
         end  
-        
+
+        % Extract atlas parameters and edge groups
+        [RP.node_nets, RP.trilmask_net, RP.edge_groups, RP.n_networks] = ...
+            extract_atlas_related_parameters(RP, Y);
+
+        %% Multivariate variable grouping handling - add check
+        [RP.multivariate_group, RP.n_multivariate] = set_multivariate_group(RP);
+        check_multivariate_group(RP);
+
         if strcmp(RP.test_type, 't2')
             RP.list_of_nsubset = cap_t2_test_subs_when_data_limited(RP);
         end

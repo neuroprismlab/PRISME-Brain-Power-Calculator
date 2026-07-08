@@ -59,6 +59,8 @@ function all_pvals = initialize_global_pvals(RP, max_rep_pending)
                         method_struct.(full_method_name) = zeros(length(unique(RP.edge_groups)) - 1, RP.n_repetitions);
                     case "variable"
                         method_struct.(full_method_name) = zeros(RP.n_var, RP.n_repetitions);
+                    case "multivariate"
+                        method_struct.(full_method_name) = zeros(RP.n_multivariate, RP.n_repetitions);
                     otherwise
                         error("Unknown statistic level: %s", method_instance.level);
                 end

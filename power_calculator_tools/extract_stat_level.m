@@ -10,6 +10,9 @@ function level = extract_stat_level(level)
 
         case 'network'
             level = 'network';
+
+        case 'multivariate'
+            level = 'multivariate';
         
         case 'node'
             level = 'variable';

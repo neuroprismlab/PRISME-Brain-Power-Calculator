@@ -28,49 +28,40 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-Params.data_dir = './data/s_hcp_fc_noble_corr.mat';
+Params.data_dir = './data/s_slim_fc_rosenblatt.mat';
 
 % Name of the output directory 
-% Params.output = nan;
+% Params.output = 'test_presentation';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
 % Params.gt_data_dir = './power_calculator_results/'; 
 
-
-
 % Options - full_file, compact_file;
 Params.subsample_file_type = 'compact_file';
 
-% Gt origin is currently deprecated
-Params.gt_origin = 'power_calculator';
-
 % If not NaN, it will use the atlas file found in this directory
 Params.atlas_file = NaN;
+% If NaN - uses network edge groups to create a mvg group
+Params.multivariate_group = NaN;
 
 % If recalculate is equal to 1 - recalculate
 Params.recalculate = false;
 
-% Directories
-Params.nbs_dir = './NBS1.2';
-Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
-
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 10; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 10;
- 
 
 %% Skip some tests - change ranges or the function
 % Tests to skip accepts functions
-ranges = {[0, 0]};
+ranges = {[0, 1]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
-
 %% List of subjects per subset
-Params.list_of_nsubset = {20, 40, 80, 120, 200}; % To change this, add more when necessary
-                    % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
+Params.list_of_nsubset = {20, 40, 80, 120, 200}; 
+% size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
                             % Current model (see above design matrix) only designed for t-test
 Params.force_permute = true;               
@@ -81,23 +72,27 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
-%Params.all_cluster_stat_types = {'IC_TFCE_FC_cpp_dh1', 'IC_TFCE_FC_cpp_dh5', 'IC_TFCE_FC_cpp_dh10',...
-%    'IC_TFCE_FC_cpp_dh25', 'TFCE_cpp_dh1', 'TFCE_cpp_dh5','TFCE_cpp_dh10', 'TFCE_cpp_dh25', 'Exact_FC_TFCE_cpp'};
+%Params.all_cluster_stat_types = {'Multivariate_CNBS'};
 
-Params.all_submethods = {'FWER', 'FDR'};
+Params.all_submethods = {'FWER', 'FDR'};                            
 
-Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
-                            % Only used if cluster_stat_type='Size'
-% Params.all_omnibus_types = {'Multidimensional_cNBS'};
-% Params.omnibus_type = 'Multidimensional_cNBS';
-                 
+
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
-Params.test_n_perms = 10;
-Params.test_n_repetitions = 5;
+Params.testing = true;
+Params.test_n_perms = 5;
+Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
 Params.test_disable_save = false;
+
+% The options bellow are deprecated and not used in calculations
+% They do need to be removed
+
+% Deprecated options - to be removed soon 
+Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
+% Directories
+Params.nbs_dir = './NBS1.2';
+Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
 
 end

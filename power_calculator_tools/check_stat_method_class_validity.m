@@ -1,4 +1,4 @@
-function Params = check_stat_method_class_validity(Params)
+function [Params, has_mvm] = check_stat_method_class_validity(Params)
 % check_stat_method_class_validity - Validates properties of statistical method classes.
 %
 % Checks that method classes in Params.all_cluster_stat_types:
@@ -96,7 +96,18 @@ function Params = check_stat_method_class_validity(Params)
             error('Method %s has more local permutations defined than can be prepared by setparams', method_name)
         end
     end
+    
+    %% Check if multivariate method exists
+    
+    has_mvm = false;
+    for i = 1:numel(Params.all_cluster_stat_types)
+        method_obj = feval(Params.all_cluster_stat_types{i});
 
+        if strcmp(method_obj.level,'multivariate')
+            has_mvm = true;
+            break
+        end
 
+    end
     
 end
