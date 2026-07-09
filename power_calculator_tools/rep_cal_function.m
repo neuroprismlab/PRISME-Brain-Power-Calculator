@@ -68,7 +68,6 @@ function rep_cal_function(Params)
     Params.save_directory = create_output_directory(Params);
 
     %% Parallel Workers 
-    % Uncoment the disp line if setup is commented out - as reminder 
     Params.parallel = setup_parallel_workers(Params.parallel, Params.n_workers);   
    
     OutcomeData = Dataset.outcome;

@@ -61,8 +61,8 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
             Y = [Yc1, Yc2];
     
             % Get the number of subjects for each condition
-            n_subs_1 = length(RP.sub_ids_rest);
-            n_subs_2 = length(RP.sub_ids_task);
+            n_subs_1 = nnz(index_b_data_c1);   % = size(Yc1, 2)
+            n_subs_2 = nnz(index_b_data_c2);   % = size(Yc2, 2)
 
             X = zeros(n_subs_1 + n_subs_2, 2);
             X(1:n_subs_1, 1) = 1;                   % Condition 1
@@ -71,6 +71,15 @@ function [X, Y, RP] = subs_data_from_score_condition(RP,  TestData, BrainData, t
             RP.n_subs_1 = n_subs_1;
             RP.n_subs_2 = n_subs_2;
             RP.n_subs = n_subs_1 + n_subs_2;
+
+            n_available = size(BrainData.(ref_cond).data,1);
+
+            assert(RP.n_subs <= n_available, ...
+                ['Dataset bug: t2 groups sum to %d subjects but BrainData.%s ' ...
+                'only has %d unique subjects. ' ...
+                'Groups likely overlap (a subject matched both conditions) ' ...
+                'or IDs are duplicated.'], ...
+                RP.n_subs, ref_cond, n_available);
 
         case 'r'
             
