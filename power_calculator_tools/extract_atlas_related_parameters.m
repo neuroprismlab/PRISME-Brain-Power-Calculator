@@ -1,4 +1,5 @@
-function [n_node_nets, trilmask_net, edge_groups, n_networks] = extract_atlas_related_parameters(RP, Y)
+function [n_node_nets, trilmask_net, edge_groups, n_networks] = ... 
+    extract_atlas_related_parameters(RP, Y)
 %% extract_atlas_related_parameters
 % **Description**
 % Extracts atlas-related parameters used for network-based statistics 
@@ -68,7 +69,6 @@ function [n_node_nets, trilmask_net, edge_groups, n_networks] = extract_atlas_re
         n_networks = sum(unique_vals > 0);      
     end
 
-
 end
 
 
@@ -81,6 +81,7 @@ function [edge_groups, n_nodes_nets] = mat_case_atlas_extraction(Y_exp, atlas_fi
 
     edge_groups = load_atlas_edge_groups(atlas_file);
     edge_groups = triu(edge_groups, 1);
+    edge_groups = edge_groups + edge_groups';
 
 end
 

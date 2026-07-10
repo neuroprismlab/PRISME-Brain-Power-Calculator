@@ -28,7 +28,7 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-Params.data_dir = './data/s_slim_fc_rosenblatt.mat';
+Params.data_dir = './data/s_hcpep_fc_foster.mat';
 
 % Name of the output directory 
 % Params.output = 'test_presentation';
@@ -49,7 +49,7 @@ Params.multivariate_group = NaN;
 Params.recalculate = false;
 
 %%% Resampling parameters %%%
-Params.parallel = true; % run stuff sequentially or in parallel
+Params.parallel = false; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 10;
@@ -80,7 +80,7 @@ Params.all_submethods = {'FWER', 'FDR'};
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = false;
+Params.testing = true;
 Params.test_n_perms = 5;
 Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
