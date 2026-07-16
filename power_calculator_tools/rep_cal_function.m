@@ -49,6 +49,9 @@ function rep_cal_function(Params)
         Dataset = load(Params.data_dir);
         Dataset.file_name = Params.data_dir;
     end
+    % Check dataset for some errors in data formating
+    assert_dataset(Dataset)
+
     
     %% Set .n_nodes, .n_var, .n_repetitions, .mask
     [Params.mask, Params.n_var, Params.n_nodes] = setup_experiment_data(Dataset);

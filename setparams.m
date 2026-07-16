@@ -28,7 +28,8 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-Params.data_dir = './data/s_hcpep_fc_foster.mat';
+Params.data_dir = './data/s_slim_fc_rosenblatt.mat';
+
 
 % Name of the output directory 
 % Params.output = 'test_presentation';

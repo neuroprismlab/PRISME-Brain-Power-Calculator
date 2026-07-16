@@ -42,6 +42,15 @@ function run_benchmarking(RP, Y, X)
         RP.n_subs_subset = RP.list_of_nsubset{id_nsub_list};
         RP = set_n_subs_subset(RP);
 
+        % Not enough subs for this analysis skip
+        if RP.n_subs < RP.n_subs_subset
+
+            warning(['Skipping test %s: requested subsample size %d ' ...
+'               exceeds available subjects %d.'], ...
+                RP.test_name, RP.n_subs_subset, RP.n_subs);
+            continue;
+        end
+
         % Prepare benchmarking setup
         [UI, RP] = setup_benchmarking(RP);
 
