@@ -14,7 +14,7 @@ clc;
 
 %% Configuration
 seed       = 42;            % RNG seed (reproducibility)
-n_reps     = 1000;          % Number of random matrices
+n_reps     = 50000;          % Number of random matrices
 N          = 268;           % Number of ROIs
 dh         = 0.1;           % TFCE step size
 H          = 3.0;           % Height exponent 
@@ -45,10 +45,13 @@ for rep = 1:n_reps
     % NOTE: The argument orders are different
     %   traditional_tfce_cpp(matrix, H, E, dh)
     %   apply_tfce_cpp(matrix, dh, H, E)
+    
+    % This is the traditional TFCE computation
     tfce_trad = traditional_tfce_cpp(t_mat, H, E, dh);
 
     % apply_tfce_cpp modifies its input array in place
     % so a copy is passed
+    % This is the IC TFCE one
     tfce_ic = apply_tfce_cpp(t_mat + 0, dh, H, E);
 
     d = abs(tfce_trad(edge_mask) - tfce_ic(edge_mask));
