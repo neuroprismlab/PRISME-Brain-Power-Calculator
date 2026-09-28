@@ -28,15 +28,16 @@ function Params = setparams()
 % Author: Fabricio Cravo | Date: March 2025
 
 % Datasets - Commented for easy use
-Params.data_dir = './data/s_slim_fc_rosenblatt.mat';
+Params.data_dir = './data/s_ukb_fc_jjang_fabi.mat';
+% Params.data_dir = './data/s_hcp_fc_noble_tasks.mat';
 
 
 % Name of the output directory 
-% Params.output = 'test_presentation';
+Params.output = 'ukb_fc';
 
 % Save specifications - if NaN output becomes dataset file name
 Params.save_directory = './power_calculator_results/';
-% Params.gt_data_dir = './power_calculator_results/'; 
+ 
 
 % Options - full_file, compact_file;
 Params.subsample_file_type = 'compact_file';
@@ -50,7 +51,7 @@ Params.multivariate_group = NaN;
 Params.recalculate = false;
 
 %%% Resampling parameters %%%
-Params.parallel = false; % run stuff sequentially or in parallel
+Params.parallel = true; % run stuff sequentially or in parallel
 Params.n_workers = 5; % num parallel workers for parfor, best if # workers = # cores
 Params.n_repetitions = 100;  % 500 recommended
 Params.batch_size = 10;
@@ -61,10 +62,10 @@ ranges = {[0, 0]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 %% List of subjects per subset
-Params.list_of_nsubset = {20, 40, 80, 120, 200}; 
+Params.list_of_nsubset = {200, 2000, 5000, 10000, 20000}; 
 % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
-                            % Current model (see above design matrix) only designed for t-test
+% Current model (see above design matrix) only designed for t-test
 Params.force_permute = true;               
 Params.n_perms = 1000;               % recommend n_perms=5000 to appreciably reduce uncertainty of p-value estimation (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Randomise/Theory)
 Params.tthresh_first_level = 3.1;    % t=3.1 corresponds with p=0.005-0.001 (DOF=10-1000)
@@ -73,7 +74,7 @@ Params.pthresh_second_level = 0.05;  % FWER or FDR rate
 Params.tpr_dthresh = 0; % Threshold for true positives vs negatives
 Params.save_significance_thresh = 0.15;
 Params.all_cluster_stat_types = {'Parametric', 'Size_cpp', 'Fast_TFCE_cpp', 'Constrained_cpp', 'Omnibus_cNBS'};
-%Params.all_cluster_stat_types = {'Multivariate_CNBS'};
+%Params.all_cluster_stat_types = {'Parametric'};
 
 Params.all_submethods = {'FWER', 'FDR'};                            
 
@@ -81,7 +82,7 @@ Params.all_submethods = {'FWER', 'FDR'};
 %%%%% DEVELOPERS ONLY %%%%%
 % Use a small subset of permutations for faster development -- inappropriate for inference
 
-Params.testing = true;
+Params.testing = false;
 Params.test_n_perms = 5;
 Params.test_n_repetitions = 10;
 Params.test_n_workers = 1;
@@ -94,6 +95,6 @@ Params.test_disable_save = false;
 Params.cluster_size_type = 'Extent'; % 'Intensity' | 'Extent'
 % Directories
 Params.nbs_dir = './NBS1.2';
-Params.other_scripts_dir='./NBS_benchmarking/support_scripts/';
+Params.other_scripts_dir = './NBS_benchmarking/support_scripts/';
 
 end

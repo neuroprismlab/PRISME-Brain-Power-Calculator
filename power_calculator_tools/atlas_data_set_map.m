@@ -57,6 +57,9 @@ function atlas_file = atlas_data_set_map(Params)
             case startsWith(data_set_choice, 'test') && endsWith(data_set_choice, 'act')
                 atlas_file = NaN;
 
+            case startsWith(data_set_choice, 'ukb_fc')
+                atlas_file = './atlas_storage/map55_subnetwork.csv';
+    
             otherwise
                 % Default to shen atlas now
                 atlas_file = './atlas_storage/map268_subnetwork.mat';

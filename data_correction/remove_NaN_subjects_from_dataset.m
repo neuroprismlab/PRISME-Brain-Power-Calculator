@@ -6,8 +6,8 @@
 
 clear; clc;
 
-in_file  = '/Users/f.cravogomes/Desktop/Cloned Repos/PRISME-Brain-Power-Calculator/data/s_slim_fc_rosenblatt.mat';
-out_file = '/Users/f.cravogomes/Desktop/Cloned Repos/PRISME-Brain-Power-Calculator/data/s_slim_fc_rosenblatt_fabi.mat';
+in_file  = '/Users/f.cravogomes/Desktop/Cloned Repos/PRISME-Brain-Power-Calculator/data/s_pnc_fc_ye.mat';
+out_file = '/Users/f.cravogomes/Desktop/Cloned Repos/PRISME-Brain-Power-Calculator/data/s_pnc_fc_ye_fabi.mat';
 
 fprintf('Loading %s\n', in_file);
 Dataset = load(in_file);

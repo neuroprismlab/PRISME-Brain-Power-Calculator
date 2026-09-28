@@ -44,20 +44,22 @@ function [n_node_nets, trilmask_net, edge_groups, n_networks] = ...
     trilmask_net = NaN;
     edge_groups = [];
     n_networks = 0;
-       
+
     % Only apply atlas to the network-based stats
     if ~isnan(RP.atlas_file)
 
         [~, ~, atlas_ext] = fileparts(RP.atlas_file);
 
-
         switch atlas_ext
 
             case '.nii'
-                [edge_groups, n_node_nets] = nii_case_atlas_extraction(RP.atlas_file);
+                [edge_groups, n_node_nets] = l_nii_case_atlas_extraction(RP.atlas_file);
 
             case '.mat'
-                [edge_groups, n_node_nets] = mat_case_atlas_extraction(Y(:, 1),  RP.atlas_file, RP.mask);
+                [edge_groups, n_node_nets] = l_mat_case_atlas_extraction(Y(:, 1),  RP.atlas_file, RP.mask);
+
+            case '.csv'
+                [edge_groups, n_node_nets] = csv_atlas_extraction(RP.atlas_file);
 
             otherwise 
                 error('Atlas extension not supported')
@@ -72,7 +74,7 @@ function [n_node_nets, trilmask_net, edge_groups, n_networks] = ...
 end
 
 
-function [edge_groups, n_nodes_nets] = mat_case_atlas_extraction(Y_exp, atlas_file, mask)
+function [edge_groups, n_nodes_nets] = l_mat_case_atlas_extraction(Y_exp, atlas_file, mask)
     
     template_net = summarize_matrix_by_atlas(Y_exp, atlas_file, 'suppressimg', 1, 'mask', mask);
     
@@ -85,7 +87,7 @@ function [edge_groups, n_nodes_nets] = mat_case_atlas_extraction(Y_exp, atlas_fi
 
 end
 
-function [edge_groups, n_nodes_nets] = nii_case_atlas_extraction(atlas_file)
+function [edge_groups, n_nodes_nets] = l_nii_case_atlas_extraction(atlas_file)
     
     edge_groups = niftiread(atlas_file);
     n_nodes_nets = max(edge_groups(:));
