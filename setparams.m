@@ -62,7 +62,7 @@ ranges = {[0, 0]};
 Params.tests_to_skip = @(x) any(cellfun(@(r) (x >= r(1)) && (x <= r(2)), ranges));
 
 %% List of subjects per subset
-Params.list_of_nsubset = {200, 2000, 5000, 10000, 20000}; 
+Params.list_of_nsubset = {250, 500, 1000, 2000}; 
 % size of subset is full group size (N=n*2 for two sample t-test or N=n for one-sample)
 
 % Current model (see above design matrix) only designed for t-test
