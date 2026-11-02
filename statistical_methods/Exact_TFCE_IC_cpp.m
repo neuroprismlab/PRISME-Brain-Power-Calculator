@@ -31,7 +31,7 @@ classdef Exact_TFCE_IC_cpp
             test_stat_mat = STATS.unflatten_matrix(edge_stats);
 
             % Apply exact TFCE transformation to the observed test statistics
-            cluster_stats_target = apply_exact_tfce_cpp(test_stat_mat, ...
+            cluster_stats_target = ic_exact_tfce(test_stat_mat, ...
                 obj.method_params.H, obj.method_params.E);
             cluster_stats_target = STATS.flatten_matrix(cluster_stats_target);
 
