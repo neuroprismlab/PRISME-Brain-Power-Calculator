@@ -130,7 +130,5 @@ function process_repetition_batches(X, Y, RP, UI)
 
     end 
 
-    
-  
 end
 

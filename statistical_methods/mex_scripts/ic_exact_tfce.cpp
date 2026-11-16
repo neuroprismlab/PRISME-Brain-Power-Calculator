@@ -67,8 +67,7 @@ struct Cluster {
     double size_pow;          // edge_size^E (0 when edge_size == 0)
 };
 
-// Stable bottom-up merge sort, DESCENDING by w.
-// Ties keep their original order (left run is taken unless right is strictly larger).
+// Stable bottom-up merge sort
 void merge_sort_desc(std::vector<EdgeRec> &a) {
     const size_t n = a.size();
     if (n < 2) return;
@@ -132,10 +131,10 @@ void ic_exact_tfce_impl(const double *img, size_t N, double H, double E, double 
     std::vector<Cluster> clusters(N);
     std::vector<int> cluster_label(N);
     for (size_t x = 0; x < N; x++) {
-        clusters[x].nodes.assign(1, (int)x);
+        clusters[x].nodes.assign(1, (int) x);
         clusters[x].edge_size = 0;
         clusters[x].size_pow = 0.0;
-        cluster_label[x] = (int)x;
+        cluster_label[x] = (int) x;
     }
 
     auto update_pow = [&](Cluster &c) {
@@ -156,16 +155,20 @@ void ic_exact_tfce_impl(const double *img, size_t N, double H, double E, double 
         if (ci != cj) {
             // merge smaller (by node count) into larger, relabel absorbed nodes
             int target = ci, absorbed = cj;
+
             if (clusters[cj].nodes.size() > clusters[ci].nodes.size()) {
                 target = cj;
                 absorbed = ci;
             }
+
             Cluster &t = clusters[target];
             Cluster &a = clusters[absorbed];
+
             for (size_t k = 0; k < a.nodes.size(); k++) {
                 cluster_label[a.nodes[k]] = target;
                 t.nodes.push_back(a.nodes[k]);
             }
+
             t.edge_size += a.edge_size + 1;
             a.nodes.clear();
             a.edge_size = 0;

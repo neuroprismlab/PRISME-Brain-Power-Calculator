@@ -31,6 +31,9 @@ compile_mex()
 
 cd(scriptDir);
 
+% Test glm fit
+test_nbsglm_smn();
+
 % Test if retrieval of subject scores matches what is expected 
 % tests subs_data_from_score_condition function
 test_subs_score_retrieval()
@@ -40,6 +43,9 @@ test_type_inference_tests()
 
 % test if calculation status is proper
 test_check_calculation_status()
+
+% Unit tests for the GLM t-statistic function (onesample/ttest branch)
+test_nbsglm_smn()
 
 clean_test_directories()
 
@@ -76,7 +82,6 @@ create_r_test_dataset()
 edge_based_tests('test_r_fc.mat')
 
 network_based_tests('test_r_fc.mat')
-
 
 create_act_test_dataset()
 
