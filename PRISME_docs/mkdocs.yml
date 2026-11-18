@@ -24,6 +24,7 @@ theme:
 nav:
   - Home: index.md
   - User Guide:
+      - Quickstart: user_guide/quickstart.md
       - Input Data Format: user_guide/input_format.md
       - Configuration Parameters: user_guide/parameters.md
       - Running Workflows: user_guide/workflows.md
