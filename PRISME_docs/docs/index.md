@@ -66,7 +66,7 @@ Results are saved to `./power_calculator_results/` by default under a directory 
 
 See [Configuration Parameters](user_guide/parameters.md) for all available `setparams.m` options and [Running Workflows](user_guide/workflows.md) for detailed execution instructions.
 
-See [Quick Start Guide](getting_started/quickstart.md) for a complete tutorial.
+See [Quick Start Guide](user_guide/quickstart.md) for a complete tutorial.
 
 ## Documentation Structure
 
