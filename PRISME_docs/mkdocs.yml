@@ -31,3 +31,4 @@ nav:
       - Adding New Methods: developer/adding_methods.md
       - Architecture Overview: developer/architecture.md
       - C++ Integration: developer/cpp_integration.md
+  - Testing: tests/testing_detail.md
