@@ -81,6 +81,24 @@ See [Quick Start Guide](getting_started/quickstart.md) for a complete tutorial.
 - [Architecture Overview](developer/architecture.md) - Code organization and design principles
 - [C++ Integration](developer/cpp_integration.md) - How to optimize your method with C++ 
 
+## Testing
+
+PRISME includes unit tests and full pipeline tests, located in `test_scripts/`. The unit tests check the statistical inference methods (Parametric, Size, TFCE, cNBS and its C++ version, and the omnibus cNBS) against hard-coded p-values on small hand-built networks. They also check that the GLM fit matches closed-form t-statistics for one-sample, two-sample and correlation designs, the automatic inference of the test type (`t`, `t2`, `r`) from the input data, the extraction of design matrices and brain data from contrast-based and score-based tests, and the logic that resumes repetition calculations from existing result files. The goal of the tests is to assure calculations are correct and remain correct at each update. The tests run automatically on every pull request into `main`. See [Testing](tests/testing_detail.md) for a per-test breakdown of what is checked and which functions are covered.
+
+## Contributing
+
+To contribute, first open an issue in the [Issues tab](https://github.com/neuroprismlab/PRISME-Brain-Power-Calculator/issues) describing the change you plan to make. 
+Once it has been discussed, open a pull request into `main` that references the issue (e.g. `Closes #12`).
+
+The `main` branch is rule-protected:
+- No direct pushes to `main`. All changes must result from a PR.
+- Automated tests must pass before a pull request can be merged.
+- One approving review from someone with write access is required.
+
+New inference methods must follow the API in [Adding New Methods](developer/adding_methods.md). 
+If a new method is added, please add a test (see [Testing](tests/testing_detail.md)).
+
+
 ## License
 
 MIT License - see GitHub repository for details.
