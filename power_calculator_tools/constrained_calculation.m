@@ -1,13 +1,11 @@
-function pval_uncorr = constrained_calculation(STATS, edge_stats, permuted_edge_stats)
-
-    % Get number of nodes
-    N = STATS.N;
-    
-    % Convert edge statistics back into a matrix
-    test_stat_mat = unflatten_matrix(edge_stats, STATS.mask);
-    
+function pval_uncorr = constrained_calculation( ...
+    flat_edge_groups, ...
+    edge_stats, ...
+    permuted_edge_stats ...
+    )
+ 
     % Compute cluster statistics for the observed data
-    cluster_stats_target = get_constrained_stats(test_stat_mat, STATS.edge_groups);
+    cluster_stats_target = get_constrained_stats(edge_stats, flat_edge_groups);
 
     % Number of permutations
     K = size(permuted_edge_stats, 2);
@@ -15,8 +13,7 @@ function pval_uncorr = constrained_calculation(STATS, edge_stats, permuted_edge_
 
     % Compute cluster statistics for each permutation
     for i = 1:K
-        perm_stat_mat = unflatten_matrix(permuted_edge_stats(:, i), STATS.mask);
-        null_stat = get_constrained_stats(perm_stat_mat, STATS.edge_groups);
+        null_stat = get_constrained_stats(permuted_edge_stats(:, i), flat_edge_groups);
         null_dist(i, :) = null_stat;  % Store in permutation null distribution
     end
 

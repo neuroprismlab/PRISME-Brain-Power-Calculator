@@ -30,8 +30,13 @@ classdef Constrained
             end
 
             % Compute uncorrected p-values via cNBS
-            pval_uncorr = constrained_calculation(STATS, edge_stats, permuted_edge_stats);
-
+            flat_edge_groups = double(STATS.flatten_matrix(STATS.edge_groups));
+            pval_uncorr = constrained_calculation( ...
+                flat_edge_groups, ...
+                edge_stats, ...
+                permuted_edge_stats ...
+            );
+            
             pvals = struct();
 
             % FWER - Bonferroni correction

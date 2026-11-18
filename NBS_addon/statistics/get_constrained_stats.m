@@ -7,20 +7,14 @@ function [cluster_stat] = get_constrained_stats(test_stat, edge_groups)
 % them to be upper/lower triangular (if inputs and mask are symmetric, run
 % risk of double counting. Maybe best is symmetric input / lower tril mask)
 
-% Some cleaning
-if size(test_stat,1)~=size(test_stat,2)
-    error('Input test statistic matrix is not square');
+n_networks = numel(unique(nonzeros(edge_groups)));
+cluster_stat = zeros(1, n_networks);
+n_edge_net = zeros(1, n_networks);
+
+for i = 1:numel(edge_groups)
+    i_net = edge_groups(i);
+    n_edge_net(i_net) = n_edge_net(i_net) + 1;
+    cluster_stat(i_net) = cluster_stat(i_net) + test_stat(i);
 end
 
-if any(test_stat-test_stat')
-    error('Input test statistic matrix is not symmetric');
-end
-
-% cluster_stat_full=zeros(size(test_stat));
-cluster_stat = zeros(1, length(edge_groups.unique));
-% get those constrained stats - average within nets
-for i=1:length(edge_groups.unique)
-    group_ids = edge_groups.groups == edge_groups.unique(i);
-    cluster_stat(i) = mean(test_stat(group_ids));
-%     cluster_stat_full(group_ids)=cluster_stat_by_group(i);
-end
+cluster_stat = cluster_stat ./ n_edge_net;
