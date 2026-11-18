@@ -1,28 +1,27 @@
 function test_statistical_methods()
-%% test_nbsglm_smn
-% Unit tests for NBSglm_smn (t-test branch: 'onesample' / 'ttest').
-%
-% Each case builds a GLM struct the same way the pipeline does
-% (design matrix X, data Y, contrast, then NBSglm_setup_smn) and compares the
-% returned t-statistics with independent references: closed-form formulas
-% and, when available, Statistics Toolbox functions (ttest, ttest2, fitlm).
-%
-% Design matrices follow the pipeline conventions:
-%   't'  : X = ones(n,1),            contrast = 1
-%   't2' : X = [group1 group2] dummies, contrast = [1 -1]
-%   'r'  : X = [score ones],         contrast = [1 0]
-%
-% The 'ftest' branch is not covered here (not used by the pipeline).
-
+    %% This function test the implemented statistical methods used in the toolbox
+    % It has hard coded t-stat inputs and p-value outputs that must match
+    % within a tolerance for the test to pass
+    % It's simply a test of correctness
     fprintf('Testing statistical methods on the toolbox\n');
     rng(42);
-    %test_Parametric(1e-5);
-    %test_Size_cpp(1e-5);
-    %test_Fast_TFCE_cpp(1e-5);
-    %test_Constrained(1e-5);
-    %test_Constrained_cpp(1e-5);
+    tol = 1e-5;
+    
+    method_test = struct();
+    method_test.Parametric      = @() test_Parametric(tol);
+    method_test.Size_cpp        = @() test_Size_cpp(tol);
+    method_test.Fast_TFCE_cpp   = @() test_Fast_TFCE_cpp(tol);
+    method_test.Constrained     = @() test_Constrained(tol);
+    method_test.Constrained_cpp = @() test_Constrained_cpp(tol);
+    method_test.Omnibus_cNBS    = @() test_Omnibus_cNBS(tol);
+    
+    method_names = fieldnames(method_test);
+    for i = 1:numel(method_names)
+        fprintf('Testing %s\n', method_names{i});
+        method_test.(method_names{i})();
+    end
 
-
+    fprintf('All statistical method tests passed\n');
 end
 
 %%%%%% Test Parametric
@@ -219,4 +218,43 @@ function test_Constrained_cpp(tol)
         'Constrained_cpp: FDR differs from the hard-coded values');
 end
 
-%%% Test Ominibus_cNBS(tol)
+%%% Test Ominibus_cNBS
+function test_Omnibus_cNBS(tol)
+    % Whole-brain test: network sums -> Euclidean distance to the
+    % permutation mean -> p = #(null distance >= observed distance) / K
+    
+    mask = triu(true(5), 1);
+    
+    % Data, permutations, and expected p-value
+    [edge_groups, obs, perms, p_whole_brain] = whole_brain_test_data();
+    K = size(perms, 3);
+    
+    STATS = struct();
+    STATS.mask = mask;
+    STATS.edge_groups = edge_groups;
+    STATS.n_perms = K;
+    
+    % Flattened edge vectors, as in the pipeline
+    edge_stats = obs(mask);
+    permuted_edge_stats = zeros(nnz(mask), K);
+    for k = 1:K
+        P = perms(:, :, k);
+        permuted_edge_stats(:, k) = P(mask);
+    end
+    
+    % The method only uses its size(., 1) as the number of networks (4)
+    network_stats = [2; -2; 0; 0];
+    
+    method = Omnibus_cNBS();
+    pval = method.run_method( ...
+        'statistical_parameters', STATS, ...
+        'edge_stats', edge_stats, ...
+        'network_stats', network_stats, ...
+        'permuted_edge_data', permuted_edge_stats);
+    
+    assert(abs(pval - p_whole_brain) < tol, ...
+        'Omnibus_cNBS: p-value differs from the hard-coded value');
+
+end
+
+
